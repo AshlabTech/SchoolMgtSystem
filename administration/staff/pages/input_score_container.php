@@ -1,0 +1,1 @@
+<iframe src="../staff/pages/input-scoreA.php" style="width: 100%; height: 600px; border: none;"></iframe>

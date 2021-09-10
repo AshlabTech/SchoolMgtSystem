@@ -1,0 +1,264 @@
+[02-Dec-2020 17:31:24 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library '/opt/cpanel/ea-php56/root/usr/lib64/php/modules/imagick.so' - libMagickWand.so.5: cannot open shared object file: No such file or directory in Unknown on line 0
+[02-Dec-2020 17:31:24 UTC] PHP Warning:  mysqli_connect(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home/elmaasu1/public_html/students/public/php/connection.php on line 10
+[02-Dec-2020 17:31:24 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, boolean given in /home/elmaasu1/public_html/students/public/php/connection.php on line 10
+[02-Dec-2020 17:32:18 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library '/opt/cpanel/ea-php56/root/usr/lib64/php/modules/imagick.so' - libMagickWand.so.5: cannot open shared object file: No such file or directory in Unknown on line 0
+[02-Dec-2020 17:32:18 UTC] PHP Warning:  mysqli_connect(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home/elmaasu1/public_html/students/public/php/connection.php on line 10
+[02-Dec-2020 17:32:18 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, boolean given in /home/elmaasu1/public_html/students/public/php/connection.php on line 10
+[02-Dec-2020 17:32:20 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library '/opt/cpanel/ea-php56/root/usr/lib64/php/modules/imagick.so' - libMagickWand.so.5: cannot open shared object file: No such file or directory in Unknown on line 0
+[02-Dec-2020 17:32:20 UTC] PHP Warning:  mysqli_connect(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home/elmaasu1/public_html/students/public/php/connection.php on line 10
+[02-Dec-2020 17:32:20 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, boolean given in /home/elmaasu1/public_html/students/public/php/connection.php on line 10
+[02-Dec-2020 17:32:23 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library '/opt/cpanel/ea-php56/root/usr/lib64/php/modules/imagick.so' - libMagickWand.so.5: cannot open shared object file: No such file or directory in Unknown on line 0
+[02-Dec-2020 17:32:23 UTC] PHP Warning:  mysqli_connect(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home/elmaasu1/public_html/students/public/php/connection.php on line 10
+[02-Dec-2020 17:32:23 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, boolean given in /home/elmaasu1/public_html/students/public/php/connection.php on line 10
+[02-Dec-2020 17:32:24 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library '/opt/cpanel/ea-php56/root/usr/lib64/php/modules/imagick.so' - libMagickWand.so.5: cannot open shared object file: No such file or directory in Unknown on line 0
+[02-Dec-2020 17:32:24 UTC] PHP Warning:  mysqli_connect(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home/elmaasu1/public_html/students/public/php/connection.php on line 10
+[02-Dec-2020 17:32:24 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, boolean given in /home/elmaasu1/public_html/students/public/php/connection.php on line 10
+[02-Dec-2020 17:36:20 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library '/opt/cpanel/ea-php56/root/usr/lib64/php/modules/imagick.so' - libMagickWand.so.5: cannot open shared object file: No such file or directory in Unknown on line 0
+[02-Dec-2020 17:36:20 UTC] PHP Warning:  mysqli_connect(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: NO) in /home/elmaasu1/public_html/students/public/php/connection.php on line 10
+[02-Dec-2020 17:36:20 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, boolean given in /home/elmaasu1/public_html/students/public/php/connection.php on line 10
+[02-Dec-2020 17:38:15 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library '/opt/cpanel/ea-php56/root/usr/lib64/php/modules/imagick.so' - libMagickWand.so.5: cannot open shared object file: No such file or directory in Unknown on line 0
+[02-Dec-2020 17:38:54 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library '/opt/cpanel/ea-php56/root/usr/lib64/php/modules/imagick.so' - libMagickWand.so.5: cannot open shared object file: No such file or directory in Unknown on line 0
+[02-Dec-2020 17:39:51 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library '/opt/cpanel/ea-php56/root/usr/lib64/php/modules/imagick.so' - libMagickWand.so.5: cannot open shared object file: No such file or directory in Unknown on line 0
+[02-Dec-2020 17:40:14 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library '/opt/cpanel/ea-php56/root/usr/lib64/php/modules/imagick.so' - libMagickWand.so.5: cannot open shared object file: No such file or directory in Unknown on line 0
+[02-Dec-2020 17:58:51 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library '/opt/cpanel/ea-php56/root/usr/lib64/php/modules/imagick.so' - libMagickWand.so.5: cannot open shared object file: No such file or directory in Unknown on line 0
+[02-Dec-2020 18:21:43 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library '/opt/cpanel/ea-php56/root/usr/lib64/php/modules/imagick.so' - libMagickWand.so.5: cannot open shared object file: No such file or directory in Unknown on line 0
+[02-Dec-2020 18:27:06 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library '/opt/cpanel/ea-php56/root/usr/lib64/php/modules/imagick.so' - libMagickWand.so.5: cannot open shared object file: No such file or directory in Unknown on line 0
+[02-Dec-2020 18:27:12 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library '/opt/cpanel/ea-php56/root/usr/lib64/php/modules/imagick.so' - libMagickWand.so.5: cannot open shared object file: No such file or directory in Unknown on line 0
+[02-Dec-2020 18:29:48 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library '/opt/cpanel/ea-php56/root/usr/lib64/php/modules/imagick.so' - libMagickWand.so.5: cannot open shared object file: No such file or directory in Unknown on line 0
+[02-Dec-2020 18:37:18 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library '/opt/cpanel/ea-php56/root/usr/lib64/php/modules/imagick.so' - libMagickWand.so.5: cannot open shared object file: No such file or directory in Unknown on line 0
+[02-Dec-2020 19:31:54 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library '/opt/cpanel/ea-php56/root/usr/lib64/php/modules/imagick.so' - libMagickWand.so.5: cannot open shared object file: No such file or directory in Unknown on line 0
+[02-Dec-2020 19:32:21 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library '/opt/cpanel/ea-php56/root/usr/lib64/php/modules/imagick.so' - libMagickWand.so.5: cannot open shared object file: No such file or directory in Unknown on line 0
+[02-Dec-2020 19:43:29 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library '/opt/cpanel/ea-php56/root/usr/lib64/php/modules/imagick.so' - libMagickWand.so.5: cannot open shared object file: No such file or directory in Unknown on line 0
+[02-Dec-2020 20:33:53 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library '/opt/cpanel/ea-php56/root/usr/lib64/php/modules/imagick.so' - libMagickWand.so.5: cannot open shared object file: No such file or directory in Unknown on line 0
+[02-Dec-2020 20:34:30 UTC] PHP Warning:  PHP Startup: Unable to load dynamic library '/opt/cpanel/ea-php56/root/usr/lib64/php/modules/imagick.so' - libMagickWand.so.5: cannot open shared object file: No such file or directory in Unknown on line 0
+[02-Dec-2020 20:34:30 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[02-Dec-2020 20:34:30 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[02-Dec-2020 20:34:30 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[02-Dec-2020 20:34:30 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[02-Dec-2020 20:34:30 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[17-Dec-2020 09:24:33 UTC] PHP Parse error:  syntax error, unexpected '' </td>' (T_CONSTANT_ENCAPSED_STRING), expecting ',' or ';' in /home/elmaasu1/public_html/students/public/results.php on line 425
+[17-Dec-2020 09:24:42 UTC] PHP Parse error:  syntax error, unexpected '' </td>' (T_CONSTANT_ENCAPSED_STRING), expecting ',' or ';' in /home/elmaasu1/public_html/students/public/results.php on line 425
+[17-Dec-2020 09:24:47 UTC] PHP Parse error:  syntax error, unexpected '' </td>' (T_CONSTANT_ENCAPSED_STRING), expecting ',' or ';' in /home/elmaasu1/public_html/students/public/results.php on line 425
+[17-Dec-2020 09:28:20 UTC] PHP Parse error:  syntax error, unexpected '' </td>' (T_CONSTANT_ENCAPSED_STRING), expecting ',' or ';' in /home/elmaasu1/public_html/students/public/results.php on line 425
+[17-Dec-2020 09:29:59 UTC] PHP Parse error:  syntax error, unexpected '' </td>' (T_CONSTANT_ENCAPSED_STRING), expecting ',' or ';' in /home/elmaasu1/public_html/students/public/results.php on line 430
+[17-Dec-2020 09:30:02 UTC] PHP Parse error:  syntax error, unexpected '' </td>' (T_CONSTANT_ENCAPSED_STRING), expecting ',' or ';' in /home/elmaasu1/public_html/students/public/results.php on line 430
+[17-Dec-2020 09:30:05 UTC] PHP Parse error:  syntax error, unexpected '' </td>' (T_CONSTANT_ENCAPSED_STRING), expecting ',' or ';' in /home/elmaasu1/public_html/students/public/results.php on line 430
+[18-Dec-2020 13:27:22 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/results.php on line 17
+[18-Dec-2020 13:27:22 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[18-Dec-2020 13:27:22 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[18-Dec-2020 13:27:22 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[18-Dec-2020 13:27:22 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[18-Dec-2020 13:28:31 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/results.php on line 17
+[18-Dec-2020 13:28:31 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[18-Dec-2020 13:28:31 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[18-Dec-2020 13:28:31 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[18-Dec-2020 13:28:31 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[20-Dec-2020 05:11:08 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[20-Dec-2020 05:11:08 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[20-Dec-2020 05:11:08 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[20-Dec-2020 05:11:08 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[20-Dec-2020 05:11:08 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[20-Dec-2020 05:11:38 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[20-Dec-2020 05:11:38 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[20-Dec-2020 05:11:38 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[20-Dec-2020 05:11:38 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[20-Dec-2020 05:11:38 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[09-Jan-2021 09:19:47 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[09-Jan-2021 09:19:47 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[09-Jan-2021 09:19:47 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[09-Jan-2021 09:19:47 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[09-Jan-2021 09:19:47 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[11-Jan-2021 12:00:35 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/results.php on line 17
+[11-Jan-2021 12:00:36 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[11-Jan-2021 12:00:36 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[11-Jan-2021 12:00:36 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[11-Jan-2021 12:00:36 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[01-Feb-2021 16:47:16 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[01-Feb-2021 16:47:16 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[01-Feb-2021 16:47:16 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[01-Feb-2021 16:47:16 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[01-Feb-2021 16:47:16 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[04-Feb-2021 10:20:25 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[04-Feb-2021 10:20:25 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[04-Feb-2021 10:20:25 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[04-Feb-2021 10:20:25 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[04-Feb-2021 10:20:25 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[04-Feb-2021 10:28:36 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[04-Feb-2021 10:28:36 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[04-Feb-2021 10:28:36 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[04-Feb-2021 10:28:36 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[04-Feb-2021 10:28:36 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[04-Feb-2021 16:19:07 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[04-Feb-2021 16:19:07 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[04-Feb-2021 16:19:07 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[04-Feb-2021 16:19:07 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[04-Feb-2021 16:19:07 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:14:23 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[05-Feb-2021 08:14:23 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:14:23 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:14:23 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:14:23 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:16:49 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[05-Feb-2021 08:16:49 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:16:49 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:16:49 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:16:49 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:20:34 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[05-Feb-2021 08:20:34 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:20:34 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:20:34 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:20:34 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:20:37 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[05-Feb-2021 08:20:37 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:20:37 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:20:37 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:20:37 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:43:02 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[05-Feb-2021 08:43:02 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:43:02 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:43:02 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:43:02 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:43:55 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[05-Feb-2021 08:43:55 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:43:55 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:43:55 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Feb-2021 08:43:55 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Feb-2021 10:08:35 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[08-Feb-2021 10:08:35 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Feb-2021 10:08:35 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Feb-2021 10:08:35 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Feb-2021 10:08:35 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[09-Feb-2021 06:36:22 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[09-Feb-2021 06:36:22 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[09-Feb-2021 06:36:22 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[09-Feb-2021 06:36:22 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[09-Feb-2021 06:36:22 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Apr-2021 10:28:08 UTC] PHP Parse error:  syntax error, unexpected ')' in /home/elmaasu1/public_html/students/public/results.php on line 47
+[05-Apr-2021 10:29:42 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/results.php on line 16
+[05-Apr-2021 10:29:42 UTC] PHP Notice:  Undefined variable: student_obj in /home/elmaasu1/public_html/students/public/results.php on line 17
+[05-Apr-2021 10:29:42 UTC] PHP Fatal error:  Call to a member function find() on null in /home/elmaasu1/public_html/students/public/results.php on line 17
+[05-Apr-2021 11:31:10 Africa/Lagos] PHP Fatal error:  Uncaught exception 'PDOException' with message 'SQLSTATE[42S22]: Column not found: 1054 Unknown column 'code' in 'where clause'' in /home/elmaasu1/public_html/administration/php/Models/Result.php:26
+Stack trace:
+#0 /home/elmaasu1/public_html/administration/php/Models/Result.php(26): PDOStatement->execute(Array)
+#1 /home/elmaasu1/public_html/students/public/results.php(68): Result->isCodeValid(Array)
+#2 {main}
+  thrown in /home/elmaasu1/public_html/administration/php/Models/Result.php on line 26
+[05-Apr-2021 11:34:57 Africa/Lagos] PHP Fatal error:  Uncaught exception 'PDOException' with message 'SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 1' in /home/elmaasu1/public_html/administration/php/Models/Result.php:42
+Stack trace:
+#0 /home/elmaasu1/public_html/administration/php/Models/Result.php(42): PDOStatement->execute(Array)
+#1 /home/elmaasu1/public_html/students/public/results.php(81): Result->saveResultCode(Array)
+#2 {main}
+  thrown in /home/elmaasu1/public_html/administration/php/Models/Result.php on line 42
+[05-Apr-2021 11:40:16 Africa/Lagos] PHP Notice:  Undefined variable: updateResultCode in /home/elmaasu1/public_html/students/public/results.php on line 78
+[05-Apr-2021 11:40:16 Africa/Lagos] PHP Fatal error:  Method name must be a string in /home/elmaasu1/public_html/students/public/results.php on line 78
+[05-Apr-2021 11:40:59 Africa/Lagos] PHP Warning:  PDOStatement::execute() expects parameter 1 to be array, integer given in /home/elmaasu1/public_html/administration/php/Models/Result.php on line 48
+[05-Apr-2021 11:41:36 Africa/Lagos] PHP Fatal error:  Uncaught exception 'PDOException' with message 'SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens' in /home/elmaasu1/public_html/administration/php/Models/Result.php:48
+Stack trace:
+#0 /home/elmaasu1/public_html/administration/php/Models/Result.php(48): PDOStatement->execute(Array)
+#1 /home/elmaasu1/public_html/students/public/results.php(78): Result->updateResultCode(Array)
+#2 {main}
+  thrown in /home/elmaasu1/public_html/administration/php/Models/Result.php on line 48
+[05-Apr-2021 10:46:06 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[05-Apr-2021 10:46:06 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Apr-2021 10:46:06 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Apr-2021 10:46:06 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[05-Apr-2021 10:46:06 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[07-Apr-2021 17:31:57 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[07-Apr-2021 17:31:57 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[07-Apr-2021 17:31:57 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[07-Apr-2021 17:31:57 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[07-Apr-2021 17:31:57 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:37:37 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[08-Apr-2021 07:37:37 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:37:37 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:37:37 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:37:37 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:20 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[08-Apr-2021 07:38:20 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:20 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:20 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:20 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:22 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[08-Apr-2021 07:38:22 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:22 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:22 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:22 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:26 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[08-Apr-2021 07:38:26 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:26 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:26 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:26 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:30 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/results.php on line 47
+[08-Apr-2021 07:38:30 UTC] PHP Notice:  Undefined variable: student_obj in /home/elmaasu1/public_html/students/public/results.php on line 48
+[08-Apr-2021 07:38:30 UTC] PHP Fatal error:  Call to a member function find() on null in /home/elmaasu1/public_html/students/public/results.php on line 48
+[08-Apr-2021 07:38:31 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[08-Apr-2021 07:38:31 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:31 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:31 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:31 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:35 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[08-Apr-2021 07:38:35 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:35 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:35 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:35 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:37 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[08-Apr-2021 07:38:37 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:37 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:37 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:38:37 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:40:51 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[08-Apr-2021 07:40:51 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:40:51 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:40:51 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[08-Apr-2021 07:40:51 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[10-Jun-2021 16:41:25 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[10-Jun-2021 16:41:25 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[10-Jun-2021 16:41:25 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[10-Jun-2021 16:41:25 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[10-Jun-2021 16:41:25 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[10-Jun-2021 16:42:41 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[10-Jun-2021 16:42:41 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[10-Jun-2021 16:42:41 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[10-Jun-2021 16:42:41 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[10-Jun-2021 16:42:41 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[10-Jun-2021 16:44:42 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[10-Jun-2021 16:44:42 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[10-Jun-2021 16:44:42 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[10-Jun-2021 16:44:42 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[10-Jun-2021 16:44:42 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[14-Jul-2021 13:17:14 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[14-Jul-2021 13:17:14 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[14-Jul-2021 13:17:14 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[14-Jul-2021 13:17:14 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[14-Jul-2021 13:17:14 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[14-Jul-2021 13:19:35 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[14-Jul-2021 13:19:35 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[14-Jul-2021 13:19:35 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[14-Jul-2021 13:19:35 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[14-Jul-2021 13:19:35 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[14-Jul-2021 14:52:59 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[14-Jul-2021 14:52:59 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[14-Jul-2021 14:52:59 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[14-Jul-2021 14:52:59 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[14-Jul-2021 14:52:59 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[21-Aug-2021 13:56:39 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[21-Aug-2021 13:56:39 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[21-Aug-2021 13:56:39 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[21-Aug-2021 13:56:39 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[21-Aug-2021 13:56:39 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[21-Aug-2021 17:34:05 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[21-Aug-2021 17:34:05 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[21-Aug-2021 17:34:05 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[21-Aug-2021 17:34:05 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[21-Aug-2021 17:34:05 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[21-Aug-2021 17:37:06 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/results.php on line 47
+[21-Aug-2021 17:37:06 UTC] PHP Notice:  Undefined variable: student_obj in /home/elmaasu1/public_html/students/public/results.php on line 48
+[21-Aug-2021 17:37:06 UTC] PHP Fatal error:  Uncaught Error: Call to a member function find() on null in /home/elmaasu1/public_html/students/public/results.php:48
+Stack trace:
+#0 {main}
+  thrown in /home/elmaasu1/public_html/students/public/results.php on line 48
+[21-Aug-2021 17:58:23 UTC] PHP Notice:  Undefined variable: student_login_id in /home/elmaasu1/public_html/students/public/index.php on line 13
+[21-Aug-2021 17:58:23 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[21-Aug-2021 17:58:23 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[21-Aug-2021 17:58:23 UTC] PHP Notice:  Undefined variable: conn in /home/elmaasu1/public_html/students/php/student_data.php on line 4
+[21-Aug-2021 17:58:23 UTC] PHP Warning:  mysqli_error() expects parameter 1 to be mysqli, null given in /home/elmaasu1/public_html/students/php/student_data.php on line 4
