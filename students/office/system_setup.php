@@ -52,7 +52,6 @@
 											</a>
 										  </h4>
 										</div>
-										
 										  <div class="panel-body" id="subject_collapse" style="display:none">
 										
 												<?php include_once('system_subjects.php');?>

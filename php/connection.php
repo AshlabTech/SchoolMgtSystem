@@ -1,8 +1,12 @@
 <?php
 
 	$servername = "localhost";
-	$username = "elmaasu1_user";
+	/* $username = "elmaasu1_user";
 	$password = "_DU=yAUqdfuV";
+	 */
+	
+	$username = "root";
+	$password = "";
 
 	$db = "elmaasu1_db";
 

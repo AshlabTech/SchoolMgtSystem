@@ -60,7 +60,10 @@ if ($num_rows_all_class > 0) {
 			<i class="ace-icon fa fa-home"></i><a href="#"> Home <b></b></a>
 		</div>
 		<div>
-
+			<button class="btn btn-warning" id="reset_student_password" style="" onclick="reset_student_password()">
+				<span class="fa fa-lock">
+				</span> Reset All Password
+			</button>
 			<button class="btn btn-info" id="add_new_staff_btn" style="" onclick="load_upload_new_student_form()">
 				<span class="fa fa-plus-circle">
 				</span> upload Students

@@ -1,11 +1,15 @@
 <?php
 
-	$servername = "localhost";
-	$username = "elmaasu1_user";
-	$password = "_DU=yAUqdfuV";
 
-	$db = "elmaasu1_db";
+$servername = "localhost";
+/* $username = "elmaasu1_user";
+$password = "_DU=yAUqdfuV";
+ */
 
+$username = "root";
+$password = "";
+
+$db = "elmaasu1_db";
 	//create login connection and login
 	$conn =  mysqli_connect($servername,$username,$password,$db) or die(mysqli_error($conn));
 	error_reporting(0);

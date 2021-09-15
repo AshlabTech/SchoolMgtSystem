@@ -21,7 +21,7 @@ session_start();
 		if(empty($student_pass_input) || empty($student_no_input)){
 			$error_message = 'Student No. and password is required';
 		}else{
-			 $password = base64_encode(md5($school_abbr).md5($student_pass_input));
+			 $password = md5($student_pass_input);
 			 
 			$student_check = mysqli_query($conn,"SELECT * FROM student_login_info WHERE student_no = '$student_no_input' AND password = '$password' and status ='1'") or die(mysqli_error($conn));
 			$student_check_rows = mysqli_num_rows($student_check);
@@ -65,6 +65,8 @@ session_start();
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="Login_v1/css/util.css">
 	<link rel="stylesheet" type="text/css" href="Login_v1/css/main.css">
+	<script src="../Login_v1/vendor/jquery/jquery-3.2.1.min.js"></script>
+		<script src="../administration/js/vue.js"></script>
 <!--===============================================================================================-->
 </head>
 <body>

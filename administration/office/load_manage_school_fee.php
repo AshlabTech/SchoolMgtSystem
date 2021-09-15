@@ -17,13 +17,15 @@
 			
 		<link rel="shortcut icon" href="../../images/e_portal.png">
 	   <meta name="viewport" content="width=device-width, initial-scale=1" >
+	   
 		<link rel="stylesheet" href="../../css/bootstrap.css">
 		<link rel="stylesheet" href="../../css/bootstrap.min.css">
 		<link rel="stylesheet" href="../../css/bootstrap-theme.css">
 		<link rel="stylesheet" href="../../css/bootstrap-theme.min.css">
 		<link rel="stylesheet" href="../../css/font-awesome-4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="../../css/styles.css">
-		
+		<script src="../Login_v1/vendor/jquery/jquery-3.2.1.min.js"></script>
+	<script src="../js/vue.js"></script>
 				
 			
 		
@@ -42,7 +44,7 @@
 	</head>
 <body style="background:#fff">
 
-<div class="container-fluid" style="margin:0;padding:0">
+<div class="container-fluid" style="margin:0;padding:0" id="summary_payment_id100">
 				<div class="row" style="margin-bottom:10px">
 					<div class="col-md-12 " style="padding:">
 						
@@ -183,12 +185,13 @@
 							</select>
 					</p>
 					
-					<div class="list-group">
+					<div class="list-group" >
 						  
-						  <a href="#" class="list-group-item btn btn-default" style="background-color:#f0f0f0" onclick="display_classes_payment()">Display Classes Summary</a>
-						  <a href="#" class="list-group-item btn btn-default" style="background-color:#f0f0f0" onclick="display_deptors_list_by_classes()">Display Deptors In Classes </a>
-						  <a href="#" class="list-group-item btn btn-default" style="background-color:#f0f0f0"  onclick="display_term_payment_summary()">Print Term Payment Summary</a>
-						  <a href="#" class="list-group-item btn btn-default" style="background-color:#f0f0f0" onclick="display_session_payment_summary()">Print Session Payment Summary</a>
+						  <a href="#" class="list-group-item btn btn-default" style="font-size: 1.1em;text-align:right; background-color:#f0f0f0" onclick="display_classes_payment()"> <i class="fa fa-keys"></i> Classes Summary</a>
+						  <a href="#" class="list-group-item btn btn-default" style="font-size: 1.1em;text-align:right; background-color:#f0f0f0" onclick="display_deptors_list_by_classes()"> <i class="fa fa-keys"></i> Deptors In Classes </a>
+						  <a href="#" class="list-group-item btn btn-default" style="font-size: 1.1em;text-align:right; background-color:#f0f0f0" onclick="display_other_payments()"> <i class="fa fa-keys"></i>Other Payments</a>
+						  <a href="#" class="list-group-item btn btn-default" style="font-size: 1.1em;text-align:right; background-color:#f0f0f0"  onclick="display_term_payment_summary()"> <i class="fa fa-keys"></i>Print Term Payment Summary</a>
+						  <a href="#" class="list-group-item btn btn-default" style="font-size: 1.1em;text-align:right; background-color:#f0f0f0" onclick="display_session_payment_summary()"> <i class="fa fa-keys"></i>Print Session Payment Summary</a>
 						  <a href="#" onclick="window.location.assign('../php/logout.php')" class="list-group-item btn btn-default" style="background-color:#f0f0f0;color:red">Logout</a>
 						</div>
 				</div>					
@@ -221,7 +224,7 @@
 	});
   })
   
-  
+
 </script>
 
 	</body>

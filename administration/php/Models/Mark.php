@@ -216,6 +216,22 @@ public function classDistinctScores($arr){
 public function getStudentTotalScore($arr)	{
 		$sql = "SELECT SUM(total) total_score FROM contineous_accessment WHERE student_info_id = ? AND session_id = ? AND term_id = ? AND class_id = ? AND  status = '1'";
 		$stmt = $this->dbCon->prepare($sql);
+		return $stmt->execute($arr);
+		return json_decode(json_encode($stmt->fetch(PDO::FETCH_ASSOC) ));
+	}
+
+	public function getResumptionDate($sid, $ssid, $tid)	{
+		$sql = "SELECT * FROM `manage_term_info` WHERE section_id = '$sid' AND session_id = '$ssid' AND term_id = '$tid'";
+		$stmt = $this->dbCon->prepare($sql);
+		$stmt->execute();
+		return json_decode(json_encode($stmt->fetch(PDO::FETCH_ASSOC) ));
+	}
+
+	public function getStudentComments($arr)	{		
+		$sql = "SELECT c.student_info_id, cm.comment1, cm.comment2 FROM `contineous_accessment` AS c 
+		LEFT JOIN comments AS cm ON (cm.student_info_id = c.student_info_id AND cm.session_id =c.session_id AND cm.class_id=c.class_id AND cm.term_id=c.term_id)
+		WHERE c.student_info_id = ? AND c.session_id =? AND c.term_id=? AND c.class_id=? AND c.status='1' GROUP BY c.student_info_id";
+		$stmt = $this->dbCon->prepare($sql);
 		$stmt->execute($arr);
 		return json_decode(json_encode($stmt->fetch(PDO::FETCH_ASSOC) ));
 	}

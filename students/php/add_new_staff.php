@@ -60,7 +60,7 @@
 		$staff_number = 'PSS/STAFF/'.$no;
 	 }
 	 $staff_type = IntVal($staff_category);
-	 $password = md5('1234');
+	 $password = md5($school_abbr.'1234');
 	 
 	 
 	 //check if email_address already exist

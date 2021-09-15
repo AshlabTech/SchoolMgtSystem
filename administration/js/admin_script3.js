@@ -246,6 +246,13 @@ function close_change_staff_picture(token){
 				getId('display_content').innerHTML = response;
 			});
 	}
+
+	function cumulative_result(){
+		document.getElementById("display_content").innerHTML = '<center><img src="../../images/ajax-loader.gif"><br> please, wait...</center>';
+		   $.post("cummulative_result.php",{token:'t'},function(response,error){
+				getId('display_content').innerHTML = response;
+			});			
+	}
 	
 	function manage_students_result(){
 		$("#exam_section_2").show('fast');

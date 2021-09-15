@@ -9,6 +9,7 @@
 		$date = date('Y-m-d h:s');
 		$store =array();
 		$class_id = $_POST['class'];
+		$clear = $_POST['clear'];
 		$txt = "";
 		for ($i = 0; $i < 60; $i++) {
 		    $value = rand(100,1000);
@@ -78,8 +79,8 @@
 					<?php
 				}
 				?>
-			</select>
-			<input type="submit" name="generateNewCode" class="btn btn-lg bg-info" value="GENERATE" style="padding: 20px 40px; background-color: #6c2; color: white; border: none; cursor: pointer; box-shadow: 0px 0px 6px #ccc; border-radius: 6px;">
+			</select>			
+			<input type="submit" name="generateNewCode" class="btn btn-lg bg-info" value="GENERATE" style="padding: 20px 40px; background-color: #6c2; color: white; border: none; cursor: pointer; box-shadow: 0px 0px 6px #ccc; border-radius: 6px;">			
 
 			<?php
 				if (isset($message)) {

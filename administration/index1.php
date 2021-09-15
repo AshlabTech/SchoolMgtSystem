@@ -24,7 +24,8 @@
 				<script type="text/javascript" src="js/admin_script.js"></script>
 				
 				<script type="text/javascript" src="js/admin_reg_script.js"></script>
-
+				<script src="Login_v1/vendor/jquery/jquery-3.2.1.min.js"></script>
+				<script src="js/vue.js"></script>
 		
 		<style>
 				#page-section{

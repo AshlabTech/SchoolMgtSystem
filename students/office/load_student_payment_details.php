@@ -29,7 +29,7 @@
 					</button>
 			</h4>
 			<div id="class_term_summary"></div>
-			<div id="student_payment_summary">
+			<div id="">
 				<?php include_once('student_payment_summary.php')?>
 			</div>
 		</div>

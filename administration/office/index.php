@@ -36,10 +36,14 @@ header("Expires: 0"); // Proxies.
 		<link rel="stylesheet" href="../../css/styles.css">
 		<link href="../js/listjs/PagingStyle.css" rel="stylesheet" />		
 		<script type="text/javascript" src="../../js/jquery-1.10.2.js"></script>
+		<script src="../js/jquery3.js"></script>
+
 		 <script src="../js/sweetalert.js"></script>
 		 <script src="../js/listjs/paging.js"></script>
 		 <script src="../js/datatable.js"></script>
 		 <script src="../js/bootstrap.js"></script>
+		 <script src="../Login_v1/vendor/jquery/jquery-3.2.1.min.js"></script>
+		<script src="../js/vue.js"></script>
 		 <!-- <script src="../js/datatable.css"></script> -->
 		
 		<style>

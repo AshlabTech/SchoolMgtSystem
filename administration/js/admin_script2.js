@@ -5,7 +5,7 @@ function system_setup(){
 			});
 }
 
-function setup(openClose,btn_caret){
+function setup(openClose,btn_caret, type='none'){
 	//$('#'+openClose).slideToggle('slow');
 	
 		if(getId(openClose).style.display == 'block' ){
@@ -16,6 +16,11 @@ function setup(openClose,btn_caret){
 		}else{
 				getId(openClose).style.display = 'block';
 			$('#'+btn_caret).attr('class','glyphicon glyphicon-minus');
+		}
+		if(type == 'iframe'){			
+			setTimeout(function(){				
+				$('.iframeloader').hide();				
+			}, 2000)
 		}
 }
 

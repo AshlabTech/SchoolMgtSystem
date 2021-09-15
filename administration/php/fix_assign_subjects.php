@@ -3,8 +3,11 @@
 	include_once('connection.php');
 		define('DB_HOST', 'localhost');
 	define('DB_NAME', 'elmaasu1_db');
-	define('DB_USER', 'elmaasu1_user');
-	define('DB_PASS', '_DU=yAUqdfuV');
+	define('DB_USER', 'root');
+	define('DB_PASS', '');
+	/* define('DB_NAME', 'elmaasu1_db');
+	define('DB_USER', 'elmaasu1_ruser');
+	define('DB_PASS', '_DU=yAUqdfuV'); */
 	
 	
 	

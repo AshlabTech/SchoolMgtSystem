@@ -2,11 +2,15 @@
 	//error_reporting(E_ALL);
 	date_default_timezone_set('Africa/Lagos');
 
-	
-		$servername = "localhost";
-	$username = "elmaasu1_user";
+	$servername = "localhost";
+	/* $username = "elmaasu1_user";
 	$password = "_DU=yAUqdfuV";
+	 */
+	
+	$username = "root";
+	$password = "";
 
+	
 	$db = "elmaasu1_db";
 
 	//create login connection and login

@@ -29,7 +29,7 @@
 	 $guidian_address = mysqli_real_escape_string($conn,$_POST['guidian_address']);
 	 
 	 $admitted_year = date('y');
-	 $password = base64_encode(md5('PSS').md5('1234'));
+	 $password = md5($school_abbr.'1234');
 	 
 	 
 	 

@@ -1,3 +1,9 @@
+<div>
+<style>
+	.d-none{
+		display: none;
+	}
+</style>
 <?php 
 		
 	// get distinct classes	
@@ -54,7 +60,7 @@
 													$tm = 'Third Term';
 												}
 												echo '<h5>Your '.$class_name.' <b style="color:red"> '.$tm.'</b> Payment Summary - <b>  '.$session.'  </b>Academic Session</h5>';
-												echo '<table class="table table-bordered payment_summary_table">';
+												echo '<table id="summary_payment_id9090" class="table table-bordered payment_summary_table">';
 												echo '<tr>
 													<td >SN</td>
 													<td>Amount</td>
@@ -79,15 +85,32 @@
 															$payment_madeBy = $term_payment_rows['payment_madeBy'];
 															$date = $day.' - '.$month.' - '.$year;
 															$tt = $tt + $amount_paid;
+															$totalamt = $amount_paid + $ballance;
 																echo '<tr>
-																		<td>'.$sn.'</td>
-																		<td>'.$amount_paid.'</td>
-																		<td>'.$ballance.'</td>
-																		<td>'.$payment_number.'</td>
-																		<td>'.$date.'</td>
-																		<td>'.$payment_madeBy.'</td>
+																		<td><span>'.$sn.'</span> </td>
+																		<td>
+																			<span class="mdk_'.$sn.'">'.$amount_paid.'</span>
+																			<input class="d-none amtc" type="number" onkeyup="amount_ch(event, '.$totalamt.')" min="0" max="'.$totalamt.'" value="'.$amount_paid.'">
+																		</td>
+																		<td>
+																			<span class="mdk_'.$sn.'">'.$ballance.'</span>
+																			<input class="d-none balc" disabled type="number" value="'.$ballance.'">
+																		</td>
+																		<td>
+																			<span class="">'.$payment_number.'</span> 
+																		</td>
+																		<td>
+																			<span class="mdk_'.$sn.'">'.$date.'</span> 
+																			<input class="d-none" type="text" disabled value="'.$date.'">
+																		</td>
+																		<td>
+																			<span class="mdk_'.$sn.'">'.$payment_madeBy.'</span>
+																			<input class="d-none payer" value="'.$payment_madeBy.'" type="text">
+																		</td>
 																		<td>
 																		<button class="btn btn-sm btn-danger" onclick="deleteStudentPayment('.$id.','.$student_info_id.')"><span class="fa fa-trash"></span></button>
+																		<button class="btn btn-sm btn-warning" onclick="edit_payment_btn(\'mdk_'.$sn.'\', event)"><span style="pointer-events:none" class="fa fa-edit"></span></button>
+																		<button class="btn btn-sm btn-success d-none" onclick="updateStudentPayment('.$id.','.$student_info_id.', event)">Save</button>
 																		</td>
 																		
 																		
@@ -115,17 +138,18 @@
 				
 			} // end of distinct class while loop
 			
+			?>
 			
+
+			<?php
 		}else{
 			echo 'No Payment summary for the moment';
 		}
 	
 
 ?>
-
-
+</div>
 <script>
     
-    
-    
+
 </script>

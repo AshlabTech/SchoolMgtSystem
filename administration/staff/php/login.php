@@ -3,7 +3,7 @@
 	include_once('connection.php');
 	$staff_pass = mysqli_real_escape_string($conn,$_POST['staff_pass']);
 	$staff_id = mysqli_real_escape_string($conn,$_POST['staff_id']);
-	$password = md5($staff_pass);
+	$password = md5($school_abbr.'1234');
 
 					$sql = "SELECT * FROM  staff_login_info where staff_login_id = '$staff_id' and password = '$password' and status = '1'";
 					$query= mysqli_query($conn,$sql) or die(mysqli_error($conn));

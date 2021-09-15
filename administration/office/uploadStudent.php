@@ -145,7 +145,7 @@ if(in_array($_FILES["file"]["type"],$allowedFileType)){
                 	$run = $conn->query("SELECT * FROM student_info WHERE adm_no='$addNo'");
  					if($run->num_rows<1){
 	                    $admitted_year = date('y');
-						$password = base64_encode(md5($school_abbr).md5('1234'));
+						$password = md5($school_abbr.'1234');
 						//get current session id
 						$query2 = mysqli_query($conn,"select * from session where status = '1' ") or die(mysqli_error($conn));
 						$class_array2 = mysqli_fetch_array($query2);

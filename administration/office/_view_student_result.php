@@ -37,6 +37,10 @@ $position_index = array_search($getStudentTotalScore->total_score, $classDistinc
 $position = $position_index + 1;
 
 $total_attendance = $mark_obj->getStudentTotalAttendance(array($student_info_id, $session_id, $term_id, $class_id));
+
+$getStudentComments = $mark_obj->getStudentComments(array($student_info_id, $session_id, $term_id, $class_id));
+$getResumptionDate = $mark_obj->getResumptionDate($class_->school_section_id, $session_id, $term_id);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -273,23 +277,23 @@ $total_attendance = $mark_obj->getStudentTotalAttendance(array($student_info_id,
 						</td>
 
 						<td width="25%">
-							<table border="2">
+						<table border="2">
 								<tr>
 									<td> <b>Name [Form Teacher]:</b> <?= $formTeacher; ?></td>
 								</tr>
 								<tr>
-									<td> <b>Comment [Form Teacher]:</b> </td>
+									<td> <b>Comment [Form Teacher]:</b> <?= $getStudentComments->comment1; ?> </td>
 								</tr>
 
 								<tr>
 									<td> <b>Name [School Head]:</b> <?= $head_name; ?></td>
 								</tr>
 								<tr>
-									<td> <b>Comment [School Head]:</b> <?= $comment_;?></td>
+									<td> <b>Comment [School Head]:</b> <?= $getStudentComments->comment2; ?></td>
 								</tr>
 							</table>
 
-							<p>Resumption Date: 30th April, 2021</p>
+							<p>Vacation Date: <?= date_format(date_create($getResumptionDate->vacation), "jS M, Y"); ?> Resumption Date: <?= date_format(date_create($getResumptionDate->next_resumption), "jS M, Y"); ?></p>
 							<p></p>
 							<p> <b>--------------------------------------------------------------------- </b><br> School Head [Signature]</p>
 

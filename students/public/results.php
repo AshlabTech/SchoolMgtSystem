@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 if (isset($_SESSION['PSS_STUDENT_LOGIN_ID'])) {
 
 	$student_login_id = $_SESSION['PSS_STUDENT_LOGIN_ID'];
-///	include_once('../../administration/php/connection.php');
+include_once('../../administration/php/connection.php');
 
 date_default_timezone_set('Africa/Lagos');
 
@@ -19,7 +19,7 @@ $password = "_DU=yAUqdfuV";
 $db = "elmaasu1_db";
 
 //create login connection and login
-$conn =  mysqli_connect($servername, $username, $password, $db) or die(mysqli_error($conn));
+//$conn =  mysqli_connect($servername, $username, $password, $db) or die(mysqli_error($conn));
 
 
 $Fschool = mysqli_query($conn, "SELECT * FROM school LIMIT 1") or die(mysqli_error($conn));

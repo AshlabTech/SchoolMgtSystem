@@ -8,11 +8,16 @@ function checkDate1($d){
 			return 1;
 		}
 	}
-	if($_POST['cdate'] !=''){
-		echo checkDate1($_POST['cdate']);
-	
+
+	$date1=date_create(date('Y-m-d'));
+$date2=date_create($_POST['cdate']);
+$diff=date_diff($date1,$date2);
+	$dd =  $diff->format("%R%a");
+	echo $dd. 45;
+	if($dd < 1){
+		//echo 0;
 	}else{
-		echo 0;
+		echo $diff;
 	}
 
 	

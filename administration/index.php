@@ -19,6 +19,8 @@
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="Login_v1/css/util.css">
 	<link rel="stylesheet" type="text/css" href="Login_v1/css/main.css">
+	<script src="Login_v1/vendor/jquery/jquery-3.2.1.min.js"></script>
+	<script src="js/vue.js"></script>
 <!--===============================================================================================-->
 </head>
 <body>
@@ -80,7 +82,7 @@
 
 	
 <!--===============================================================================================-->	
-	<script src="Login_v1/vendor/jquery/jquery-3.2.1.min.js"></script>
+
 <!--===============================================================================================-->
 	<script src="Login_v1/vendor/bootstrap/js/popper.js"></script>
 	<script src="Login_v1/vendor/bootstrap/js/bootstrap.min.js"></script>

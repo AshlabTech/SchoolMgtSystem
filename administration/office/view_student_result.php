@@ -2,15 +2,10 @@
 error_reporting(E_ALL);
 date_default_timezone_set('Africa/Lagos');
 
-
-$servername = "localhost";
-$username = "elmaasu1_user";
-$password = "_DU=yAUqdfuV";
+include_once('../php/connection.php');
 
 $db = "elmaasu1_db";
 
-//create login connection and login
-$conn =  mysqli_connect($servername, $username, $password, $db) or die(mysqli_error($conn));
 
 
 $Fschool = mysqli_query($conn, "SELECT * FROM school LIMIT 1") or die(mysqli_error($conn));
@@ -72,6 +67,10 @@ if (
 
 
 	$getStudentTotalScore = $mark_obj->getStudentTotalScore(array($student_info_id, $session_id, $term_id, $class_id));
+	$getStudentComments = $mark_obj->getStudentComments(array($student_info_id, $session_id, $term_id, $class_id));
+	$getResumptionDate = $mark_obj->getResumptionDate($class_->school_section_id,$session_id, $term_id);
+
+	
 	$totalNumberInClass = count($student_obj->getAllStudentByClass($class_id, $session_id));
 } else {
 	echo '<h2>Processing variable is missing...</h2>';
@@ -185,7 +184,7 @@ $total_attendance = $mark_obj->getStudentTotalAttendance(array($student_info_id,
 									</td>
 									<td>Admission Number: <h5><?= $student_->adm_no; ?> </h5>
 									</td>
-									<td>Total Attendance: <h5> <?= $total_attendance;?></h5>
+									<td>Total Attendance: <h5> <?= $total_attendance; ?></h5>
 									</td>
 								</tr>
 							</table>
@@ -200,11 +199,10 @@ $total_attendance = $mark_obj->getStudentTotalAttendance(array($student_info_id,
 				<?php
 
 				$sn = 1;
-				$tr ='';
+				$tr = '';
 				$n = 0;
 
-				$student_grades = [
-				];
+				$student_grades = [];
 				foreach ($subjects as $key => $subject) {
 
 					$data = [
@@ -217,36 +215,36 @@ $total_attendance = $mark_obj->getStudentTotalAttendance(array($student_info_id,
 
 					$marks = $mark_obj->get($data);
 					if (!empty($marks)) {
-				
-						$tr .='<tr>
-							<td class="text-center"> '.$sn .'</td>
-							<td> '.strtoupper($subject->subject).' </td>
-							<td class="text-center">'. ( $marks->ca1 ? $marks->ca1 : "-" ).'</td>
-							<td class="text-center">'. ( $marks->ca2 ? $marks->ca2 : "-" ).'</td>
-							<td class="text-center">'. ( $marks->ca3 ? $marks->ca3 : "-" ).'</td>
-							<td class="text-center">'. ( $marks->ca4 ? $marks->ca4 : "-" ).'</td>
-							<td class="text-center">'. ( $marks->ca5 ? $marks->ca5 : "-" ).'</td>
-							<td class="text-center">'. ( $marks->exam ? $marks->exam : "-" ).'</td>
-							<td class="text-center">'. ( $marks->total ? $marks->total : "-" ).'</td>
+
+						$tr .= '<tr>
+							<td class="text-center"> ' . $sn . '</td>
+							<td> ' . strtoupper($subject->subject) . ' </td>
+							<td class="text-center">' . ($marks->ca1 ? $marks->ca1 : "-") . '</td>
+							<td class="text-center">' . ($marks->ca2 ? $marks->ca2 : "-") . '</td>
+							<td class="text-center">' . ($marks->ca3 ? $marks->ca3 : "-") . '</td>
+							<td class="text-center">' . ($marks->ca4 ? $marks->ca4 : "-") . '</td>
+							<td class="text-center">' . ($marks->ca5 ? $marks->ca5 : "-") . '</td>
+							<td class="text-center">' . ($marks->exam ? $marks->exam : "-") . '</td>
+							<td class="text-center">' . ($marks->total ? $marks->total : "-") . '</td>
 							';
-								
-								$total = $marks->total ? $marks->total : '-';
-								if ($total == '-') {
-									$grade =  '-';
-								} else {
-									$grade =  $marks->grade;
-									array_push($student_grades, $grade);
-								}
-							
-                                $n++;
-							$tr .='<td class="text-center">'.$grade.'</td>
+
+						$total = $marks->total ? $marks->total : '-';
+						if ($total == '-') {
+							$grade =  '-';
+						} else {
+							$grade =  $marks->grade;
+							array_push($student_grades, $grade);
+						}
+
+						$n++;
+						$tr .= '<td class="text-center">' . $grade . '</td>
 						</tr>';
-			
+
 
 						$sn++;
 					}
 				}
-				$grade_nums=array_count_values($student_grades);
+				$grade_nums = array_count_values($student_grades);
 				$num_A = (isset($grade_nums['A']) ? $grade_nums['A'] : 0);
 				$num_B = (isset($grade_nums['B']) ? $grade_nums['B'] : 0);
 				$num_C = (isset($grade_nums['C']) ? $grade_nums['C'] : 0);
@@ -254,31 +252,31 @@ $total_attendance = $mark_obj->getStudentTotalAttendance(array($student_info_id,
 				$num_E = (isset($grade_nums['E']) ? $grade_nums['E'] : 0);
 				$num_F = (isset($grade_nums['F']) ? $grade_nums['F'] : 0);
 				$comment_ = '';
-				if(count($grade_nums) == 1 && $num_A >=1){
+				if (count($grade_nums) == 1 && $num_A >= 1) {
 					$comment_ = 'Excellent result, keep it up.';
-				}else if(count($grade_nums) == 1 && $num_B >=1){
+				} else if (count($grade_nums) == 1 && $num_B >= 1) {
 					$comment_ = 'Excellent result, keep it up.';
-				}else if(count($grade_nums) == 2 && $num_A >=1 && $num_B >=1){
+				} else if (count($grade_nums) == 2 && $num_A >= 1 && $num_B >= 1) {
 					$comment_ = 'Excellent result, keep it up.';
-				}else if(count($grade_nums) == 1 && $num_F >= 1){
+				} else if (count($grade_nums) == 1 && $num_F >= 1) {
 					$comment_ = 'Very poor result, wake up from your slumber and work hard next term';
-				}else if(count($grade_nums) == 1 && $num_C >= 1){
+				} else if (count($grade_nums) == 1 && $num_C >= 1) {
 					$comment_ = 'Very good result, try harder next time.';
-				}else if($num_A >=1 && $num_C >= 1 && $num_F == 0){
+				} else if ($num_A >= 1 && $num_C >= 1 && $num_F == 0) {
 					$comment_ = 'Very good result, try harder next time.';
-				}else if($num_C >= 1 && $num_F >= 1){
+				} else if ($num_C >= 1 && $num_F >= 1) {
 					$comment_ = 'Good result, try harder next time.';
-				}else if(($num_B >= 1 || $num_C >= 1 || $num_D >= 1 ) && $num_F == 0){
+				} else if (($num_B >= 1 || $num_C >= 1 || $num_D >= 1) && $num_F == 0) {
 					$comment_ = 'Good result, try harder next time.';
-				}else if(($num_D >= 2 || $num_E >= 2 ) && $num_F >= 1){
+				} else if (($num_D >= 2 || $num_E >= 2) && $num_F >= 1) {
 					$comment_ = 'Poor result, wake up from your slumber and work hard next term';
-				}else if(($num_D >= 5 || $num_E >= 5 ) && $num_F >= 1){
+				} else if (($num_D >= 5 || $num_E >= 5) && $num_F >= 1) {
 					$comment_ = 'Fair result, improve next time.';
 				}
 
 				$sn = 1;
 				?>
-				<h6>Total Marks: <b><?= $getStudentTotalScore->total_score; ?></b> | Avergage Score: <?= round(($n > 0 ? $getStudentTotalScore->total_score/$n : 0)); ?> | No. IN Class: <?= $totalNumberInClass; ?>
+				<h6>Total Marks: <b><?= $getStudentTotalScore->total_score; ?></b> | Avergage Score: <?= round(($n > 0 ? $getStudentTotalScore->total_score / $n : 0)); ?> | No. IN Class: <?= $totalNumberInClass; ?>
 					<span style="float:right">Position in Class: <b><?= $mark_obj->formatPosition($position); ?></b> </span>
 				</h6>
 
@@ -297,7 +295,7 @@ $total_attendance = $mark_obj->getStudentTotalAttendance(array($student_info_id,
 							<th>GRADE</th>
 						</tr>
 					</thead>
-					<?= $tr ;?>
+					<?= $tr; ?>
 
 				</table>
 
@@ -355,18 +353,18 @@ $total_attendance = $mark_obj->getStudentTotalAttendance(array($student_info_id,
 									<td> <b>Name [Form Teacher]:</b> <?= $formTeacher; ?></td>
 								</tr>
 								<tr>
-									<td> <b>Comment [Form Teacher]:</b> </td>
+									<td> <b>Comment [Form Teacher]:</b> <?= $getStudentComments->comment1 ;?> </td>
 								</tr>
 
 								<tr>
 									<td> <b>Name [School Head]:</b> <?= $head_name; ?></td>
 								</tr>
 								<tr>
-									<td> <b>Comment [School Head]:</b> <?= $comment_;?></td>
+									<td> <b>Comment [School Head]:</b> <?= $getStudentComments->comment2; ?></td>
 								</tr>
 							</table>
 
-						<p>Resumption Date: 30th April, 2021</p>
+							<p>Vacation Date: <?= date_format(date_create($getResumptionDate->vacation),"jS M, Y"); ?>   Resumption Date: <?= date_format(date_create($getResumptionDate->next_resumption),"jS M, Y");?></p>
 							<p></p>
 							<p> <b>--------------------------------------------------------------------- </b><br> School Head [Signature]</p>
 

@@ -1,20 +1,19 @@
 <?php
-function checkDate1($d){
-		$expire = strtotime($d);
-	$today = strtotime("today midnight");
-	$today = strtotime(date("Y-d-m"));
-		
-		if($today >= $expire){
-			return 0;
-		} else {
-			return 1;
-		}
-	}
-	if($_POST['cdate'] !=0){
-		echo checkDate1($_POST['cdate']);
-	}else{
-		echo 0;
-	}
+if($_POST['cdate'] == 0){
+	echo 0;
+	exit();
+}
+$date1=date_create(date('Y-m-d'));
+$date2=date_create($_POST['cdate']);
+$diff=date_diff($date1,$date2);
+$dd =  $diff->format("%R%a");	
+if($dd < 1){
+	//echo 0;
+}else{
+	echo $dd;// $diff->format("%a");	
+
+}
+	
 
 
 ?>

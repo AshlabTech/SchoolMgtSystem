@@ -26,7 +26,6 @@ $id = '';
 $session = "";
 $term = "";
 $session_id = '';
-/*
 	$session = $conn->query("SELECT * FROM session WHERE status = '1'") or die(mysqli_error($conn));
 		$term = $conn->query("SELECT * FROM term WHERE status = '1'") or die(mysqli_error($conn));
 		if ($session->num_rows>0) {
@@ -34,7 +33,9 @@ $session_id = '';
 				$ss1 = $session->fetch_assoc();
 				$tt1 = $term->fetch_assoc();
 	 			$session_id = $ss1['section_id'];
-	 			$term_id = $tt1['id'];
+	 			$term_id = $tt1['id'];				 
+				$session =  $ss1['section'];
+				$term = $tt1['description'];				
 			
 			}else{
 				echo "term not set";
@@ -45,9 +46,8 @@ $session_id = '';
 			exit();
 		}
 
-*/
 
-
+//echo $session_id;
 if (isset($_GET['openC'])) {
 	$tid = null;
 	$sid = null;
@@ -63,7 +63,7 @@ if (isset($_GET['openC'])) {
 	$term_ =  $term_obj->find($tid);
 
 	
-	if (!empty($session_)) {
+/* 	if (!empty($session_)) {
 		if (!empty($term_)) {
 			$session_id = $session_->section_id;
 			$section = $session_->section;
@@ -76,8 +76,8 @@ if (isset($_GET['openC'])) {
 	} else {
 		echo "session not set";
 		exit();
-	}
-}
+	}*/
+} 
 $action = "add";
 if (isset($_GET['action']) && $_GET['action'] == "edit") {
 	$id = isset($_GET['id']) ? mysqli_real_escape_string($conn, $_GET['id']) : '';
@@ -114,6 +114,7 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 
 
 	<!-- BOOTSTRAP STYLES-->
+	<link href="../../css/boostrap4.css" rel="stylesheet" />
 	<link href="../css/bootstrap.css" rel="stylesheet" />
 	<!-- FONTAWESOME STYLES-->
 	<link href="../css/font-awesome.css" rel="stylesheet" />
@@ -122,15 +123,20 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 	<!--CUSTOM MAIN STYLES-->
 	<link href="../css/custom.css" rel="stylesheet" />
 	<link href="../js/listjs/PagingStyle.css" rel="stylesheet" />
+	<script src="../../js/jquery3.js"></script>
+    <script src="../../js/bootstrap4.js"></script>
+    <script src="../../js/propper.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../js/datatable/datatables.min.css" />
 
+    <script type="text/javascript" src="../../js/datatable/pdfmake.min.js"></script>
+    <script type="text/javascript" src="../../js/datatable/datatables.min.js"></script>
+    <script type="text/javascript" src="../../js/datatable/datatables.min.js"></script>
 	<link rel="stylesheet" href="../../css/font-awesome-4.7.0/css/font-awesome.min.css">
-
-	<link href="../css/datatable/datatable1.css" rel="stylesheet" />
+	<script type="text/javascript" src="../../js/datatable/vfs_fonts.js"></script>
 
 	<!-- GOOGLE FONTS-->
 
-
-	<script src="../js/jquery-1.10.2.js"></script>
+	
 	<script src="../js/sweetalert.js"></script>
 	<script src="../js/listjs/paging.js"></script>
 
@@ -140,6 +146,9 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 			padding: 14px;
 			border: 1px solid #ddd;
 			height: 500px;
+		}
+		body{
+			user-select: none;
 		}
 
 		#mcl li {
@@ -162,7 +171,7 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 			background: blue !important;
 		}
 
-
+		
 
 		.s3 {
 			display: block;
@@ -180,7 +189,7 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 		}
 
 		.headerC {
-			box-shadow: #ccc 0px 1px 4px;
+			/* box-shadow: #ccc 0px 1px 4px; */
 			padding: 8px;
 			display: flex;
 		}
@@ -192,7 +201,7 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 		}
 
 		.bodyC {
-			box-shadow: #ccc 0px 1px 4px;
+			/* box-shadow: #ccc 0px 1px 4px; */
 			padding: 8px;
 		}
 
@@ -220,36 +229,35 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 			}
 		}
 
-		.timerC div {
-			padding: 5px;
-		}
-
-		.timerC div div:first-child {
-			background: rgba(160, 20, 32, .2);
-			color: rgb(160, 20, 32);
-			border-radius: 7px;
-			padding: 10px;
-			box-shadow: 1px 2px 3px rgb(160, 20, 32);
-			height: 50px;
-		}
-
-		.timerC div div span {
-			position: absolute;
-			top: -20px;
-			left: 35px;
-			background: rgb(160, 20, 32);
-			border-radius: 5px;
-			padding: 2px 5px;
-			color: #fff;
-		}
-
-		.timerC div div div {
-			margin: 0;
-			padding: 0;
-			font-size: 18px;
-			color: rgb(160, 20, 32);
-
-		}
+		.timerC div{
+    padding:5px;
+}
+.timerC div div:first-child{
+    /* background:rgba(160,20,32,.2);
+    color:rgb(160,20,32);
+    border-radius:7px;
+    box-shadow:1px 2px 3px rgb(160,20,32);
+	
+	*/
+    padding:10px;
+    height:50px;
+}
+.timerC div div span{
+    position:absolute;
+    top:-20px;
+    left:35px;
+    /*  background:rgb(160,20,32);
+     border-radius:5px; */
+     padding:2px 5px;
+     color:#fff;
+}
+.timerC div div div{
+    margin:0;
+    padding:0;
+    font-size:18px;    
+    color:rgb(160,20,32);
+    
+}
 	</style>
 	</head>
 
@@ -310,47 +318,51 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 	<?php
 	/*include("../php/headerF.php");*/
 	?>
-	<div id="ploader" on>
+	<div id="ploader" style="position: fixed; top:140px; left:45%;">
 		<!-- <div class="loader"></div> -->
-		<h4 style='text-align:center'><img src='../../../images/ajax-loader.gif'></h4>
+		<div class="spinner-grow text-info" role="status" key="loader">
+            <span class="sr-only">Loading...</span>
+        </div>		
 	</div>
 	<script>
 
 	</script>
-	<div id="page-wrapper" style="background: #fff !important;margin:0px;padding:10px 0px;" onload="(function(){})()" style="display: none;">
+	<div id="page-wrapper" style="background: #fff !important;margin:0px;padding:10px 0px;display: none; width:100%;" onload="(function(){})()" >
 		<div id="page-inner">
-			<div class="row">
+			<div class="row w-100">
 				<div class="container-fluid col-sm-12 col-md-4 col-lg-4" style=" font-size: 2em;font-weight: bolder; font-family: arial;">Input Score For All CA</div>
 				<div class="timerC col-sm-12 col-md-8 col-lg-8 ">
 					<div class="col-sm-12 col-md-3">
-						<div><span>CA 1 Time Left:</span>
-							<div id="time1">Time Closed</div>
+						<div><span class="text-dark ml-5  d-inline-block">CA 1 Time Left:</span>
+							<div id="time1" class="alert alert-light p-1 text-danger text-center" style="font-size:1em;font-family:arial;letter-spacing:2px; font-weight:600;">Time Closed</div>
 						</div>
 					</div>
 					<div class="col-sm-12 col-md-3">
-						<div><span>CA 2 Time Left:</span>
-							<div id="time2">Time Closed</div>
+						<div><span class="text-dark ml-5  d-inline-block">CA 2 Time Left:</span>
+							<div id="time2" class="alert alert-light p-1 text-danger text-center" style="font-size:1em;font-family:arial;letter-spacing:2px; font-weight:600;">Time Closed</div>
 						</div>
 					</div>
 					<div class="col-sm-12 col-md-3">
-						<div><span>CA 3 Time Left:</span>
-							<div id="time3">Time Closed</div>
+						<div><span class="text-dark ml-5  d-inline-block">CA 3 Time Left:</span>
+							<div id="time3" class="alert alert-light p-1 text-danger text-center" style="font-size:1em;font-family:arial;letter-spacing:2px; font-weight:600;">Time Closed</div>
 						</div>
 					</div>
 					<div class="col-sm-12 col-md-3">
-						<div><span>Exam Time Left:</span>
-							<div id="time4">Time Closed</div>
+						<div><span class="text-dark ml-5  d-inline-blockfo">Exam Time Left:</span>
+							<div id="time4" class="alert alert-light p-1 text-danger text-center" style="font-size:1em;font-family:arial;letter-spacing:2px; font-weight:600;">Time Closed</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<hr>
-			<div class="row" style="padding:10px 0px 0px 0px; margin: 0px; display: flex;">
+			<hr >
+			<div class="row w-100" style="padding:10px 0px 0px 0px; margin: 0px; display: flex;">
 				<div class="col-xs-3 col-sm-5 col-md-3 col-lg-2" style="padding: 0px; width: 220px;">
 					<ul id="mcl">
 						<?php
 						//$c_teacher_subject = $conn->query("SELECT * FROM staff_subjects as ss INNER JOIN classes as c ");
-						$c_teacher_subject = $conn->query("SELECT *, sr.class_id as bid, sr.id as srid, t.id as tid, s.section_id as sid,sb.id as sbid FROM staff_subjects as sr INNER JOIN classes AS b ON sr.class_id=b.class_id INNER JOIN subject AS sb ON sr.subject_id=sb.id INNER JOIN term AS t ON t.id=sr.term_id INNER JOIN session AS s ON s.section_id=sr.session_id WHERE sr.staff_info_id='$user_id'");
+						//$sql = "SELECT *, sr.class_id as bid, sr.id as srid, t.id as tid, s.section_id as sid,sb.id as sbid FROM staff_subjects as sr INNER JOIN classes AS b ON sr.class_id=b.class_id INNER JOIN subject AS sb ON sr.subject_id=sb.id INNER JOIN term AS t ON t.id=sr.term_id INNER JOIN session AS s ON s.section_id='$session_id' WHERE sr.staff_info_id='$user_id'";
+						$c_teacher_subject = $conn->query("SELECT *, sr.class_id as bid, sr.id as srid, t.id as tid, s.section_id as sid,sb.id as sbid FROM staff_subjects as sr INNER JOIN classes AS b ON sr.class_id=b.class_id INNER JOIN subject AS sb ON sr.subject_id=sb.id INNER JOIN term AS t ON t.id=sr.term_id INNER JOIN session AS s ON s.section_id='$session_id' WHERE sr.staff_info_id='$user_id'");
+						
 						echo mysqli_error($conn);
 						if ($c_teacher_subject->num_rows > 0) {
 							while ($row = $c_teacher_subject->fetch_assoc()) {
@@ -360,6 +372,7 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 						?>
 								<li id="<?php echo 'list' . $srid; ?>"><span class="fa fa-book s3"></span><span id="si1"><?php echo ucwords($row['subject']); ?><br><?php echo ucwords($row['class_name']); ?><br><?php echo ucwords($row['description']); ?>, <?php echo ucwords($row['section']); ?><br>session</br></span></li>
 								<script>
+									
 									$(document).ready(function() {
 										$('#list<?php echo $srid ?>').click(function() {
 											document.getElementById('ploader').style.display = 'block';
@@ -370,6 +383,8 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 											var sid = <?php echo $row['sid']; ?>;
 											var sbid = <?php echo $row['sbid']; ?>;
 											document.cookie = "openC=" + user_id + '-' + tid + '-' + sid + '-' + sbid;
+											localStorage.setItem("thxxxm", "<?= $row['description'].', '.$row['section'];?>");
+
 											window.location = 'input-scoreA.php?openC=' + user_id + '-' + tid + '-' + sid + '-' + sbid;
 
 											/*
@@ -392,17 +407,27 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 					$(function() {
 						$("#mcl").JPaging();
 					});
+					
 				</script>
-				<div class="col-xs-3 col-sm-7 col-md-8 col-lg-8" style="min-width: 600px;">
-					<div id="">
-						<p style="font-size: 1.3em; font-family: arial; font-weight: bold; color: #288;"><?php echo ucwords($term); ?>,<?php echo ' ' . $session; ?></p>
+				<div class=" col-md-8 col-lg-10" style="min-width: 600px;">
+					<div id="">											
 						<div style="position: absolute;top:-21.3%; left: 0; width: 100%;  overflow-y: none;">
 							<div class="loader" id="load1" style="margin-left: 0px; margin-right: 0px; display:none;"></div>
 						</div>
 						<div id="class-cont">
-							<p style="border-bottom: 1pt solid black;" id="showClass">Class:</p>
+							<div style="border-bottom: 1pt solid #aaa;" class="shadow-sm p-2">
+								<p style="font-size: 1.3em; font-family: arial; font-weight: bold; color: #288;">
+								<span id="selectedTK"></span></p>							
+								<p class="p-0 m-0 w-25"  >								
+									<span style="width: 100px; display:inline-block;">Class:</span>
+									<span id="showClass"></span>
+								</p>
+								<span class="d-flex">
+									<p class="p-0 m-0" style="width: 100px;">Subject: </p><p class="p-0 m-0 w-25" id="showSubject"></p>
+								</span>
+							</div>
 							<center>
-								<p id="showSubject"></p>
+								
 							</center>
 							<div style="border: 1px solid #eee; padding: 8px;">
 								<?php
@@ -412,6 +437,7 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 
 								?>
 									<script>
+										
 										//use cookie for some checking (security) so that whe alternate data passed to url page reload;
 										function getCookie(name) {
 											var dc = document.cookie;
@@ -436,6 +462,8 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 
 
 										var myCookie = getCookie("openC");
+										
+										document.getElementById('selectedTK').innerHTML = localStorage.getItem("thxxxm");
 										if (myCookie == null) {
 											// do cookie doesn't exist stuff;
 											//alert(2);
@@ -446,9 +474,11 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 												window.location = 'input-scoreA.php';
 											}
 										}
+										
 									</script>
 
 									<?php
+									
 
 									$op = explode('-', $_REQUEST['openC']);
 									$bid = $op[0];
@@ -458,13 +488,14 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 
 									$sql = $conn->query("SELECT * FROM score_time_frame as st INNER JOIN classes as b ON b.class_id='$bid' WHERE st.term_id='$tid' AND st.section_id =b.school_section_id");
 									//echo mysqli_error($conn);
+									//echo "SELECT * FROM score_time_frame as st INNER JOIN classes as b ON b.class_id='$bid' WHERE st.term_id='$tid' AND st.section_id =b.school_section_id";
 									$caOpen = array();
 									$cA1O = $cA2O = $cA3O = $examO = '';
 									$cA1C = $cA2C = $cA3C = $examC = 0;
 									$ca1Close = array();
 									//= $ca2Close = $ca3Close =$examClose ='';
 									$timing = 0;
-									if ($sql->num_rows > 0) {
+									if ($sql->num_rows > 0) {										
 										$timing = $sql->num_rows;
 										while ($timeframe = $sql->fetch_assoc()) {
 											$caOpen[$timeframe['ca_id']] = $timeframe['start_date'];
@@ -501,88 +532,82 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 									<style>
 									</style>
 									<script>
-										(function() {
+										
+										(function(){
 											var timing = <?php echo $timing; ?>;
+																						
+											if (timing != 0) {											
+										setInterval(function(){ 
+											
+											$.post('misc/timeframe_lock.php',{cdate:'<?php echo $cA1C; ?>'}, function(data){												
+												
+												if(data!=0){
+												    //var timeLeft1 = data *3600,
+												    $(document).ready(function(){
+												    	var display1 = document.querySelector('#time1');
+												    	renderCountdown( new Date('<?php echo $cA1C; ?>'), display1);											    	
+												    })
 
-											if (timing != 0) {
+												    //startTimer(display1);
+												}else if(data==0){
+													//	alert(1);
+													$(document).ready(function(){
 
-												setInterval(function() {
-													//console.log('<?php// echo $cA1C; ?>');
-													$.post('misc/timeframe_lock.php', {
-														cdate: '<?php echo $cA1C; ?>'
-													}, function(data) {
-														if (data != 0) {
-															//var timeLeft1 = data *3600,
-															$(document).ready(function() {
-																var display1 = document.querySelector('#time1');
-																renderCountdown(new Date('<?php echo $cA1C; ?>'), display1);
-															})
-
-															//startTimer(display1);
-														} else if (data == 0) {
-															//	alert(1);
-															$(document).ready(function() {
-
-																$('.ca1').prop('disabled', true);
-															});
-
-														}
+													$('.ca1').prop('disabled',true);
 													});
-													$.post('misc/timeframe_lock.php', {
-														cdate: <?php echo $cA2C; ?>
-													}, function(data) {
-														if (data != 0) {
-															$(document).ready(function() {
-																var display2 = document.querySelector('#time2');
-																renderCountdown(new Date('<?php echo $cA2C; ?>'), display2);
-															})
-														} else if (data == 0) {
-															$(document).ready(function() {
-
-																$('.ca2').prop('disabled', true);
-															});
-
-														}
+													
+												}
+											});
+											
+											$.post('misc/timeframe_lock.php',{cdate:<?php echo $cA2C; ?>}, function(data){
+												if(data !=0){
+													 $(document).ready(function(){
+												    	var display2 = document.querySelector('#time2');
+												    	renderCountdown( new Date('<?php echo $cA2C; ?>'), display2);											    	
+												    })
+												}else if(data==0){													
+													$(document).ready(function(){
+														
+													$('.ca2').prop('disabled',true);
 													});
-													$.post('misc/timeframe_lock.php', {
-														cdate: <?php echo $cA3C; ?>
-													}, function(data) {
-														if (data != 0) {
-															$(document).ready(function() {
-																var display3 = document.querySelector('#time3');
-																renderCountdown(new Date('<?php echo $cA3C; ?>'), display3);
-															})
-														} else if (data == 0) {
-															$(document).ready(function() {
-
-																$('.ca3').prop('disabled', true);
-															});
-
-														}
+													
+												}
+											});
+											$.post('misc/timeframe_lock.php',{cdate:<?php echo $cA3C; ?>}, function(data){
+												if(data !=0){
+													 $(document).ready(function(){
+												    	var display3 = document.querySelector('#time3');
+												    	renderCountdown( new Date('<?php echo $cA3C; ?>'), display3);											    	
+												    })
+												}else if(data==0){
+													$(document).ready(function(){
+														
+													$('.ca3').prop('disabled',true);
 													});
-													$.post('misc/timeframe_lock.php', {
-														cdate: <?php echo $examC; ?>
-													}, function(data) {
-														if (data != 0) {
-															$(document).ready(function() {
-																var display4 = document.querySelector('#time4');
-																renderCountdown(new Date('<?php echo $examC; ?>'), display4);
-															})
-														} else if (data == 0) {
-															$('.cae').prop('disabled', true);
+													
+												}
+											});
+											$.post('misc/timeframe_lock.php',{cdate:<?php echo $examC; ?>}, function(data){
+												if(data !=0 ){
+													 $(document).ready(function(){
+												    	var display4 = document.querySelector('#time4');
+												    	renderCountdown( new Date('<?php echo $examC; ?>'), display4);											    	
+												    })
+												}else if(data==0){
+													$('.cae').prop('disabled',true);
+													
+												}
+											});
 
-														}
-													});
-
-												}, 100);
-											} else {
+										 }, 100);
+											}else{
 												//if not timing not created disable all													
-												$(document).ready(function() {
+												$(document).ready(function(){
 													$("#saveBtn").prop("onclick", null).off("click");
-													$('.ca1').prop('disabled', true);
-													$('.ca2').prop('disabled', true);
-													$('.ca3').prop('disabled', true);
-													$('.cae').prop('disabled', true);
+													$('.ca1').prop('disabled',true);
+													$('.ca2').prop('disabled',true);
+													$('.ca3').prop('disabled',true);
+													$('.cae').prop('disabled',true);
 												})
 											}
 										})();
@@ -602,7 +627,7 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 											var tid = " . $tid . ";
 											var sid = " . $sid . ";
 											var sbid = " . $sbid . ";
-											document.getElementById('showClass').innerHTML='Class: ";
+											document.getElementById('showClass').innerHTML=' ";
 									echo $selected_class;
 									echo "';
 										document.getElementById('showSubject').innerHTML='";
@@ -625,8 +650,8 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 										<p><input type="hidden" name="subject_id" value="<?= $sbid; ?>"></p>
 										
 									<div class="headerC" style="">
-										<button>Download template</button>
-										<button>Upload From template</button>
+										<!-- <button>Download template</button>
+										<button>Upload From template</button> -->
 										<!--<form class="p-0 m-0 d-inline-block" method="post" action="subject_ca_pdf.php">-->
 											<input type="text" name="data" id="dataValue" style="display: none;">
 											<input type="text" name="subject" style="display: none;" value="<?= $selected_subject; ?>">
@@ -634,12 +659,14 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 											<input type="text" name="term" style="display: none;" value="<?php echo ucwords($term); ?>">
 											<input type="text" name="section" style="display: none;" value="<?php echo ucwords($subject_section); ?>">
 											<input type="text" name="session" style="display: none;" value="<?= $session; ?>">
-											<button type="submit">Print</button>
+											<button class="btn btn-info" type="submit">Print</button>
 										<!--</form>-->
 										<button class="btn btn-info" id="saveBtn" onclick="saveResultBtn();">save</button>
+										<span id="dttest_length"></span>
 									</div>
-										<table class="table table-condensed table-striped table-hover">
+										<table class="table table-condensed table-striped table-hover datatb">
 											<thead>
+												<tr>
 												<?php
 												$get_set_score = $conn->query("SELECT * FROM score WHERE section_id = '$subject_section' AND activate='1'");
 												$scorep = $get_set_score->fetch_assoc();
@@ -648,20 +675,21 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 												$ca3Data = $scorep['ca3'];
 												$examData = $scorep['exam'];
 												?>
-												<th style="cursor: pointer;"><input type="checkbox" id="chkA" onclick="(function(){cm+=1;selected =chkAll(cm,'chkclass');})()"></th>
-												<th>s/n</th>
-												<th>Adm No.</th>
-												<th colspan="10">Name</th>
-												<th>CA1 <br> 10</th>
-												<th>CA2 <br> 10</th>
-												<th>CA3 <br> 10</th>
-												<th>P-Q <br> 10</th>
-												<th>ASS <br> 10</th>
-												<th>Exams <br> 50</th>
-												<th>Total <br>100%</th>
+												<th width="3%" style="cursor: pointer;"><input type="checkbox" id="chkA" onclick="(function(){cm+=1;selected =chkAll(cm,'chkclass');})()"></th>
+												<th width="5%">s/n</th>
+												<th width="10%">Adm No.</th>
+												<th width="20%">Name</th>
+												<th width="6%">CA1 <br> 10</th>
+												<th width="6%">CA2 <br> 10</th>
+												<th width="6%">CA3 <br> 10</th>
+												<th width="6%">P-Q <br> 10</th>
+												<th width="6%">ASS <br> 10</th>
+												<th width="6%">Exams <br> 50</th>
+												<th width="10%">Total <br>100%</th>
+												</tr>
 											</thead>
 
-											<body>
+											<tbody>
 												<?php
 												//echo $bid;
 												$dataValueForPDF = '';
@@ -711,20 +739,23 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 
 															<td><?php echo $n . '.'; ?></td>
 															<td><?=$student_->adm_no; ?></td>
-															<td colspan="10"><?= $student_obj->formatName($student_); ?></td>
+															<td ><?= $student_obj->formatName($student_); ?></td>
 															
 
 
-															<td><input class="form-control" type="text" value="<?= $ca1; ?>" max="10" min="0" name="ca1[<?= $stid; ?>]" id="ca1_<?php echo $stid; ?>" style="width: 60px;"></td>
-															<td><input class="form-control" type="text" value="<?= $ca2; ?>" max="10" min="0" name="ca2[<?= $stid; ?>]" id="ca2_<?php echo $stid; ?>" style="width: 60px;"></td>
-															<td><input class="form-control" type="text" value="<?= $ca3; ?>" max="10" min="0" name="ca3[<?= $stid; ?>]" id="ca3_<?php echo $stid; ?>" style="width: 60px;"></td>
-															<td><input class="form-control" type="text" value="<?= $ca4; ?>" max="10" min="0" name="ca4[<?= $stid; ?>]" id="ca4_<?php echo $stid; ?>" style="width: 60px;"></td>
-															<td><input class="form-control" type="text" value="<?= $ca5; ?>" max="10" min="0" name="ca5[<?= $stid; ?>]" id="ca5_<?php echo $stid; ?>" style="width: 60px;"></td>
-															<td><input class="form-control" type="text" value="<?= $exam; ?>" max="50" min="0" name="exam[<?= $stid; ?>]" id="ca6_<?php echo $stid; ?>" style="width: 60px;"></td>
-															<td><input class="form-control" type="text" value="<?= $total; ?>" max="100" min="0" name="" readonly style="width: 60px;">
+															<td><input onkeypress="return isNumber(event)" class="form-control ca1" type="text" value="<?= $ca1; ?>" max="10" min="0" name="ca1[<?= $stid; ?>]" id="ca1_<?php echo $stid; ?>" style="width: 60px;"></td>
+															<td><input onkeypress="return isNumber(event)" class="form-control ca2" type="text" value="<?= $ca2; ?>" max="10" min="0" name="ca2[<?= $stid; ?>]" id="ca2_<?php echo $stid; ?>" style="width: 60px;"></td>
+															<td><input onkeypress="return isNumber(event)" class="form-control ca3" type="text" value="<?= $ca3; ?>" max="10" min="0" name="ca3[<?= $stid; ?>]" id="ca3_<?php echo $stid; ?>" style="width: 60px;"></td>
+															<td><input onkeypress="return isNumber(event)" class="form-control" type="text" value="<?= $ca4; ?>" max="10" min="0" name="ca4[<?= $stid; ?>]" id="ca4_<?php echo $stid; ?>" style="width: 60px;"></td>
+															<td><input onkeypress="return isNumber(event)" class="form-control" type="text" value="<?= $ca5; ?>" max="10" min="0" name="ca5[<?= $stid; ?>]" id="ca5_<?php echo $stid; ?>" style="width: 60px;"></td>
+															<td><input onkeypress="return isNumber(event)" class="form-control cae" type="text" value="<?= $exam; ?>" max="50" min="0" name="exam[<?= $stid; ?>]" id="ca6_<?php echo $stid; ?>" style="width: 60px;"></td>
+															<td><input onkeypress="return isNumber(event)" class="form-control" type="text" value="<?= $total; ?>" max="100" min="0" name="" readonly style="width: 60px;">
 															<input type="hidden" name="student_id[]" value="<?= $stid; ?>"></td>
 															
 														</tr>
+														<script>
+														
+													</script>
 													<?php
 														$n++;
 													}
@@ -736,7 +767,7 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 												}
 
 												?>
-											</body>
+											</tbody>
 										</table>
 									</form>
 
@@ -756,6 +787,9 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 											<thead>
 												<th>Teacher</th>
 											</thead>
+											<tbody>
+												<td></td>
+											</tbody>
 										</table>
 
 									</div>
@@ -769,11 +803,12 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 
 
 			</div>
-
+<!-- 
 			<script src="../js/dataTable/jquery.dataTables.min.js"></script>
 			<script>
+				
 				$("#tSortable22").dataTable();
-			</script>
+			</script> -->
 
 			<!-- Modal -->
 			<div class="modal fade" id="myModal" role="dialog">
@@ -810,115 +845,157 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 
 
 	<!-- BOOTSTRAP SCRIPTS -->
-	<script src="../js/bootstrap.js"></script>
+	<!-- <script src="../js/bootstrap.js"></script> -->
 	<!-- METISMENU SCRIPTS -->
-	<script src="../js/jquery.metisMenu.js"></script>
+	<!-- <script src="../js/jquery.metisMenu.js"></script> -->
 	<!-- CUSTOM SCRIPTS -->
-	<script src="../js/custom1.js"></script>
+	<!-- <script src="../js/custom1.js"></script> -->
 	<script>
+		
 		//start checkbox
-		function chkAll(source, name) {
+		function chkAll(source,name){
 			selArray = '';
 			chkname = document.getElementsByClassName(name);
 			for (var i = 0; i < chkname.length; i++) {
-				//alert(source.checked);
-				if (source % 2 == 1) {
+			//alert(source.checked);
+				if(source % 2==1){
 					chkname[i].checked = true;
-					selArray += chkname[i].value + ',';
-				} else {
+					selArray+= chkname[i].value +',';
+				}else{
 					chkname[i].checked = false;
-					selArray = '';
+					selArray='';
 				}
 
-			}
-			return selArray;
 		}
-
-		function selChk(s, p) {
-			var chkAll = document.getElementById('chkA').checked;
-			var id = s.val();
-			//alert();
-			var selct = '';
-			if (chkAll == true) {
-				if (s.prop('checked') == true) {
-					p += id + ',';
-					//alert(p);
-					return p;
-				} else if (s.prop('checked') == false) {
-					if (p.length != '') {
-						var selV = p.split(",");
-					} else {
-						var selV;
-					}
-					for (var i = 0; i < selV.length - 1; i++) {
-						var len = id.length;
-						var index = selV.indexOf(id);
-						if (id == selV[i]) {
-							selV.splice(index, 1);
-						}
-					}
-					p = '';
-					for (var i = 0; i < selV.length - 1; i++) {
-						p += selV[i] + ',';
-					}
-					//alert(p);
-					return p;
+				return selArray;
+	}
+    	function selChk(s,p){
+		var chkAll = document.getElementById('chkA').checked;
+		var id = s.val();
+		//alert();
+		var selct = '';
+		if(chkAll==true){
+			if(s.prop('checked')==true){
+				p += id+',';
+				//alert(p);
+				return p;
+			}else if(s.prop('checked')==false){
+				if(p.length != ''){
+					var selV = p.split(",");
+				}else{
+					var selV;
 				}
-			} else if (chkAll == false) {
-				if (s.prop('checked') == true) {
-					p += id + ',';
-					//alert(p);
-					return p;
-				} else if (s.prop('checked') == false) {
-					if (p.length != '') {
-						var selV = p.split(",");
-					} else {
-						var selV;
+				for (var i = 0; i < selV.length-1; i++) {
+					var len = id.length;
+					var index = selV.indexOf(id);
+					if(id == selV[i]){
+						selV.splice(index,1);
 					}
-					for (var i = 0; i < selV.length - 1; i++) {
-						var len = id.length;
-						var index = selV.indexOf(id);
-						if (id == selV[i]) {
-							selV.splice(index, 1);
-						}
-					}
-					p = '';
-					for (var i = 0; i < selV.length - 1; i++) {
-						p += selV[i] + ',';
-					}
-					//alert(p);
-					return p;
 				}
+					p ='';
+				for (var i = 0; i < selV.length-1; i++) {
+					p += selV[i]+',';
+				}
+				//alert(p);
+				return p;
+			}
+		}else if(chkAll==false){
+			if(s.prop('checked')==true){
+				p += id+',';
+				//alert(p);
+				return p;
+			}else if(s.prop('checked')==false){
+				if(p.length != ''){
+					var selV = p.split(",");
+				}else{
+					var selV;
+				}
+				for (var i = 0; i < selV.length-1; i++) {
+					var len = id.length;
+					var index = selV.indexOf(id);
+					if(id == selV[i]){
+						selV.splice(index,1);
+					}
+				}
+					p ='';
+				for (var i = 0; i < selV.length-1; i++) {
+					p += selV[i]+',';
+				}
+				//alert(p);
+				return p;
 			}
 		}
+	}
+	function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        return false;
+    }
+    return true;
+	}
+	function isNumberCA(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+     
+        return false;
+    }
+    return true;
+	}
+	function disableALL(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode >0) {
+        return false;
+    }
+    return true;
+	}
+	function saveResultBtn(){
+		if(all_student_info_id == ''){
+			Swal.fire('No Student in class');
+		}else{
+			var data = [];
+			//alert(all_student_info_id.length);
+			for (var i = 0; i < all_student_info_id.length; i++) {
+				var r = all_student_info_id[i];
+				var s = $('#ca1_'+all_student_info_id[i]).val();
+				var p = $('#ca2_'+all_student_info_id[i]).val();
+				var d = $('#ca3_'+all_student_info_id[i]).val();
+				var f = $('#exam_'+all_student_info_id[i]).val();
+				var t = $('#total_'+all_student_info_id[i]).val();
+				dat = {id:r,ca1:s,ca2:p,ca3:d,exam:f,total:t};
+				data.push(dat);
 
-		function isNumber(evt) {
-			evt = (evt) ? evt : window.event;
-			var charCode = (evt.which) ? evt.which : evt.keyCode;
-			if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-				return false;
 			}
-			return true;
+			$.post('misc/save_input_score.php',{data:data,bid:bid,tid:tid,sid:sid,sbid:sbid},function(data){
+				$('#load1').hide();
+				//alert(data);
+				if(data==1){
+					Swal.fire({
+						type: 'success',
+						title: 'save successfully',
+						showConfirmButton: true
+					});
+				}else{
+					let dataArr = data.split('');
+					let dataSum = dataArr.reduce((a, b) => a + b) / dataArr.length;
+					if(dataSum==1){
+						Swal.fire({
+							type: 'success',
+							title: 'save successfully',
+							showConfirmButton: true
+						});
+					}else{
+						alert(data);
+					}
+				}
+			});
+			$('#load1').show();
 		}
+	}
 
-		function isNumberCA(evt) {
-			evt = (evt) ? evt : window.event;
-			var charCode = (evt.which) ? evt.which : evt.keyCode;
-			if (charCode > 31 && (charCode < 48 || charCode > 57)) {
 
-				return false;
-			}
-			return true;
-		}
-
-		function disableALL(evt) {
-			evt = (evt) ? evt : window.event;
-			var charCode = (evt.which) ? evt.which : evt.keyCode;
-			if (charCode > 0) {
-				return false;
-			}
-			return true;
-		}
 
 		function saveResultBtn() {
 			if (all_student_info_id == '') {
@@ -978,11 +1055,26 @@ if (isset($_REQUEST['act']) && @$_REQUEST['act'] == "1") {
 		}
 
 
-		$(document).ready(function() {
+		$(document).ready(function() {			
 			document.getElementById('ploader').style.display = 'none';
 			$('#page-wrapper').show();
+			setTimeout(() => {
+			  var table = $('.datatb').DataTable({
+						responsive: true,						
+						buttons: [									
+							'pdf'
+						],
+						pageLength: 200,
+						columnDefs: [{
+							orderable: false,
+							targets: [6,7,8,9,10]
+						}]
+		
+					});
+					table.buttons().container()
+					.insertAfter('#dttest_length');					
+			}, 1000);
 		});
-
 
 		/*$('.table').DataTable({saveState:true,});*/
 	</script>

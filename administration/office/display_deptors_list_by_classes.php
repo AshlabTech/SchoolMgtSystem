@@ -54,6 +54,7 @@ $table_headings = '
 														<td class="text-left">Name </td>
 														<td class="text-center">Total Amount paid</td>
 														<td class="text-center">Remaining Ballance</td>
+														<td class="text-center">Term</td>
 														<td class="text-center"></td>
 														
 													</tr>
@@ -143,6 +144,7 @@ if ($distinct_class_rows > 0) {
                                     <td class="text-left">' . $full_name . '</td>
                                     <td class="text-center">N' . $total_amount_paid . '</td>
                                     <td class="text-center">N' . $remaining_ballance . '</td>
+                                    <td class="text-center">' . $term_full. '</td>
                                     <td class="text-center">' . $status . '</td>
                                     
                             </tr>
@@ -154,6 +156,7 @@ if ($distinct_class_rows > 0) {
 															<td class="text-left">' . $full_name . '</td>
 															<td class="text-center">N' . $total_amount_paid . '</td>
 															<td class="text-center">N' . $total_school_fees . '</td>
+                                                            <td class="text-center">' . $term_full. '</td>
 															<td class="text-center"><b style="color:red"> No Payment </b></td>
 															
 													</tr>
