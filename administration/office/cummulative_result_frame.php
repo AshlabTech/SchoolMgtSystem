@@ -51,7 +51,7 @@ if ($run->num_rows > 0) {
     <link rel="stylesheet" type="text/css" href="../js/datatable/datatables.min.css" />
     
     <script type="text/javascript" src="../js/datatable/pdfmake.min.js"></script>
-    <script type="text/javascript" src="../js/datatable/buttons.html5.min.js"></script>
+    <!-- <script type="text/javascript" src="../js/datatable/buttons.html5.min.js"></script> -->
     
     <!-- <script type="text/javascript" src="../js/datatable/datatables.min.js"></script> -->
     <script type="text/javascript" src="../js/datatable/datatable_excel.js"></script>
@@ -118,12 +118,13 @@ if ($run->num_rows > 0) {
 <body style="background:#fff">
 
 
-    <div id="app" class="py-4 px-3" style="height:98vh;">
+    <div id="app" class="pl-3" >
         <div id="keyloader" v-if="isloading" class="d-flex" style="justify-content:center; flex-wrap:wrap;align-items:center;width:100%;height:90%; position:absolute; left:0;z-index:132000; ">
             <div class="spinner-grow text-info" style="font-size: 7em;" role="status" key="loader">
                 <span class="sr-only">Loading...</span>
             </div>
         </div>
+        <input type="text" style="display: none;" id="forIframeLoaded" :value="forIframeLoaded">
         <!-- <i class="text-secondary"><b> CUMMLATIVE RESULT </b></i>  -->
         <div class="w-100 no-visible" id="app-content">
             <center>
@@ -220,6 +221,7 @@ if ($run->num_rows > 0) {
         var vm = new Vue({
             el: "#app",
             data: {
+                forIframeLoaded:200,
                 sessions: <?= json_encode($sessions); ?>,
                 terms: <?= json_encode($terms); ?>,
                 classes: <?= json_encode($classes); ?>,

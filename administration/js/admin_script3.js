@@ -251,6 +251,15 @@ function close_change_staff_picture(token){
 		document.getElementById("display_content").innerHTML = '<center><img src="../../images/ajax-loader.gif"><br> please, wait...</center>';
 		   $.post("cummulative_result.php",{token:'t'},function(response,error){
 				getId('display_content').innerHTML = response;
+				setTimeout(() => {
+					var interval = setInterval(() => {						
+						if($('#comulative_iframex').contents().find('#forIframeLoaded').val() == 200){
+							$('#iframeLoader').hide();
+							clearInterval(interval);
+						}
+						
+					}, 50);
+				  }, 1000);
 			});			
 	}
 	

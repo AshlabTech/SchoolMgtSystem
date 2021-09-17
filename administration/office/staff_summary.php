@@ -9,7 +9,19 @@
 				$sql_all_staff22 = "select * from student_info where status  ='1' or status='2'";
 				$php_process_sql_all_staff22 =  mysqli_query($conn,$sql_all_staff22) or die(mysqli_error($conn));
 				$total_students = mysqli_num_rows($php_process_sql_all_staff22);
+
+				$sql_all_staff22 = "select * from student_info where status  ='0'";
+				$php_process_sql_all_staff22 =  $conn->query($sql_all_staff22) or die(mysqli_error($conn));
+				$total_inactive = $php_process_sql_all_staff22->num_rows;				
 				
+				$sql_all_staff22 = "select * from student_info";
+				$php_process_sql_all_staff22 =  $conn->query($sql_all_staff22) or die(mysqli_error($conn));				
+				$all_students = [];
+				if($php_process_sql_all_staff22->num_rows >0){
+					while($row = $php_process_sql_all_staff22->fetch_assoc()){
+						$all_students[] = $row;
+					}
+				}
 				$sql_all_staff2 = "select * from staff_info where highest_qualification = 'B.S.C' and status='1'";
 				$php_process_sql_all_staff2 =  mysqli_query($conn,$sql_all_staff2) or die(mysqli_error($conn));
 				$total_number_of_degree_staff = mysqli_num_rows($php_process_sql_all_staff2);

@@ -706,13 +706,17 @@ function display_other_payments() {
     { session_id: session_id, term_id: term_id },
     function (response) {
       getId("make_payement_student_search_wrap").innerHTML = response;
+      setTimeout(() => {
+        var interval = setInterval(() => {						
+          if($('iframeother').contents().find('#forIframeLoaded').val() == 200){
+            $('#iframeLoader').hide();
+            clearInterval(interval);
+          }
+          
+        }, 50);
+        }, 1000);
     }
   );
-  setTimeout(() => {
-    $("iframe").on("load", function () {
-      $("#iframeloader").hide();
-    });
-  }, 500);
 }
 function reset_student_password() {
   Swal.fire({
@@ -876,6 +880,7 @@ function score_entry_frame() {
   );
 }
 function laod_manage_form_teacher() {
+  
   document.getElementById("display_content").innerHTML =
     '<center><img src="../../images/ajax-loader.gif"><br> please, wait...</center>';
   $.post(
@@ -883,6 +888,15 @@ function laod_manage_form_teacher() {
     { token: "token" },
     function (response, error) {
       getId("display_content").innerHTML = response;
+      setTimeout(() => {
+        var interval = setInterval(() => {						
+          if($('#form_teacher_iframe').contents().find('#forIframeLoaded').val() == 200){
+            $('#iframeLoader').hide();
+            clearInterval(interval);
+          }
+          
+        }, 50);
+        }, 1000);
     }
   );
 }

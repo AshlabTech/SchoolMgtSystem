@@ -154,16 +154,13 @@ include_once('../../php/staff_data.php');
 ?>
 
 <h4><i class="menu-icon fa fa-desktop"></i> Form Teacher</h4>
-<div class="breadcrumb ace-save-state" id="breadcrumbs" style="margin:0">
-	<div class="" id="sub_nav">
-		<i class="ace-icon fa fa-cog home-icon"></i><a href="#"> <b>form teacher</b></a>
-	</div>
-</div>
-<div class="row w-100" style="color:#067;margin:20px;" id="access_options_wrap">
-	<div class="col-lg-12">
-		<form class="form-horizontal" method="POST" action="">
-			<div class="form-group row w-100">
-				<div class="col-sm-3">
+
+<br>
+<div class="row w-100 p-0 m-0" style="color:#067;;" id="access_options_wrap">
+	<div class="col-lg-12 p-0">
+		<form class="form-horizontal p-0 m-0" method="POST" action="">
+			<div class="form-group row w-100 m-0 0-0">
+				<div class="col-sm-3 pl-0">
 					<input type="text" value="" id="classname" name="classname" style="display: none;">
 					<input type="text" value="" id="termname" name="termname" style="display: none;">
 					<select required="" class='form-control' name="class_id" onchange="(function(){document.getElementById('classname').value= document.getElementById('class_idd').options[document.getElementById('class_idd').selectedIndex].text; })()" style="margin:5px;color:#000" id="class_idd">
@@ -209,10 +206,13 @@ include_once('../../php/staff_data.php');
 				</div>
 			</div>
 		</form>
+	
+		<hr>
 	</div>
 
-	<div class="row w-100" id="traitPage">
-		<div class="col-sm-6 col-md-6 col-lg-5" style="min-width: 400px;">
+	<div class="row w-100 m-0" id="traitPage">
+	
+		<div class="p-0 col-sm-6 col-md-6 col-lg-5" style="min-width: 400px;">
 			<div id="">
 				<div style="position: absolute;top:-21.3%; left: 0; width: 100%;  overflow-y: none;">
 					<div class="loader" id="load1" style="margin-left: 0px; margin-right: 0px; display:none;"></div>
@@ -292,9 +292,10 @@ include_once('../../php/staff_data.php');
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-6 col-xs-12 col-md-6 col-lg-6" style="padding: 4px; min-width: 345px;">
+		<div class="col-lg-1"></div>
+		<div class="col-sm-6 col-xs-12 col-md-6 col-lg-6 p-0" style="padding: 4px; min-width: 345px;">
 			<div id="traits" style="width: 100%;">
-				<button class="btn btn-info ml-4"  onclick="saveResultBtn();">save</button>
+				<button class="btn btn-info ml-2"  onclick="saveResultBtn();">save</button>
 				<div style="margin: 10px 0px 0px 10px; border:1px solid #eee; box-shadow: 0px 1px 1px #ccc;">
 					<select style=""></select>
 				</div>
@@ -442,7 +443,7 @@ include_once('../../php/staff_data.php');
 				</div>
 			</div>
 		<?php } ?>
-
+		<input type="text" :value="forIframeLoaded" id="forIframeLoaded">
 
 	</div>
 
@@ -497,7 +498,8 @@ if(isset($_POST['enterT'])){
 
 	var vm = new Vue({
 		el: "#commentPage",
-		data: {
+		data: {			
+			forIframeLoaded:200,
 			lists: <?php echo json_encode($list); ?>,
 			term_id: '<?php echo $term_id; ?>',
 			class_id: '<?php echo $class_id; ?>',

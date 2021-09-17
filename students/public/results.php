@@ -98,7 +98,9 @@ if(isset($_POST['view-result'])){
 
 						$getStudentTotalScore = $mark_obj->getStudentTotalScore(array($student_info_id, $session_id, $term_id, $class_id));
 						$totalNumberInClass = count($student_obj->getAllStudentByClass($class_id, $session_id));
-
+						?>
+						<link rel="stylesheet" href="../../css/bootstrap.css">
+						<?php
 						include_once('../../administration/office/_view_student_result.php');
 						exit;
 				}

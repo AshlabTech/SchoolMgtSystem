@@ -109,6 +109,7 @@ $payment_historyx = [];
 
 <body style="background:#fff">
     <div id="app" class="no-visible">
+
         <center v-show="isloading == false">
             <button class="mt-2 active btn btn-sm btn-primary" @click="switchbtn($event, 1)">Make Payment</button>
             <button class=" mt-2 btn btn-sm btn-primary" @click="switchbtn($event, 2); openHistory()">view histroy</button>
@@ -194,6 +195,7 @@ $payment_historyx = [];
                     </table>
 
                 </div>
+                <input type="text" :value="forIframeLoaded" id="forIframeLoaded" >
             </div>
         </transition-group>
 
@@ -386,6 +388,7 @@ $payment_historyx = [];
         var vm = new Vue({
             el: "#app",
             data: {
+                forIframeLoaded: 200,
                 years: <?php echo json_encode($years); ?>,
                 students: <?php echo json_encode($students); ?>,
                 selected: "",

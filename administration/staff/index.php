@@ -28,6 +28,8 @@
 		
 		
 		<!-- inlcude all javascript files -->
+		<script src="../Login_v1/vendor/jquery/jquery-3.2.1.min.js"></script>
+		<script src="../js/vue.js"></script>
 				<script type="text/javascript" src="../../js/jquery-1.10.2.js"></script>
 				<script type="text/javascript" src="../../js/bootstrap.js"></script>
 				<script type="text/javascript" src="../../js/bootstrap.min.js"></script>

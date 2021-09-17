@@ -487,6 +487,8 @@ function close_change_staff_pics(token){
 				getId('display_content').innerHTML = response;
 			});
 		}
+
+		
 		
 		
 		function mark_attendance(token,month_id,day_in_month){
