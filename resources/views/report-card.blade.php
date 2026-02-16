@@ -65,7 +65,7 @@
         .student-info-cell {
             display: table-cell;
             padding: 3px 6px;
-            border: 1px solid #000;
+            border: 0.5pt solid #000;
             font-size: 9pt;
         }
         
@@ -75,10 +75,34 @@
             background-color: #f0f0f0;
         }
         
+        /* Main content with side-by-side layout */
+        .content-wrapper {
+            display: table;
+            width: 100%;
+            margin-bottom: 8px;
+        }
+        
+        .content-row {
+            display: table-row;
+        }
+        
+        .subject-results-cell {
+            display: table-cell;
+            vertical-align: top;
+            width: 68%;
+            padding-right: 5px;
+        }
+        
+        .domains-cell {
+            display: table-cell;
+            vertical-align: top;
+            width: 32%;
+        }
+        
         .marks-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 8px;
+            margin-bottom: 0;
             font-size: 8pt;
         }
         
@@ -86,14 +110,14 @@
             background-color: #333;
             color: white;
             padding: 4px 3px;
-            border: 1px solid #000;
+            border: 0.5pt solid #000;
             font-weight: bold;
             text-align: center;
         }
         
         .marks-table td {
             padding: 3px 2px;
-            border: 1px solid #000;
+            border: 0.5pt solid #000;
             text-align: center;
         }
         
@@ -106,11 +130,27 @@
             background-color: #f9f9f9;
         }
         
+        /* Grade and score color coding */
+        .grade-a, .grade-b, .score-excellent {
+            color: #059669;
+            font-weight: bold;
+        }
+        
+        .grade-c, .grade-d, .score-good {
+            color: #2563eb;
+            font-weight: bold;
+        }
+        
+        .grade-e, .grade-f, .score-poor {
+            color: #dc2626;
+            font-weight: bold;
+        }
+        
         .summary-section {
             display: table;
             width: 100%;
             margin-bottom: 8px;
-            border: 1px solid #000;
+            border: 0.5pt solid #000;
         }
         
         .summary-row {
@@ -120,7 +160,7 @@
         .summary-cell {
             display: table-cell;
             padding: 4px 6px;
-            border: 1px solid #000;
+            border: 0.5pt solid #000;
             font-size: 9pt;
         }
         
@@ -133,7 +173,7 @@
         .grading-key {
             margin-bottom: 8px;
             padding: 5px;
-            border: 1px solid #000;
+            border: 0.5pt solid #000;
             background-color: #f9f9f9;
         }
         
@@ -150,13 +190,13 @@
         }
         
         .skills-section {
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         
         .skills-section h3 {
-            font-size: 9pt;
-            margin-bottom: 3px;
-            padding: 3px;
+            font-size: 8pt;
+            margin-bottom: 2px;
+            padding: 2px;
             background-color: #333;
             color: white;
             text-align: center;
@@ -172,18 +212,18 @@
         
         .skills-table td {
             padding: 2px 3px;
-            border: 1px solid #000;
+            border: 0.5pt solid #000;
             text-align: center;
         }
         
         .skills-table td.skill-name {
             text-align: left;
-            width: 22%;
-            font-size: 7pt;
+            width: 70%;
+            font-size: 6.5pt;
         }
         
         .skills-table td.skill-rating {
-            width: 3%;
+            width: 30%;
             text-align: center;
         }
         
@@ -192,7 +232,7 @@
         }
         
         .comment-box {
-            border: 1px solid #000;
+            border: 0.5pt solid #000;
             padding: 5px;
             margin-bottom: 6px;
             min-height: 35px;
@@ -310,53 +350,126 @@
             @endif
         </div>
 
-        <!-- Academic Performance Table -->
-        <table class="marks-table">
-            <thead>
-                <tr>
-                    <th rowspan="2">SUBJECTS</th>
-                    <th colspan="{{ $caComponents ?? 4 }}">CONTINUOUS ASSESSMENT</th>
-                    <th rowspan="2">TOTAL CA<br/>({{ $caWeight ?? 40 }})</th>
-                    <th rowspan="2">EXAM<br/>({{ $examWeight ?? 60 }})</th>
-                    <th rowspan="2">TOTAL<br/>(100)</th>
-                    <th rowspan="2">GRADE</th>
-                    <th rowspan="2">REMARK</th>
-                    <th rowspan="2">POSITION</th>
-                </tr>
-                <tr>
-                    @for($i = 1; $i <= ($caComponents ?? 4); $i++)
-                        <th>T{{ $i }}</th>
-                    @endfor
-                </tr>
-            </thead>
-            <tbody>
-                @if(isset($marks) && count($marks) > 0)
-                    @foreach($marks as $mark)
-                        <tr>
-                            <td class="subject-name">{{ $mark['subject'] ?? '' }}</td>
-                            <td>{{ $mark['t1'] ?? '-' }}</td>
-                            <td>{{ $mark['t2'] ?? '-' }}</td>
-                            @if(($caComponents ?? 4) >= 3)
-                                <td>{{ $mark['t3'] ?? '-' }}</td>
+        <!-- Main Content: Subject Results and Domains Side-by-Side -->
+        <div class="content-wrapper">
+            <div class="content-row">
+                <!-- Left Side: Subject Results -->
+                <div class="subject-results-cell">
+                    <table class="marks-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">SUBJECTS</th>
+                                <th colspan="{{ $caComponents ?? 4 }}">CONTINUOUS ASSESSMENT</th>
+                                <th rowspan="2">TOTAL CA<br/>({{ $caWeight ?? 40 }})</th>
+                                <th rowspan="2">EXAM<br/>({{ $examWeight ?? 60 }})</th>
+                                <th rowspan="2">TOTAL<br/>(100)</th>
+                                <th rowspan="2">GRADE</th>
+                                <th rowspan="2">REMARK</th>
+                                <th rowspan="2">POS</th>
+                            </tr>
+                            <tr>
+                                @for($i = 1; $i <= ($caComponents ?? 4); $i++)
+                                    <th>T{{ $i }}</th>
+                                @endfor
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(isset($marks) && count($marks) > 0)
+                                @foreach($marks as $mark)
+                                    @php
+                                        $grade = strtoupper($mark['grade'] ?? '');
+                                        $total = $mark['total'] ?? 0;
+                                        
+                                        // Determine grade color class
+                                        $gradeClass = '';
+                                        if (in_array($grade, ['A', 'B'])) {
+                                            $gradeClass = 'grade-a';
+                                        } elseif (in_array($grade, ['C', 'D'])) {
+                                            $gradeClass = 'grade-c';
+                                        } elseif (in_array($grade, ['E', 'F'])) {
+                                            $gradeClass = 'grade-e';
+                                        }
+                                        
+                                        // Determine score color class
+                                        $scoreClass = '';
+                                        if ($total >= 70) {
+                                            $scoreClass = 'score-excellent';
+                                        } elseif ($total >= 50) {
+                                            $scoreClass = 'score-good';
+                                        } elseif ($total > 0) {
+                                            $scoreClass = 'score-poor';
+                                        }
+                                    @endphp
+                                    <tr>
+                                        <td class="subject-name">{{ $mark['subject'] ?? '' }}</td>
+                                        <td>{{ $mark['t1'] ?? '-' }}</td>
+                                        <td>{{ $mark['t2'] ?? '-' }}</td>
+                                        @if(($caComponents ?? 4) >= 3)
+                                            <td>{{ $mark['t3'] ?? '-' }}</td>
+                                        @endif
+                                        @if(($caComponents ?? 4) >= 4)
+                                            <td>{{ $mark['t4'] ?? '-' }}</td>
+                                        @endif
+                                        <td><strong>{{ $mark['tca'] ?? '-' }}</strong></td>
+                                        <td><strong>{{ $mark['exam'] ?? '-' }}</strong></td>
+                                        <td class="{{ $scoreClass }}"><strong>{{ $mark['total'] ?? '-' }}</strong></td>
+                                        <td class="{{ $gradeClass }}"><strong>{{ $mark['grade'] ?? '-' }}</strong></td>
+                                        <td>{{ $mark['remark'] ?? '-' }}</td>
+                                        <td>{{ $mark['position'] ?? '-' }}</td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="{{ 6 + ($caComponents ?? 4) }}" style="text-align: center;">No marks recorded</td>
+                                </tr>
                             @endif
-                            @if(($caComponents ?? 4) >= 4)
-                                <td>{{ $mark['t4'] ?? '-' }}</td>
-                            @endif
-                            <td><strong>{{ $mark['tca'] ?? '-' }}</strong></td>
-                            <td><strong>{{ $mark['exam'] ?? '-' }}</strong></td>
-                            <td><strong>{{ $mark['total'] ?? '-' }}</strong></td>
-                            <td><strong>{{ $mark['grade'] ?? '-' }}</strong></td>
-                            <td>{{ $mark['remark'] ?? '-' }}</td>
-                            <td>{{ $mark['position'] ?? '-' }}</td>
-                        </tr>
-                    @endforeach
-                @else
-                    <tr>
-                        <td colspan="{{ 6 + ($caComponents ?? 4) }}" style="text-align: center;">No marks recorded</td>
-                    </tr>
-                @endif
-            </tbody>
-        </table>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Right Side: Psychomotor and Affective Domains -->
+                <div class="domains-cell">
+                    <!-- Psychomotor Skills -->
+                    @if(isset($psychomotorSkills) && count($psychomotorSkills) > 0)
+                    <div class="skills-section">
+                        <h3>PSYCHOMOTOR (Skills)</h3>
+                        <table class="skills-table">
+                            <tbody>
+                                @foreach($psychomotorSkills as $skill)
+                                    <tr>
+                                        <td class="skill-name">{{ $skill['name'] ?? '' }}</td>
+                                        <td class="skill-rating">{{ $skill['rating'] ?? '-' }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    @endif
+
+                    <!-- Affective Skills -->
+                    @if(isset($affectiveSkills) && count($affectiveSkills) > 0)
+                    <div class="skills-section">
+                        <h3>AFFECTIVE (Behavior)</h3>
+                        <table class="skills-table">
+                            <tbody>
+                                @foreach($affectiveSkills as $skill)
+                                    <tr>
+                                        <td class="skill-name">{{ $skill['name'] ?? '' }}</td>
+                                        <td class="skill-rating">{{ $skill['rating'] ?? '-' }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    @endif
+                    
+                    <!-- Rating Scale -->
+                    <div class="grading-key" style="text-align: center; font-size: 6pt; padding: 2px; margin-top: 4px;">
+                        <strong>RATING:</strong> 5-Excellent | 4-V.Good | 3-Good | 2-Fair | 1-Poor
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Summary Section -->
         <div class="summary-section">
@@ -373,58 +486,6 @@
                 <div class="summary-cell"><strong>{{ $position ?? '-' }}</strong></div>
             </div>
         </div>
-
-        <!-- Psychomotor Skills -->
-        @if(isset($psychomotorSkills) && count($psychomotorSkills) > 0)
-        <div class="skills-section">
-            <h3>PSYCHOMOTOR DOMAIN (Skills)</h3>
-            <table class="skills-table">
-                <tbody>
-                    @php
-                        $chunks = array_chunk($psychomotorSkills, 4);
-                    @endphp
-                    @foreach($chunks as $chunk)
-                        <tr>
-                            @foreach($chunk as $skill)
-                                <td class="skill-name">{{ $skill['name'] ?? '' }}</td>
-                                <td class="skill-rating">{{ $skill['rating'] ?? '-' }}</td>
-                            @endforeach
-                            @for($i = count($chunk); $i < 4; $i++)
-                                <td class="skill-name"></td>
-                                <td class="skill-rating"></td>
-                            @endfor
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-        @endif
-
-        <!-- Affective Skills -->
-        @if(isset($affectiveSkills) && count($affectiveSkills) > 0)
-        <div class="skills-section">
-            <h3>AFFECTIVE DOMAIN (Character/Behavior)</h3>
-            <table class="skills-table">
-                <tbody>
-                    @php
-                        $chunks = array_chunk($affectiveSkills, 4);
-                    @endphp
-                    @foreach($chunks as $chunk)
-                        <tr>
-                            @foreach($chunk as $skill)
-                                <td class="skill-name">{{ $skill['name'] ?? '' }}</td>
-                                <td class="skill-rating">{{ $skill['rating'] ?? '-' }}</td>
-                            @endforeach
-                            @for($i = count($chunk); $i < 4; $i++)
-                                <td class="skill-name"></td>
-                                <td class="skill-rating"></td>
-                            @endfor
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-        @endif
 
         <!-- Rating Scale -->
         <div class="grading-key" style="text-align: center; font-size: 8pt; padding: 3px;">

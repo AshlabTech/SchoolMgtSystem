@@ -132,6 +132,28 @@ const downloadClassReportCards = () => {
     
     window.location.href = `/results/class-report-cards?${params.toString()}`;
 };
+
+const downloadClassBroadsheet = () => {
+    if (!classExportForm.class_id || !classExportForm.exam_id) {
+        showError('Please select a class and exam first');
+        return;
+    }
+    
+    const params = new URLSearchParams({
+        class_id: classExportForm.class_id,
+        exam_id: classExportForm.exam_id,
+    });
+    
+    if (classExportForm.section_id) {
+        params.append('section_id', classExportForm.section_id);
+    }
+    
+    if (classExportForm.academic_year_id) {
+        params.append('academic_year_id', classExportForm.academic_year_id);
+    }
+    
+    window.location.href = `/results/class-broadsheet?${params.toString()}`;
+};
 </script>
 
 <template>
@@ -411,9 +433,15 @@ const downloadClassReportCards = () => {
                             severity="success" 
                             @click="downloadClassReportCards" 
                         />
+                        <PButton 
+                            label="Download Class Broadsheet (PDF)" 
+                            icon="pi pi-file-excel" 
+                            severity="info" 
+                            @click="downloadClassBroadsheet" 
+                        />
                     </div>
                     <div class="mt-3 text-sm text-slate-600">
-                        <strong>Note:</strong> This will download a sample report card. For bulk downloads, please contact the system administrator.
+                        <strong>Note:</strong> Report cards download a sample. Broadsheet shows all students with subjects as columns.
                     </div>
                 </template>
             </PCard>
