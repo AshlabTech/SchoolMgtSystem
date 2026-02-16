@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             SettingsSeeder::class,
             StaffRolesSeeder::class,
             CoreModelsSeeder::class,
+            SkillsSeeder::class,
             ResultCommentsSeeder::class,
             StudentSeeder::class,
             MarksSeeder::class,

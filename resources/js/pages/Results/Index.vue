@@ -13,6 +13,8 @@ const props = defineProps({
     exams: Array,
     years: Array,
     terms: Array,
+    classes: Array,
+    sections: Array,
     marks: Array,
     selected: Object,
     examResult: Object,
@@ -20,6 +22,8 @@ const props = defineProps({
     skills: Array,
     resultComments: Array,
     autoApplyComments: Boolean,
+    currentAcademicYearId: Number,
+    currentTermId: Number,
 });
 
 const studentOptions = computed(() =>
@@ -43,7 +47,7 @@ const openView = (record) => {
 const filters = useForm({
     student_id: props.selected?.student_id ?? null,
     exam_id: props.selected?.exam_id ?? null,
-    academic_year_id: props.selected?.academic_year_id ?? null,
+    academic_year_id: props.selected?.academic_year_id ?? props.currentAcademicYearId ?? null,
 });
 
 const submit = () => {
@@ -80,6 +84,53 @@ const totalFor = (mark) => {
     const t4 = Number(mark.t4 || 0);
     const exm = Number(mark.exm || 0);
     return t1 + t2 + t3 + t4 + exm;
+};
+
+const downloadReportCard = () => {
+    if (!filters.student_id || !filters.exam_id) {
+        showError('Please select a student and exam first');
+        return;
+    }
+    
+    const params = new URLSearchParams({
+        student_id: filters.student_id,
+        exam_id: filters.exam_id,
+    });
+    
+    if (filters.academic_year_id) {
+        params.append('academic_year_id', filters.academic_year_id);
+    }
+    
+    window.location.href = `/results/report-card?${params.toString()}`;
+};
+
+const classExportForm = useForm({
+    class_id: null,
+    exam_id: null,
+    section_id: null,
+    academic_year_id: props.currentAcademicYearId ?? null,
+});
+
+const downloadClassReportCards = () => {
+    if (!classExportForm.class_id || !classExportForm.exam_id) {
+        showError('Please select a class and exam first');
+        return;
+    }
+    
+    const params = new URLSearchParams({
+        class_id: classExportForm.class_id,
+        exam_id: classExportForm.exam_id,
+    });
+    
+    if (classExportForm.section_id) {
+        params.append('section_id', classExportForm.section_id);
+    }
+    
+    if (classExportForm.academic_year_id) {
+        params.append('academic_year_id', classExportForm.academic_year_id);
+    }
+    
+    window.location.href = `/results/class-report-cards?${params.toString()}`;
 };
 </script>
 
@@ -184,7 +235,16 @@ const totalFor = (mark) => {
                             <FieldError :errors="filters.errors" field="academic_year_id" />
                         </div>
                     </div>
-                    <PButton label="View Results" icon="pi pi-search" severity="info" class="mt-4" @click="submit" />
+                    <div class="mt-4 flex gap-3">
+                        <PButton label="View Results" icon="pi pi-search" severity="info" @click="submit" />
+                        <PButton 
+                            v-if="selected && selected.student_id && selected.exam_id"
+                            label="Download Report Card (PDF)" 
+                            icon="pi pi-file-pdf" 
+                            severity="success" 
+                            @click="downloadReportCard" 
+                        />
+                    </div>
                 </template>
             </PCard>
 
@@ -295,6 +355,65 @@ const totalFor = (mark) => {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </template>
+            </PCard>
+            
+            <PCard class="shadow-sm">
+                <template #title>Class Report Cards Download</template>
+                <template #content>
+                    <div class="grid grid-cols-1 gap-3 md:grid-cols-4">
+                        <div>
+                            <ModelSelect
+                                v-model="classExportForm.class_id"
+                                :options="classes"
+                                optionLabel="name"
+                                optionValue="id"
+                                placeholder="Class"
+                            />
+                            <FieldError :errors="classExportForm.errors" field="class_id" />
+                        </div>
+                        <div>
+                            <ModelSelect
+                                v-model="classExportForm.exam_id"
+                                :options="exams"
+                                optionLabel="name"
+                                optionValue="id"
+                                placeholder="Exam"
+                            />
+                            <FieldError :errors="classExportForm.errors" field="exam_id" />
+                        </div>
+                        <div>
+                            <ModelSelect
+                                v-model="classExportForm.section_id"
+                                :options="sections"
+                                optionLabel="name"
+                                optionValue="id"
+                                placeholder="Section (Optional)"
+                            />
+                            <FieldError :errors="classExportForm.errors" field="section_id" />
+                        </div>
+                        <div>
+                            <ModelSelect
+                                v-model="classExportForm.academic_year_id"
+                                :options="years"
+                                optionLabel="name"
+                                optionValue="id"
+                                placeholder="Academic Year"
+                            />
+                            <FieldError :errors="classExportForm.errors" field="academic_year_id" />
+                        </div>
+                    </div>
+                    <div class="mt-4 flex gap-3">
+                        <PButton 
+                            label="Download Class Report Cards (PDF)" 
+                            icon="pi pi-file-pdf" 
+                            severity="success" 
+                            @click="downloadClassReportCards" 
+                        />
+                    </div>
+                    <div class="mt-3 text-sm text-slate-600">
+                        <strong>Note:</strong> This will download a sample report card. For bulk downloads, please contact the system administrator.
                     </div>
                 </template>
             </PCard>

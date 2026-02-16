@@ -51,6 +51,25 @@ class MarksController extends Controller
             $allowedSectionIds = $sectionIds->merge($sectionIdsForClassWide)->unique()->values();
         }
 
+        $currentYear = AcademicYear::query()->where('is_current', true)->first();
+        $currentTerm = Term::query()->where('is_current', true)->first();
+
+        // Get sections with their CA component counts
+        $sections = Section::query()
+            ->when($isRestrictedTeacher, fn ($q) => $q->whereIn('id', $allowedSectionIds))
+            ->orderBy('name')
+            ->get()
+            ->map(function ($section) {
+                return [
+                    'id' => $section->id,
+                    'class_id' => $section->class_id,
+                    'teacher_id' => $section->teacher_id,
+                    'name' => $section->name,
+                    'is_active' => $section->is_active,
+                    'number_of_ca_components' => $section->getNumberOfCaComponents(),
+                ];
+            });
+
         return Inertia::render('Marks/Index', [
             'exams' => Exam::query()->orderByDesc('id')->get(),
             'classes' => SchoolClass::query()
@@ -58,14 +77,13 @@ class MarksController extends Controller
                 ->orderBy('name')
                 ->get(),
             'classLevels' => ClassLevel::query()->orderBy('name')->get(),
-            'sections' => Section::query()
-                ->when($isRestrictedTeacher, fn ($q) => $q->whereIn('id', $allowedSectionIds))
-                ->orderBy('name')
-                ->get(),
+            'sections' => $sections,
             'years' => AcademicYear::query()->orderByDesc('name')->get(),
             'terms' => Term::query()->orderBy('order')->get(),
             'subjects' => $assignments,
             'numberOfCaComponents' => (int) (Setting::where('key', 'number_of_ca_components')->value('value') ?? 2),
+            'currentAcademicYearId' => $currentYear?->id,
+            'currentTermId' => $currentTerm?->id,
         ]);
     }
 
@@ -73,23 +91,76 @@ class MarksController extends Controller
     {
         $data = $request->validate([
             'class_id' => ['required', 'integer', 'exists:classes,id'],
-            'section_id' => ['nullable', 'integer', 'exists:sections,id'],
+            'term_id' => ['nullable', 'integer', 'exists:terms,id'],
             'academic_year_id' => ['nullable', 'integer', 'exists:academic_years,id'],
+            'exam_id' => ['nullable', 'integer', 'exists:exams,id'],
+            'subject_id' => ['nullable', 'integer', 'exists:subjects,id'],
         ]);
 
         $user = $request->user();
-        if ($this->isRestrictedTeacher($user) && !$this->teacherHasClassAccess($user->id, $data['class_id'], $data['section_id'] ?? null)) {
-            abort(403, 'You are not assigned to this class/section.');
+        if ($this->isRestrictedTeacher($user) && ! $this->teacherHasClassAccess($user->id, $data['class_id'], null)) {
+            abort(403, 'You are not assigned to this class.');
         }
 
         $enrollments = StudentEnrollment::query()
-            ->with(['student.user.profile'])
+            ->with(['student.user.profile', 'section'])
             ->where('class_id', $data['class_id'])
-            ->when($data['section_id'] ?? null, fn ($q) => $q->where('section_id', $data['section_id']))
             ->when($data['academic_year_id'] ?? null, fn ($q) => $q->where('academic_year_id', $data['academic_year_id']))
             ->get();
 
-        return response()->json($enrollments);
+        // Load existing marks if exam_id and subject_id are provided
+        $marks = [];
+        if (isset($data['exam_id']) && isset($data['subject_id'])) {
+            $existingMarks = Mark::query()
+                ->where('exam_id', $data['exam_id'])
+                ->where('subject_id', $data['subject_id'])
+                ->where('class_id', $data['class_id'])
+                ->when($data['academic_year_id'] ?? null, fn ($q) => $q->where('academic_year_id', $data['academic_year_id']))
+                ->get()
+                ->keyBy('student_id');
+
+            $marks = $existingMarks;
+        }
+
+        // Group enrollments by section to determine CA components
+        $sectionCaComponents = [];
+        foreach ($enrollments as $enrollment) {
+            if ($enrollment->section_id && !isset($sectionCaComponents[$enrollment->section_id])) {
+                $section = $enrollment->section ?? Section::find($enrollment->section_id);
+                $sectionCaComponents[$enrollment->section_id] = $section ? $section->getNumberOfCaComponents() : null;
+            }
+        }
+
+        // Get the most common CA component count (or global default)
+        $caComponentsCount = !empty($sectionCaComponents) 
+            ? max(array_values($sectionCaComponents)) 
+            : (int) (Setting::where('key', 'number_of_ca_components')->value('value') ?? 2);
+
+        // Merge enrollment data with marks
+        $result = $enrollments->map(function ($enrollment) use ($marks, $sectionCaComponents) {
+            $mark = $marks[$enrollment->student_id] ?? null;
+            $sectionId = $enrollment->section_id;
+            $studentCaComponents = $sectionId && isset($sectionCaComponents[$sectionId]) 
+                ? $sectionCaComponents[$sectionId] 
+                : null;
+
+            return [
+                'student_id' => $enrollment->student_id,
+                'student' => $enrollment->student,
+                'section_id' => $sectionId,
+                'section_ca_components' => $studentCaComponents,
+                't1' => $mark?->t1 ?? null,
+                't2' => $mark?->t2 ?? null,
+                't3' => $mark?->t3 ?? null,
+                't4' => $mark?->t4 ?? null,
+                'exm' => $mark?->exm ?? null,
+            ];
+        });
+
+        return response()->json([
+            'students' => $result,
+            'ca_components' => $caComponentsCount,
+        ]);
     }
 
     public function store(Request $request)
@@ -97,7 +168,7 @@ class MarksController extends Controller
         $data = $request->validate([
             'exam_id' => ['required', 'integer', 'exists:exams,id'],
             'class_id' => ['required', 'integer', 'exists:classes,id'],
-            'section_id' => ['nullable', 'integer', 'exists:sections,id'],
+            'term_id' => ['nullable', 'integer', 'exists:terms,id'],
             'academic_year_id' => ['nullable', 'integer', 'exists:academic_years,id'],
             'subject_id' => ['required', 'integer', 'exists:subjects,id'],
             'entries' => ['required', 'array'],
@@ -110,7 +181,7 @@ class MarksController extends Controller
         ]);
 
         $user = $request->user();
-        if ($this->isRestrictedTeacher($user) && !$this->teacherHasSubjectAccess($user->id, $data['subject_id'], $data['class_id'], $data['section_id'] ?? null)) {
+        if ($this->isRestrictedTeacher($user) && ! $this->teacherHasSubjectAccess($user->id, $data['subject_id'], $data['class_id'], null)) {
             abort(403, 'You are not assigned to this subject or class.');
         }
 
@@ -124,7 +195,7 @@ class MarksController extends Controller
                 ],
                 [
                     'class_id' => $data['class_id'],
-                    'section_id' => $data['section_id'],
+                    'section_id' => null, // No longer using section_id
                     't1' => $entry['t1'] ?? null,
                     't2' => $entry['t2'] ?? null,
                     't3' => $entry['t3'] ?? null,
@@ -137,12 +208,12 @@ class MarksController extends Controller
         $autoCompute = (bool) Setting::where('key', 'auto_compute_grade')->value('value');
 
         if ($autoCompute) {
-            $service = new GradeComputationService();
+            $service = new GradeComputationService;
             $service->computeForExamSubject(
                 $data['exam_id'],
                 $data['subject_id'],
                 $data['class_id'],
-                $data['section_id'] ?? null,
+                null, // section_id is null
                 $data['academic_year_id'] ?? null,
             );
         }
@@ -152,7 +223,7 @@ class MarksController extends Controller
 
     private function isRestrictedTeacher($user): bool
     {
-        if (!$user) {
+        if (! $user) {
             return false;
         }
 

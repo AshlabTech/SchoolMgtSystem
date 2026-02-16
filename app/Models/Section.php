@@ -16,7 +16,21 @@ class Section extends Model
         'teacher_id',
         'name',
         'is_active',
+        'number_of_ca_components',
     ];
+
+    /**
+     * Get the number of CA components for this section.
+     * Falls back to global setting if not set.
+     */
+    public function getNumberOfCaComponents(): int
+    {
+        if ($this->number_of_ca_components !== null) {
+            return (int) $this->number_of_ca_components;
+        }
+
+        return (int) (Setting::where('key', 'number_of_ca_components')->value('value') ?? 2);
+    }
 
     public function schoolClass()
     {

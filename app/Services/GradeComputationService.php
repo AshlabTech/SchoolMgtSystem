@@ -28,6 +28,15 @@ class GradeComputationService
             return;
         }
 
+        // Get section-specific CA components if section is specified
+        $caComponents = $settings['number_of_ca_components'];
+        if ($sectionId) {
+            $section = \App\Models\Section::find($sectionId);
+            if ($section) {
+                $caComponents = $section->getNumberOfCaComponents();
+            }
+        }
+
         $classLevelId = SchoolClass::find($classId)?->class_level_id;
 
         $grades = Grade::query()
@@ -41,14 +50,18 @@ class GradeComputationService
             ->get();
 
         foreach ($marks as $mark) {
-            $tca = $this->computeTca($mark, $settings);
+            $tca = $this->computeTca($mark, $caComponents);
             $total = $tca + ($mark->exm ?? 0);
 
             $grade = $this->resolveGrade($total, $grades, $classLevelId);
 
+            // Compute cumulative average from current and previous terms
+            $cumAverage = $this->computeCumulativeAverage($mark, $total);
+
             $mark->update([
                 'tca' => $tca,
                 'cum' => $total,
+                'cum_ave' => $cumAverage,
                 'grade_id' => $grade?->id,
             ]);
         }
@@ -61,9 +74,8 @@ class GradeComputationService
     /**
      * Compute the Total Continuous Assessment from CA component scores.
      */
-    private function computeTca(Mark $mark, array $settings): int
+    private function computeTca(Mark $mark, int $components): int
     {
-        $components = (int) $settings['number_of_ca_components'];
         $tca = 0;
 
         for ($i = 1; $i <= $components; $i++) {
@@ -72,6 +84,31 @@ class GradeComputationService
         }
 
         return $tca;
+    }
+
+    /**
+     * Compute the cumulative average from current and previous term scores.
+     * Returns string format to match database column type.
+     */
+    private function computeCumulativeAverage(Mark $mark, int $currentTotal): ?string
+    {
+        $scores = [$currentTotal];
+
+        // Add previous term scores if they exist
+        if ($mark->tex1 !== null) {
+            $scores[] = $mark->tex1;
+        }
+        if ($mark->tex2 !== null) {
+            $scores[] = $mark->tex2;
+        }
+        if ($mark->tex3 !== null) {
+            $scores[] = $mark->tex3;
+        }
+
+        // Calculate average (always has at least one score from current term)
+        $average = array_sum($scores) / count($scores);
+
+        return number_format($average, 2);
     }
 
     /**

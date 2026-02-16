@@ -14,6 +14,7 @@ use App\Models\SkillScore;
 use App\Models\Student;
 use App\Models\Term;
 use App\Services\DomainComputationService;
+use App\Services\ReportCardService;
 use App\Services\ResultComputationService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -40,6 +41,11 @@ class ResultsController extends Controller
         $exams = Exam::orderBy('name')->get();
         $years = AcademicYear::orderByDesc('name')->get();
         $terms = Term::orderBy('order')->get();
+        $classes = \App\Models\SchoolClass::orderBy('name')->get();
+        $sections = \App\Models\Section::orderBy('name')->get();
+        
+        $currentYear = AcademicYear::query()->where('is_current', true)->first();
+        $currentTerm = Term::query()->where('is_current', true)->first();
 
         $marks = [];
         $selected = null;
@@ -84,6 +90,8 @@ class ResultsController extends Controller
             'exams' => $exams,
             'years' => $years,
             'terms' => $terms,
+            'classes' => $classes,
+            'sections' => $sections,
             'marks' => $marks,
             'selected' => $selected,
             'examResult' => $examResult,
@@ -97,6 +105,8 @@ class ResultsController extends Controller
                 ->orderBy('id')
                 ->get(),
             'autoApplyComments' => (bool) Setting::where('key', 'auto_apply_result_comment')->value('value'),
+            'currentAcademicYearId' => $currentYear?->id,
+            'currentTermId' => $currentTerm?->id,
         ]);
     }
 
@@ -150,5 +160,41 @@ class ResultsController extends Controller
         ]);
 
         return back();
+    }
+
+    public function downloadReportCard(Request $request)
+    {
+        $data = $request->validate([
+            'student_id' => ['required', 'integer', 'exists:students,id'],
+            'exam_id' => ['required', 'integer', 'exists:exams,id'],
+            'academic_year_id' => ['nullable', 'integer', 'exists:academic_years,id'],
+        ]);
+
+        $service = new ReportCardService();
+        
+        return $service->generateReportCard(
+            $data['student_id'],
+            $data['exam_id'],
+            $data['academic_year_id'] ?? null
+        );
+    }
+
+    public function downloadClassReportCards(Request $request)
+    {
+        $data = $request->validate([
+            'class_id' => ['required', 'integer', 'exists:classes,id'],
+            'exam_id' => ['required', 'integer', 'exists:exams,id'],
+            'section_id' => ['nullable', 'integer', 'exists:sections,id'],
+            'academic_year_id' => ['nullable', 'integer', 'exists:academic_years,id'],
+        ]);
+
+        $service = new ReportCardService();
+        
+        return $service->generateClassReportCards(
+            $data['class_id'],
+            $data['exam_id'],
+            $data['section_id'] ?? null,
+            $data['academic_year_id'] ?? null
+        );
     }
 }

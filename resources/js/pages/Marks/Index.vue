@@ -16,6 +16,8 @@ const props = defineProps({
     terms: Array,
     subjects: Array,
     numberOfCaComponents: Number,
+    currentAcademicYearId: Number,
+    currentTermId: Number,
 });
 
 const subjectOptions = computed(() =>
@@ -31,13 +33,19 @@ const { showSuccess, showError } = useToast();
 const filter = useForm({
     exam_id: null,
     class_id: null,
-    section_id: null,
-    academic_year_id: null,
+    term_id: props.currentTermId ?? null,
+    academic_year_id: props.currentAcademicYearId ?? null,
     subject_id: null,
     entries: [],
 });
 
 const students = ref([]);
+const dynamicCaComponents = ref(null);
+
+// Get the number of CA components to use (from loaded students or global)
+const effectiveCaComponents = computed(() => {
+    return dynamicCaComponents.value ?? props.numberOfCaComponents;
+});
 
 const loadStudents = async () => {
     if (!filter.class_id) {
@@ -58,8 +66,10 @@ const loadStudents = async () => {
             },
             body: JSON.stringify({
                 class_id: filter.class_id,
-                section_id: filter.section_id,
+                term_id: filter.term_id,
                 academic_year_id: filter.academic_year_id,
+                exam_id: filter.exam_id,
+                subject_id: filter.subject_id,
             }),
         });
         
@@ -68,14 +78,20 @@ const loadStudents = async () => {
         }
         
         const data = await response.json();
-        students.value = data.map((item) => ({
+        
+        // Update CA components based on response
+        dynamicCaComponents.value = data.ca_components || null;
+        
+        students.value = data.students.map((item) => ({
             student_id: item.student_id,
             name: `${item.student.user.profile.first_name} ${item.student.user.profile.last_name}`,
-            t1: '',
-            t2: '',
-            t3: '',
-            t4: '',
-            exm: '',
+            section_id: item.section_id,
+            section_ca_components: item.section_ca_components,
+            t1: item.t1 ?? '',
+            t2: item.t2 ?? '',
+            t3: item.t3 ?? '',
+            t4: item.t4 ?? '',
+            exm: item.exm ?? '',
         }));
         showSuccess('Students loaded successfully');
     } catch (error) {
@@ -96,11 +112,11 @@ const submit = () => {
     });
 };
 
-// Show/hide CA columns based on settings
-const showT1 = computed(() => props.numberOfCaComponents >= 1);
-const showT2 = computed(() => props.numberOfCaComponents >= 2);
-const showT3 = computed(() => props.numberOfCaComponents >= 3);
-const showT4 = computed(() => props.numberOfCaComponents >= 4);
+// Show/hide CA columns based on effective CA components (section-specific or global)
+const showT1 = computed(() => effectiveCaComponents.value >= 1);
+const showT2 = computed(() => effectiveCaComponents.value >= 2);
+const showT3 = computed(() => effectiveCaComponents.value >= 3);
+const showT4 = computed(() => effectiveCaComponents.value >= 4);
 </script>
 
 <template>
@@ -235,51 +251,40 @@ const showT4 = computed(() => props.numberOfCaComponents >= 4);
                         </div>
                         <div>
                             <ModelSelect
-                                v-model="filter.section_id"
-                                :options="sections"
+                                v-model="filter.term_id"
+                                :options="terms"
                                 optionLabel="name"
                                 optionValue="id"
-                                placeholder="Section"
-                                :canCreate="can('manage.sections')"
-                                createTitle="Add Section"
-                                createEndpoint="/academics/sections"
+                                placeholder="Term"
+                                :canCreate="can('manage.settings')"
+                                createTitle="Add Term"
+                                createEndpoint="/terms"
                                 :createFields="[
                                     {
-                                        name: 'class_id',
-                                        label: 'Class',
+                                        name: 'academic_year_id',
+                                        label: 'Academic year',
                                         type: 'model-select',
-                                        options: classes,
+                                        options: years,
                                         optionLabel: 'name',
                                         optionValue: 'id',
-                                        canCreate: can('manage.classes'),
-                                        createTitle: 'Add Class',
-                                        createEndpoint: '/academics/classes',
+                                        canCreate: can('manage.settings'),
+                                        createTitle: 'Add Academic Year',
+                                        createEndpoint: '/academic-years',
                                         createFields: [
-                                            {
-                                                name: 'class_level_id',
-                                                label: 'Class level',
-                                                type: 'model-select',
-                                                options: classLevels,
-                                                optionLabel: 'name',
-                                                optionValue: 'id',
-                                                canCreate: can('manage.classes'),
-                                                createTitle: 'Add Class Level',
-                                                createEndpoint: '/academics/class-levels',
-                                                createFields: [
-                                                    { name: 'name', label: 'Level name', type: 'text' },
-                                                    { name: 'code', label: 'Code', type: 'text' },
-                                                    { name: 'description', label: 'Description', type: 'text' },
-                                                ],
-                                            },
-                                            { name: 'name', label: 'Class name', type: 'text' },
-                                            { name: 'code', label: 'Code', type: 'text' },
-                                            { name: 'description', label: 'Description', type: 'text' },
+                                            { name: 'name', label: 'Name', type: 'text', placeholder: '2025/2026' },
+                                            { name: 'starts_at', label: 'Start date', type: 'date' },
+                                            { name: 'ends_at', label: 'End date', type: 'date' },
+                                            { name: 'is_current', label: 'Set as current', type: 'select', options: [{ name: 'No', id: 0 }, { name: 'Yes', id: 1 }] },
                                         ],
                                     },
-                                    { name: 'name', label: 'Section name', type: 'text' },
+                                    { name: 'name', label: 'Term name', type: 'text' },
+                                    { name: 'order', label: 'Order', type: 'number' },
+                                    { name: 'starts_at', label: 'Start date', type: 'date' },
+                                    { name: 'ends_at', label: 'End date', type: 'date' },
+                                    { name: 'is_current', label: 'Set as current', type: 'select', options: [{ name: 'No', id: 0 }, { name: 'Yes', id: 1 }] },
                                 ]"
                             />
-                            <FieldError :errors="filter.errors" field="section_id" />
+                            <FieldError :errors="filter.errors" field="term_id" />
                         </div>
                         <div>
                             <ModelSelect v-model="filter.subject_id" :options="subjectOptions" optionLabel="label" optionValue="value" placeholder="Subject" />

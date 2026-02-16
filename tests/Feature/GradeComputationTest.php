@@ -281,3 +281,69 @@ it('respects number_of_ca_components setting', function () {
     expect($mark->tca)->toBe(20)
         ->and($mark->cum)->toBe(60);
 });
+
+it('computes cumulative average from current and previous term scores', function () {
+    $student = createStudentWithUser();
+
+    Mark::create([
+        'student_id' => $student->id,
+        'subject_id' => $this->subject->id,
+        'class_id' => $this->schoolClass->id,
+        'section_id' => $this->section->id,
+        'exam_id' => $this->exam->id,
+        'academic_year_id' => $this->academicYear->id,
+        't1' => 15,
+        't2' => 20,
+        'exm' => 50,
+        'tex1' => 70, // First term score
+        'tex2' => 80, // Second term score
+    ]);
+
+    $service = new GradeComputationService();
+    $service->computeForExamSubject(
+        $this->exam->id,
+        $this->subject->id,
+        $this->schoolClass->id,
+        $this->section->id,
+        $this->academicYear->id,
+    );
+
+    $mark = Mark::where('student_id', $student->id)->first();
+
+    // Current term: 85, tex1: 70, tex2: 80
+    // Average: (85 + 70 + 80) / 3 = 78.33
+    expect($mark->cum)->toBe(85)
+        ->and($mark->cum_ave)->toBe('78.33');
+});
+
+it('computes cumulative average with only current term when no previous terms exist', function () {
+    $student = createStudentWithUser();
+
+    Mark::create([
+        'student_id' => $student->id,
+        'subject_id' => $this->subject->id,
+        'class_id' => $this->schoolClass->id,
+        'section_id' => $this->section->id,
+        'exam_id' => $this->exam->id,
+        'academic_year_id' => $this->academicYear->id,
+        't1' => 15,
+        't2' => 20,
+        'exm' => 50,
+    ]);
+
+    $service = new GradeComputationService();
+    $service->computeForExamSubject(
+        $this->exam->id,
+        $this->subject->id,
+        $this->schoolClass->id,
+        $this->section->id,
+        $this->academicYear->id,
+    );
+
+    $mark = Mark::where('student_id', $student->id)->first();
+
+    // Only current term: 85
+    // Average: 85 / 1 = 85.00
+    expect($mark->cum)->toBe(85)
+        ->and($mark->cum_ave)->toBe('85.00');
+});
