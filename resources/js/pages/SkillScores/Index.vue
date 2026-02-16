@@ -108,11 +108,13 @@ const saveBulk = () => {
         return;
     }
 
+    const scoreCount = bulkForm.scores.length;
+    
     bulkForm.post('/skill-scores/bulk', {
         preserveScroll: true,
         onSuccess: () => {
             bulkForm.scores = [];
-            showSuccess(`${bulkForm.scores.length} skill score(s) saved successfully`);
+            showSuccess(`${scoreCount} skill score(s) saved successfully`);
         },
         onError: (errors) => {
             showError('Failed to save skill scores', Object.values(errors).join(', '));
