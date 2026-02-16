@@ -45,6 +45,9 @@ class DomainComputationService
             $psychomotorDisplay = $psychomotorAverage ? number_format($psychomotorAverage, 1) . '/5' : null;
             $affectiveDisplay = $affectiveAverage ? number_format($affectiveAverage, 1) . '/5' : null;
 
+            // Get the first score to extract class_id and section_id
+            $firstScore = $scores->first();
+
             ExamResult::updateOrCreate(
                 [
                     'exam_id' => $examId,
@@ -52,6 +55,8 @@ class DomainComputationService
                     'academic_year_id' => $academicYearId,
                 ],
                 [
+                    'class_id' => $firstScore->class_id,
+                    'section_id' => $firstScore->section_id,
                     'psychomotor' => $psychomotorDisplay,
                     'affective' => $affectiveDisplay,
                 ]
