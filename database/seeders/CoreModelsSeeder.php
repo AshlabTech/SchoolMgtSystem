@@ -17,7 +17,16 @@ class CoreModelsSeeder extends Seeder
 {
     public function run(): void
     {
-        foreach (['Mathematics', 'English Language', 'Basic Science', 'Civic Education'] as $subjectName) {
+        foreach ([
+            'Mathematics',
+            'English Language',
+            'Basic Science',
+            'Civic Education',
+            'Computer Science',
+            'Social Studies',
+            'Agricultural Science',
+            'Business Studies',
+        ] as $subjectName) {
             Subject::firstOrCreate(
                 ['name' => $subjectName],
                 ['code' => str($subjectName)->upper()->replace(' ', '_')->value(), 'is_active' => true]

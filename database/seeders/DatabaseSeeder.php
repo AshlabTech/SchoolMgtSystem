@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             CoreModelsSeeder::class,
             ResultCommentsSeeder::class,
             StudentSeeder::class,
+            MarksSeeder::class,
             TimetableSeeder::class,
         ]);
     }

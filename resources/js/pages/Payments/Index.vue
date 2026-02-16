@@ -11,6 +11,7 @@ const props = defineProps({
     definitions: Array,
     records: Array,
     classes: Array,
+    students: Array,
     classLevels: Array,
     sections: Array,
     years: Array,
@@ -18,9 +19,30 @@ const props = defineProps({
     paymentCategories: Array,
     invoiceTypes: Array,
     paymentSummary: Object,
+    filters: Object,
 });
 
 const { can } = usePermissions();
+
+const showView = ref(false);
+const viewRecord = ref(null);
+const showDefinitionForm = ref(false);
+const showGenerateDialog = ref(false);
+const showPayDialog = ref(false);
+const editingDefinitionId = ref(null);
+const selectedRecord = ref(null);
+
+const genderOptions = [
+    { label: 'Male', value: 'male' },
+    { label: 'Female', value: 'female' },
+];
+
+const filterForm = useForm({
+    status: props.filters?.status ?? null,
+    class_id: props.filters?.class_id ?? null,
+    student_id: props.filters?.student_id ?? null,
+    search: props.filters?.search ?? '',
+});
 
 const definitionForm = useForm({
     name: '',
@@ -33,15 +55,23 @@ const definitionForm = useForm({
     gender: null,
 });
 
-const editingDefinitionId = ref(null);
-const showView = ref(false);
-const viewRecord = ref(null);
-const showDefinitionForm = ref(false);
-const recordSearch = ref('');
-const genderOptions = [
-    { label: 'Male', value: 'male' },
-    { label: 'Female', value: 'female' },
-];
+const generateForm = useForm({
+    invoice_type_id: null,
+});
+
+const payForm = useForm({
+    amount: '',
+    record_id: null,
+});
+
+const studentOptions = computed(() =>
+    (props.students || [])
+        .filter((student) => !filterForm.class_id || student.current_enrollment?.class_id === filterForm.class_id)
+        .map((student) => ({
+            id: student.id,
+            name: `${student.user?.name ?? student.user?.profile?.first_name ?? 'Student'} (${student.current_enrollment?.school_class?.name ?? 'No Class'})`,
+        }))
+);
 
 const formatCurrency = (amount) =>
     new Intl.NumberFormat('en-NG', {
@@ -55,22 +85,34 @@ const getStudentName = (record) => {
     return record.student?.user?.name || profileName || 'Unknown Student';
 };
 
-const filteredRecords = computed(() => {
-    const term = recordSearch.value.trim().toLowerCase();
-    if (!term) return props.records;
-
-    return props.records.filter((record) => {
-        const studentName = getStudentName(record);
-        const invoiceName = record.invoice_type?.name ?? '';
-        const reference = record.reference ?? '';
-
-        return `${studentName} ${invoiceName} ${reference}`.toLowerCase().includes(term);
-    });
-});
-
 const openView = (record) => {
     viewRecord.value = record;
     showView.value = true;
+};
+
+const applyFilters = () => {
+    filterForm.get('/payments', {
+        preserveState: true,
+        replace: true,
+    });
+};
+
+const clearFilters = () => {
+    filterForm.reset();
+    filterForm.get('/payments', {
+        preserveState: true,
+        replace: true,
+    });
+};
+
+const exportRecords = (scope) => {
+    const params = new URLSearchParams();
+    if (filterForm.status) params.set('status', String(filterForm.status));
+    if (filterForm.class_id) params.set('class_id', String(filterForm.class_id));
+    if (filterForm.student_id) params.set('student_id', String(filterForm.student_id));
+    if (filterForm.search) params.set('search', String(filterForm.search));
+    params.set('scope', scope);
+    window.open(`/payments/export?${params.toString()}`, '_blank', 'noopener');
 };
 
 const openCreateDefinition = () => {
@@ -101,48 +143,36 @@ const cancelEditDefinition = () => {
     showDefinitionForm.value = false;
 };
 
-const generateForm = useForm({
-    invoice_type_id: null,
-});
-
-const payForm = useForm({
-    amount: '',
-    record_id: null,
-});
-
 const createDefinition = () => {
     if (editingDefinitionId.value) {
         definitionForm.put(`/payments/definitions/${editingDefinitionId.value}`, {
             preserveScroll: true,
-            onSuccess: () => {
-                editingDefinitionId.value = null;
-                definitionForm.reset();
-                showDefinitionForm.value = false;
-            },
+            onSuccess: cancelEditDefinition,
         });
         return;
     }
 
     definitionForm.post('/payments/definitions', {
         preserveScroll: true,
-        onSuccess: () => {
-            definitionForm.reset();
-            showDefinitionForm.value = false;
-        },
+        onSuccess: cancelEditDefinition,
     });
 };
 
 const generateRecords = () => {
-    generateForm.post('/payments/records/generate', { preserveScroll: true });
+    generateForm.post('/payments/records/generate', {
+        preserveScroll: true,
+        onSuccess: () => {
+            generateForm.reset();
+            showGenerateDialog.value = false;
+        },
+    });
 };
 
 const openPay = (record) => {
+    selectedRecord.value = record;
     payForm.record_id = record.id;
     payForm.amount = '';
-};
-
-const printReceipts = (id) => {
-    window.open(`/payments/records/${id}/receipts`, '_blank', 'noopener');
+    showPayDialog.value = true;
 };
 
 const submitPay = () => {
@@ -150,17 +180,20 @@ const submitPay = () => {
     payForm.post(`/payments/records/${payForm.record_id}/pay`, {
         preserveScroll: true,
         onSuccess: () => {
-            payForm.reset('amount');
+            payForm.reset();
+            showPayDialog.value = false;
         },
     });
+};
+
+const printReceipts = (id) => {
+    window.open(`/payments/records/${id}/receipts`, '_blank', 'noopener');
 };
 
 const resetRecord = (id) => {
     if (!confirm('Reset this payment record?')) return;
     router.post(`/payments/records/${id}/reset`, {}, { preserveScroll: true });
 };
-
-const selectedRecord = computed(() => props.records.find((record) => record.id === payForm.record_id) ?? null);
 </script>
 
 <template>
@@ -187,20 +220,61 @@ const selectedRecord = computed(() => props.records.find((record) => record.id =
                 </PCard>
                 <PCard class="shadow-sm">
                     <template #content>
-                        <div class="text-xs uppercase tracking-[0.2em] text-slate-400">Paid Records</div>
-                        <div class="mt-2 text-xl font-semibold">{{ props.paymentSummary?.paid_records ?? 0 }}</div>
+                        <div class="text-xs uppercase tracking-[0.2em] text-slate-400">Paid / Unpaid</div>
+                        <div class="mt-2 text-xl font-semibold">{{ props.paymentSummary?.paid_records ?? 0 }} / {{ props.paymentSummary?.unpaid_records ?? 0 }}</div>
                     </template>
                 </PCard>
             </section>
 
-            <section class="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_320px]">
-                <PCard class="shadow-sm">
-                    <template #title>
-                        <div class="flex items-center justify-between">
-                            <span>Fee Definitions</span>
+            <PCard class="shadow-sm">
+                <template #title>
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <span>Payment Workspace</span>
+                        <div class="flex flex-wrap gap-2">
                             <PButton label="New Fee" icon="pi pi-plus" severity="success" @click="openCreateDefinition" />
+                            <PButton label="Generate Records" icon="pi pi-sync" severity="secondary" @click="showGenerateDialog = true" />
+                            <PButton label="Export Full" icon="pi pi-download" severity="contrast" @click="exportRecords('all')" />
+                            <PButton label="Export Paid" icon="pi pi-download" severity="success" text @click="exportRecords('paid')" />
+                            <PButton label="Export Unpaid" icon="pi pi-download" severity="warning" text @click="exportRecords('unpaid')" />
                         </div>
-                    </template>
+                    </div>
+                </template>
+                <template #content>
+                    <div class="grid grid-cols-1 gap-3 md:grid-cols-5">
+                        <ModelSelect
+                            v-model="filterForm.class_id"
+                            :options="classes"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Load by class"
+                        />
+                        <ModelSelect
+                            v-model="filterForm.student_id"
+                            :options="studentOptions"
+                            optionLabel="name"
+                            optionValue="id"
+                            placeholder="Specific student"
+                        />
+                        <PDropdown
+                            v-model="filterForm.status"
+                            :options="[{ label: 'All Statuses', value: null }, { label: 'Paid', value: 'paid' }, { label: 'Unpaid', value: 'unpaid' }]"
+                            optionLabel="label"
+                            optionValue="value"
+                            placeholder="Status"
+                            class="w-full"
+                        />
+                        <PInputText v-model="filterForm.search" placeholder="Student, invoice or reference..." class="w-full" />
+                        <div class="flex gap-2">
+                            <PButton label="Apply" icon="pi pi-filter" severity="info" class="flex-1" @click="applyFilters" />
+                            <PButton label="Clear" severity="secondary" text @click="clearFilters" />
+                        </div>
+                    </div>
+                </template>
+            </PCard>
+
+            <section class="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_1.2fr]">
+                <PCard class="shadow-sm">
+                    <template #title>Fee Definitions</template>
                     <template #content>
                         <PDataTable :value="definitions" stripedRows responsiveLayout="scroll" class="text-sm">
                             <PColumn field="name" header="Fee" />
@@ -210,18 +284,6 @@ const selectedRecord = computed(() => props.records.find((record) => record.id =
                                 </template>
                             </PColumn>
                             <PColumn field="amount" header="Amount" />
-                            <PColumn header="Class/Section">
-                                <template #body="slotProps">
-                                    <span>{{ slotProps.data.school_class?.name ?? 'All' }}</span>
-                                    <span class="text-xs text-slate-400"> / {{ slotProps.data.section?.name ?? 'All' }}</span>
-                                </template>
-                            </PColumn>
-                            <PColumn header="Year/Term">
-                                <template #body="slotProps">
-                                    <span>{{ slotProps.data.academic_year?.name ?? 'All' }}</span>
-                                    <span class="text-xs text-slate-400"> / {{ slotProps.data.term?.name ?? 'All' }}</span>
-                                </template>
-                            </PColumn>
                             <PColumn header="">
                                 <template #body="slotProps">
                                     <div class="flex gap-2">
@@ -235,176 +297,51 @@ const selectedRecord = computed(() => props.records.find((record) => record.id =
                 </PCard>
 
                 <PCard class="shadow-sm">
-                    <template #title>Generate Payment Records</template>
+                    <template #title>Payment Records</template>
                     <template #content>
-                        <div class="space-y-3">
-                            <div>
-                                <ModelSelect
-                                    v-model="generateForm.invoice_type_id"
-                                    :options="invoiceTypes"
-                                    optionLabel="name"
-                                    optionValue="id"
-                                    placeholder="Invoice type"
-                                    :canCreate="can('manage.payments')"
-                                    createTitle="Add Invoice Type"
-                                    createEndpoint="/payments/invoice-types"
-                                    :createFields="[
-                                        {
-                                            name: 'name',
-                                            label: 'Invoice name',
-                                            type: 'text',
-                                        },
-                                        {
-                                            name: 'amount',
-                                            label: 'Amount',
-                                            type: 'number',
-                                        },
-                                        {
-                                            name: 'payment_category_id',
-                                            label: 'Payment category',
-                                            type: 'model-select',
-                                            options: paymentCategories,
-                                            optionLabel: 'name',
-                                            optionValue: 'id',
-                                            canCreate: can('manage.payments'),
-                                            createTitle: 'Add Payment Category',
-                                            createEndpoint: '/payments/categories',
-                                            createFields: [{ name: 'name', label: 'Category name', type: 'text' }],
-                                        },
-                                        {
-                                            name: 'section_id',
-                                            label: 'Section (optional, auto from class)',
-                                            type: 'model-select',
-                                            options: sections,
-                                            optionLabel: 'name',
-                                            optionValue: 'id',
-                                        },
-                                        {
-                                            name: 'academic_year_id',
-                                            label: 'Academic year',
-                                            type: 'model-select',
-                                            options: years,
-                                            optionLabel: 'name',
-                                            optionValue: 'id',
-                                            canCreate: can('manage.settings'),
-                                            createTitle: 'Add Academic Year',
-                                            createEndpoint: '/academic-years',
-                                            createFields: [
-                                                { name: 'name', label: 'Name', type: 'text', placeholder: '2025/2026' },
-                                                { name: 'starts_at', label: 'Start date', type: 'date' },
-                                                { name: 'ends_at', label: 'End date', type: 'date' },
-                                                { name: 'is_current', label: 'Set as current', type: 'select', options: [{ name: 'No', id: 0 }, { name: 'Yes', id: 1 }] },
-                                            ],
-                                        },
-                                        {
-                                            name: 'class_id',
-                                            label: 'Class',
-                                            type: 'model-select',
-                                            options: classes,
-                                            optionLabel: 'name',
-                                            optionValue: 'id',
-                                        },
-                                        {
-                                            name: 'gender',
-                                            label: 'Gender',
-                                            type: 'select',
-                                            options: [
-                                                { name: 'Male', id: 'male' },
-                                                { name: 'Female', id: 'female' },
-                                            ],
-                                        },
-                                        {
-                                            name: 'term_id',
-                                            label: 'Term',
-                                            type: 'model-select',
-                                            options: terms,
-                                            optionLabel: 'name',
-                                            optionValue: 'id',
-                                        },
-                                    ]"
-                                />
-                                <FieldError :errors="generateForm.errors" field="invoice_type_id" />
-                            </div>
-                            <PButton label="Generate" icon="pi pi-sync" severity="secondary" class="w-full" @click="generateRecords" />
-                        </div>
+                        <PDataTable :value="records" stripedRows responsiveLayout="scroll" class="text-sm">
+                            <PColumn header="Student">
+                                <template #body="slotProps">
+                                    <div class="font-medium">{{ getStudentName(slotProps.data) }}</div>
+                                    <div class="text-xs text-slate-500">
+                                        {{ slotProps.data.student?.current_enrollment?.school_class?.name ?? '—' }}
+                                    </div>
+                                </template>
+                            </PColumn>
+                            <PColumn header="Invoice">
+                                <template #body="slotProps">
+                                    {{ slotProps.data.invoice_type?.name ?? '—' }}
+                                </template>
+                            </PColumn>
+                            <PColumn header="Paid">
+                                <template #body="slotProps">
+                                    {{ formatCurrency(slotProps.data.amount_paid) }}
+                                </template>
+                            </PColumn>
+                            <PColumn header="Balance">
+                                <template #body="slotProps">
+                                    {{ formatCurrency(slotProps.data.balance) }}
+                                </template>
+                            </PColumn>
+                            <PColumn header="Status">
+                                <template #body="slotProps">
+                                    <PTag :value="slotProps.data.is_paid ? 'Paid' : 'Unpaid'" :severity="slotProps.data.is_paid ? 'success' : 'warning'" />
+                                </template>
+                            </PColumn>
+                            <PColumn header="">
+                                <template #body="slotProps">
+                                    <div class="flex gap-2">
+                                        <PButton icon="pi pi-eye" severity="secondary" text rounded @click="openView(slotProps.data)" />
+                                        <PButton icon="pi pi-wallet" severity="success" text rounded @click="openPay(slotProps.data)" />
+                                        <PButton icon="pi pi-print" severity="secondary" text rounded @click="printReceipts(slotProps.data.id)" />
+                                        <PButton icon="pi pi-refresh" severity="warning" text rounded @click="resetRecord(slotProps.data.id)" />
+                                    </div>
+                                </template>
+                            </PColumn>
+                        </PDataTable>
                     </template>
                 </PCard>
             </section>
-
-            <PCard class="shadow-sm">
-                <template #title>
-                    <div class="flex flex-wrap items-center justify-between gap-3">
-                        <span>Payment Records</span>
-                        <PInputText v-model="recordSearch" placeholder="Search student, invoice, reference..." class="w-full sm:w-80" />
-                    </div>
-                </template>
-                <template #content>
-                    <PDataTable :value="filteredRecords" stripedRows responsiveLayout="scroll" class="text-sm">
-                        <PColumn header="Student">
-                            <template #body="slotProps">
-                                <div class="font-medium">{{ getStudentName(slotProps.data) }}</div>
-                                <div class="text-xs text-slate-500">
-                                    {{ slotProps.data.student?.current_enrollment?.school_class?.name ?? '—' }}
-                                </div>
-                            </template>
-                        </PColumn>
-                        <PColumn header="Invoice">
-                            <template #body="slotProps">
-                                {{ slotProps.data.invoice_type?.name ?? '—' }}
-                            </template>
-                        </PColumn>
-                        <PColumn header="Category">
-                            <template #body="slotProps">
-                                {{ slotProps.data.invoice_type?.payment_category?.name ?? '—' }}
-                            </template>
-                        </PColumn>
-                        <PColumn header="Paid">
-                            <template #body="slotProps">
-                                {{ formatCurrency(slotProps.data.amount_paid) }}
-                            </template>
-                        </PColumn>
-                        <PColumn header="Balance">
-                            <template #body="slotProps">
-                                {{ formatCurrency(slotProps.data.balance) }}
-                            </template>
-                        </PColumn>
-                        <PColumn header="Status">
-                            <template #body="slotProps">
-                                <PTag :value="slotProps.data.is_paid ? 'Paid' : 'Pending'" :severity="slotProps.data.is_paid ? 'success' : 'warning'" />
-                            </template>
-                        </PColumn>
-                        <PColumn header="">
-                            <template #body="slotProps">
-                                <div class="flex gap-2">
-                                    <PButton icon="pi pi-eye" severity="secondary" text rounded @click="openView(slotProps.data)" />
-                                    <PButton icon="pi pi-wallet" severity="success" text rounded @click="openPay(slotProps.data)" />
-                                    <PButton icon="pi pi-print" severity="secondary" text rounded @click="printReceipts(slotProps.data.id)" />
-                                    <PButton icon="pi pi-refresh" severity="warning" text rounded @click="resetRecord(slotProps.data.id)" />
-                                </div>
-                            </template>
-                        </PColumn>
-                    </PDataTable>
-                </template>
-            </PCard>
-
-            <PCard class="shadow-sm">
-                <template #title>Pay Now</template>
-                <template #content>
-                    <div class="flex flex-col gap-3 md:flex-row md:items-center">
-                        <div>
-                            <PInputText v-model="payForm.amount" placeholder="Amount to pay" class="w-60" />
-                            <FieldError :errors="payForm.errors" field="amount" />
-                        </div>
-                        <PButton label="Apply Payment" icon="pi pi-check" severity="success" @click="submitPay" />
-                        <span class="text-xs text-slate-500">
-                            <template v-if="selectedRecord">
-                                Selected: {{ getStudentName(selectedRecord) }} • Balance {{ formatCurrency(selectedRecord.balance) }}
-                            </template>
-                            <template v-else>Select a record first.</template>
-                        </span>
-                    </div>
-                </template>
-            </PCard>
         </div>
 
         <RecordViewer v-model:visible="showView" :record="viewRecord" title="Payment Record" />
@@ -440,13 +377,7 @@ const selectedRecord = computed(() => props.records.find((record) => record.id =
                     <FieldError :errors="definitionForm.errors" field="payment_category_id" />
                 </div>
                 <div>
-                    <ModelSelect
-                        v-model="definitionForm.section_id"
-                        :options="sections"
-                        optionLabel="name"
-                        optionValue="id"
-                        placeholder="Section (optional, auto from class)"
-                    />
+                    <ModelSelect v-model="definitionForm.section_id" :options="sections" optionLabel="name" optionValue="id" placeholder="Section (optional, auto from class)" />
                     <FieldError :errors="definitionForm.errors" field="section_id" />
                 </div>
                 <div>
@@ -490,26 +421,11 @@ const selectedRecord = computed(() => props.records.find((record) => record.id =
                         optionLabel="name"
                         optionValue="id"
                         placeholder="Academic year (optional)"
-                        :canCreate="can('manage.settings')"
-                        createTitle="Add Academic Year"
-                        createEndpoint="/academic-years"
-                        :createFields="[
-                            { name: 'name', label: 'Name', type: 'text', placeholder: '2025/2026' },
-                            { name: 'starts_at', label: 'Start date', type: 'date' },
-                            { name: 'ends_at', label: 'End date', type: 'date' },
-                            { name: 'is_current', label: 'Set as current', type: 'select', options: [{ name: 'No', id: 0 }, { name: 'Yes', id: 1 }] },
-                        ]"
                     />
                     <FieldError :errors="definitionForm.errors" field="academic_year_id" />
                 </div>
                 <div>
-                    <ModelSelect
-                        v-model="definitionForm.term_id"
-                        :options="terms"
-                        optionLabel="name"
-                        optionValue="id"
-                        placeholder="Term (optional)"
-                    />
+                    <ModelSelect v-model="definitionForm.term_id" :options="terms" optionLabel="name" optionValue="id" placeholder="Term (optional)" />
                     <FieldError :errors="definitionForm.errors" field="term_id" />
                 </div>
                 <div>
@@ -527,6 +443,32 @@ const selectedRecord = computed(() => props.records.find((record) => record.id =
                     <PButton :label="editingDefinitionId ? 'Update Fee' : 'Create Fee'" icon="pi pi-check" severity="success" @click="createDefinition" />
                     <PButton label="Cancel" severity="secondary" text @click="cancelEditDefinition" />
                 </div>
+            </div>
+        </PDialog>
+
+        <PDialog v-model:visible="showGenerateDialog" modal header="Generate Payment Records" class="w-full max-w-xl">
+            <div class="space-y-3">
+                <ModelSelect
+                    v-model="generateForm.invoice_type_id"
+                    :options="invoiceTypes"
+                    optionLabel="name"
+                    optionValue="id"
+                    placeholder="Invoice type"
+                />
+                <FieldError :errors="generateForm.errors" field="invoice_type_id" />
+                <PButton label="Generate" icon="pi pi-sync" severity="success" class="w-full" @click="generateRecords" />
+            </div>
+        </PDialog>
+
+        <PDialog v-model:visible="showPayDialog" modal header="Apply Payment" class="w-full max-w-lg">
+            <div class="space-y-3">
+                <div class="rounded-lg bg-slate-50 p-3 text-sm">
+                    <div class="font-medium">{{ selectedRecord ? getStudentName(selectedRecord) : 'No record selected' }}</div>
+                    <div class="text-slate-500">Balance: {{ formatCurrency(selectedRecord?.balance) }}</div>
+                </div>
+                <PInputText v-model="payForm.amount" placeholder="Amount to pay" class="w-full" />
+                <FieldError :errors="payForm.errors" field="amount" />
+                <PButton label="Apply Payment" icon="pi pi-check" severity="success" class="w-full" @click="submitPay" />
             </div>
         </PDialog>
     </AppShell>

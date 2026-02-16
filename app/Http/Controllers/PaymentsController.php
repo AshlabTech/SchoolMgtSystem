@@ -10,6 +10,7 @@ use App\Models\PaymentCategory;
 use App\Models\Receipt;
 use App\Models\SchoolClass;
 use App\Models\Section;
+use App\Models\Student;
 use App\Models\StudentEnrollment;
 use App\Models\Term;
 use Illuminate\Http\Request;
@@ -19,10 +20,14 @@ class PaymentsController extends Controller
 {
     public function index()
     {
-        $records = FeeRecord::query()
-            ->with(['invoiceType.paymentCategory', 'student.user.profile', 'student.currentEnrollment.schoolClass'])
-            ->orderByDesc('id')
-            ->get();
+        $filters = [
+            'status' => request()->string('status')->toString() ?: null,
+            'class_id' => request()->integer('class_id') ?: null,
+            'student_id' => request()->integer('student_id') ?: null,
+            'search' => request()->string('search')->toString() ?: null,
+        ];
+
+        $records = $this->recordsQuery($filters)->get();
 
         return Inertia::render('Payments/Index', [
             'definitions' => InvoiceType::query()
@@ -31,6 +36,10 @@ class PaymentsController extends Controller
                 ->get(),
             'records' => $records,
             'classes' => SchoolClass::query()->with('level')->orderBy('name')->get(),
+            'students' => Student::query()
+                ->with(['user.profile', 'currentEnrollment.schoolClass'])
+                ->orderByDesc('id')
+                ->get(),
             'classLevels' => ClassLevel::query()->orderBy('name')->get(),
             'sections' => Section::query()->orderBy('name')->get(),
             'years' => AcademicYear::query()->orderByDesc('name')->get(),
@@ -45,8 +54,65 @@ class PaymentsController extends Controller
                 'total_paid' => (int) $records->sum('amount_paid'),
                 'total_outstanding' => (int) $records->sum('balance'),
                 'paid_records' => (int) $records->where('is_paid', true)->count(),
+                'unpaid_records' => (int) $records->where('is_paid', false)->count(),
             ],
+            'filters' => $filters,
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        $filters = [
+            'status' => $request->string('status')->toString() ?: null,
+            'class_id' => $request->integer('class_id') ?: null,
+            'student_id' => $request->integer('student_id') ?: null,
+            'search' => $request->string('search')->toString() ?: null,
+        ];
+
+        $scope = $request->string('scope')->toString() ?: 'all';
+        if ($scope === 'paid') {
+            $filters['status'] = 'paid';
+        }
+        if ($scope === 'unpaid') {
+            $filters['status'] = 'unpaid';
+        }
+
+        $records = $this->recordsQuery($filters)->get();
+
+        $csvHeaders = [
+            'Student',
+            'Class',
+            'Invoice',
+            'Category',
+            'Amount',
+            'Paid',
+            'Balance',
+            'Status',
+            'Reference',
+        ];
+
+        return response()->streamDownload(function () use ($records, $csvHeaders) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, $csvHeaders);
+
+            foreach ($records as $record) {
+                $student = $record->student?->user?->name
+                    ?: trim(($record->student?->user?->profile?->first_name ?? '').' '.($record->student?->user?->profile?->last_name ?? ''));
+                fputcsv($handle, [
+                    $student ?: 'Unknown Student',
+                    $record->student?->currentEnrollment?->schoolClass?->name ?: '—',
+                    $record->invoiceType?->name ?: '—',
+                    $record->invoiceType?->paymentCategory?->name ?: '—',
+                    (int) ($record->invoiceType?->amount ?? 0),
+                    (int) $record->amount_paid,
+                    (int) $record->balance,
+                    $record->is_paid ? 'Paid' : 'Unpaid',
+                    $record->reference,
+                ]);
+            }
+
+            fclose($handle);
+        }, 'payments-report-'.now()->format('Ymd-His').'.csv');
     }
 
     public function storeDefinition(Request $request)
@@ -239,5 +305,25 @@ class PaymentsController extends Controller
         }
 
         return [$data, null];
+    }
+
+    private function recordsQuery(array $filters)
+    {
+        $search = trim((string) ($filters['search'] ?? ''));
+
+        return FeeRecord::query()
+            ->with(['invoiceType.paymentCategory', 'student.user.profile', 'student.currentEnrollment.schoolClass'])
+            ->when(($filters['status'] ?? null) === 'paid', fn ($q) => $q->where('is_paid', true))
+            ->when(($filters['status'] ?? null) === 'unpaid', fn ($q) => $q->where('is_paid', false))
+            ->when(!empty($filters['class_id']), fn ($q) => $q->whereHas('student.currentEnrollment', fn ($enrollment) => $enrollment->where('class_id', $filters['class_id'])))
+            ->when(!empty($filters['student_id']), fn ($q) => $q->where('student_id', $filters['student_id']))
+            ->when($search !== '', function ($q) use ($search) {
+                $q->where(function ($nested) use ($search) {
+                    $nested->where('reference', 'like', '%'.$search.'%')
+                        ->orWhereHas('invoiceType', fn ($invoice) => $invoice->where('name', 'like', '%'.$search.'%'))
+                        ->orWhereHas('student.user', fn ($user) => $user->where('name', 'like', '%'.$search.'%'));
+                });
+            })
+            ->orderByDesc('id');
     }
 }

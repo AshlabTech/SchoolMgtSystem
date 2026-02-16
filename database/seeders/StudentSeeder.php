@@ -27,15 +27,27 @@ class StudentSeeder extends Seeder
             ->where('is_current', true)
             ->first() ?? Term::query()->where('academic_year_id', $academicYear->id)->orderBy('order')->first();
 
-        $classNames = ['Primary 1', 'Primary 3', 'JSS 1'];
+        $classNames = ['Primary 1', 'Primary 2', 'Primary 3', 'JSS 1', 'JSS 2', 'SS 1'];
         $classes = SchoolClass::query()->whereIn('name', $classNames)->get()->keyBy('name');
         $seedData = [
             ['first_name' => 'Amina', 'last_name' => 'Yusuf', 'class' => 'Primary 1'],
             ['first_name' => 'Daniel', 'last_name' => 'Okafor', 'class' => 'Primary 1'],
+            ['first_name' => 'Tolu', 'last_name' => 'Adejumo', 'class' => 'Primary 1'],
+            ['first_name' => 'Binta', 'last_name' => 'Umar', 'class' => 'Primary 2'],
+            ['first_name' => 'Peter', 'last_name' => 'Nnamdi', 'class' => 'Primary 2'],
+            ['first_name' => 'Rahma', 'last_name' => 'Aliyu', 'class' => 'Primary 2'],
             ['first_name' => 'Grace', 'last_name' => 'Adeyemi', 'class' => 'Primary 3'],
             ['first_name' => 'Musa', 'last_name' => 'Bello', 'class' => 'Primary 3'],
+            ['first_name' => 'Favour', 'last_name' => 'Eze', 'class' => 'Primary 3'],
             ['first_name' => 'Chioma', 'last_name' => 'Nwosu', 'class' => 'JSS 1'],
             ['first_name' => 'Ibrahim', 'last_name' => 'Sani', 'class' => 'JSS 1'],
+            ['first_name' => 'Zainab', 'last_name' => 'Abdullahi', 'class' => 'JSS 1'],
+            ['first_name' => 'Samuel', 'last_name' => 'Ojo', 'class' => 'JSS 2'],
+            ['first_name' => 'Ruth', 'last_name' => 'Ibeh', 'class' => 'JSS 2'],
+            ['first_name' => 'Yemi', 'last_name' => 'Fagbemi', 'class' => 'JSS 2'],
+            ['first_name' => 'Mary', 'last_name' => 'Okeke', 'class' => 'SS 1'],
+            ['first_name' => 'Kabiru', 'last_name' => 'Lawal', 'class' => 'SS 1'],
+            ['first_name' => 'Anita', 'last_name' => 'Obi', 'class' => 'SS 1'],
         ];
 
         foreach ($seedData as $index => $row) {
