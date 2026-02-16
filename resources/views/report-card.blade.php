@@ -13,48 +13,48 @@
         
         body {
             font-family: Arial, sans-serif;
-            font-size: 11pt;
-            line-height: 1.3;
-            padding: 20px;
+            font-size: 10pt;
+            line-height: 1.2;
+            padding: 15px;
         }
         
         .report-card {
             max-width: 800px;
             margin: 0 auto;
             border: 2px solid #000;
-            padding: 15px;
+            padding: 10px;
         }
         
         .header {
             text-align: center;
             border-bottom: 2px solid #000;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
+            padding-bottom: 6px;
+            margin-bottom: 8px;
         }
         
         .header h1 {
-            font-size: 18pt;
+            font-size: 16pt;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
             text-transform: uppercase;
         }
         
         .header .school-info {
-            font-size: 10pt;
-            margin-bottom: 3px;
+            font-size: 9pt;
+            margin-bottom: 2px;
         }
         
         .header .term-info {
-            font-size: 12pt;
+            font-size: 11pt;
             font-weight: bold;
-            margin-top: 8px;
+            margin-top: 4px;
             text-decoration: underline;
         }
         
         .student-info {
             display: table;
             width: 100%;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
             border: 1px solid #000;
         }
         
@@ -64,9 +64,9 @@
         
         .student-info-cell {
             display: table-cell;
-            padding: 5px 8px;
+            padding: 3px 6px;
             border: 1px solid #000;
-            font-size: 10pt;
+            font-size: 9pt;
         }
         
         .student-info-cell.label {
@@ -78,21 +78,21 @@
         .marks-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
-            font-size: 9pt;
+            margin-bottom: 8px;
+            font-size: 8pt;
         }
         
         .marks-table th {
             background-color: #333;
             color: white;
-            padding: 6px 4px;
+            padding: 4px 3px;
             border: 1px solid #000;
             font-weight: bold;
             text-align: center;
         }
         
         .marks-table td {
-            padding: 5px 4px;
+            padding: 3px 2px;
             border: 1px solid #000;
             text-align: center;
         }
@@ -109,7 +109,7 @@
         .summary-section {
             display: table;
             width: 100%;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
             border: 1px solid #000;
         }
         
@@ -119,9 +119,9 @@
         
         .summary-cell {
             display: table-cell;
-            padding: 6px 8px;
+            padding: 4px 6px;
             border: 1px solid #000;
-            font-size: 10pt;
+            font-size: 9pt;
         }
         
         .summary-cell.label {
@@ -131,89 +131,89 @@
         }
         
         .grading-key {
-            margin-bottom: 15px;
-            padding: 8px;
+            margin-bottom: 8px;
+            padding: 5px;
             border: 1px solid #000;
             background-color: #f9f9f9;
         }
         
         .grading-key h3 {
-            font-size: 11pt;
-            margin-bottom: 5px;
+            font-size: 10pt;
+            margin-bottom: 3px;
             text-decoration: underline;
         }
         
         .grading-key-row {
             display: inline-block;
-            margin-right: 15px;
-            font-size: 9pt;
+            margin-right: 12px;
+            font-size: 8pt;
         }
         
         .skills-section {
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
         
         .skills-section h3 {
-            font-size: 11pt;
-            margin-bottom: 5px;
-            padding: 5px;
+            font-size: 9pt;
+            margin-bottom: 3px;
+            padding: 3px;
             background-color: #333;
             color: white;
             text-align: center;
+            font-weight: bold;
         }
         
         .skills-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 10px;
-            font-size: 9pt;
-        }
-        
-        .skills-table th {
-            background-color: #666;
-            color: white;
-            padding: 5px;
-            border: 1px solid #000;
-            font-weight: bold;
+            margin-bottom: 0;
+            font-size: 7pt;
         }
         
         .skills-table td {
-            padding: 4px;
+            padding: 2px 3px;
             border: 1px solid #000;
+            text-align: center;
         }
         
         .skills-table td.skill-name {
             text-align: left;
-            width: 60%;
+            width: 22%;
+            font-size: 7pt;
+        }
+        
+        .skills-table td.skill-rating {
+            width: 3%;
+            text-align: center;
         }
         
         .comments-section {
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
         
         .comment-box {
             border: 1px solid #000;
-            padding: 8px;
-            margin-bottom: 10px;
-            min-height: 60px;
+            padding: 5px;
+            margin-bottom: 6px;
+            min-height: 35px;
         }
         
         .comment-box h4 {
-            font-size: 10pt;
+            font-size: 9pt;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
             text-decoration: underline;
         }
         
         .comment-box p {
-            font-size: 10pt;
-            line-height: 1.4;
+            font-size: 8pt;
+            line-height: 1.3;
         }
         
         .signatures {
             display: table;
             width: 100%;
-            margin-top: 20px;
+            margin-top: 10px;
         }
         
         .signature-row {
@@ -223,33 +223,35 @@
         .signature-cell {
             display: table-cell;
             width: 33.33%;
-            padding: 10px 5px;
+            padding: 8px 5px;
             text-align: center;
-            font-size: 9pt;
+            font-size: 8pt;
         }
         
         .signature-line {
             border-top: 1px solid #000;
-            margin-top: 30px;
-            padding-top: 5px;
+            margin-top: 20px;
+            padding-top: 3px;
             font-weight: bold;
         }
         
         .footer {
             text-align: center;
-            margin-top: 15px;
-            padding-top: 10px;
+            margin-top: 8px;
+            padding-top: 6px;
             border-top: 2px solid #000;
-            font-size: 9pt;
+            font-size: 8pt;
             font-style: italic;
         }
         
         @media print {
             body {
-                padding: 0;
+                padding: 5px;
+                font-size: 9pt;
             }
             .report-card {
                 border: none;
+                padding: 8px;
             }
         }
     </style>
@@ -262,7 +264,7 @@
             <div class="school-info">{{ $schoolAddress ?? 'School Address' }}</div>
             <div class="school-info">{{ $schoolContact ?? 'Tel: 000-000-0000 | Email: info@school.com' }}</div>
             <div class="term-info">TERMINAL REPORT CARD</div>
-            <div class="school-info" style="margin-top: 5px;">
+            <div class="school-info" style="margin-top: 3px;">
                 <strong>{{ $academicYear ?? '2024/2025' }} Academic Session - {{ $term ?? 'First Term' }}</strong>
             </div>
         </div>
@@ -377,28 +379,20 @@
         <div class="skills-section">
             <h3>PSYCHOMOTOR DOMAIN (Skills)</h3>
             <table class="skills-table">
-                <thead>
-                    <tr>
-                        <th>SKILL</th>
-                        <th>RATING</th>
-                        <th>SKILL</th>
-                        <th>RATING</th>
-                    </tr>
-                </thead>
                 <tbody>
                     @php
-                        $chunks = array_chunk($psychomotorSkills, 2);
+                        $chunks = array_chunk($psychomotorSkills, 4);
                     @endphp
                     @foreach($chunks as $chunk)
                         <tr>
                             @foreach($chunk as $skill)
                                 <td class="skill-name">{{ $skill['name'] ?? '' }}</td>
-                                <td>{{ $skill['rating'] ?? '-' }}</td>
+                                <td class="skill-rating">{{ $skill['rating'] ?? '-' }}</td>
                             @endforeach
-                            @if(count($chunk) == 1)
+                            @for($i = count($chunk); $i < 4; $i++)
                                 <td class="skill-name"></td>
-                                <td></td>
-                            @endif
+                                <td class="skill-rating"></td>
+                            @endfor
                         </tr>
                     @endforeach
                 </tbody>
@@ -411,28 +405,20 @@
         <div class="skills-section">
             <h3>AFFECTIVE DOMAIN (Character/Behavior)</h3>
             <table class="skills-table">
-                <thead>
-                    <tr>
-                        <th>TRAIT</th>
-                        <th>RATING</th>
-                        <th>TRAIT</th>
-                        <th>RATING</th>
-                    </tr>
-                </thead>
                 <tbody>
                     @php
-                        $chunks = array_chunk($affectiveSkills, 2);
+                        $chunks = array_chunk($affectiveSkills, 4);
                     @endphp
                     @foreach($chunks as $chunk)
                         <tr>
                             @foreach($chunk as $skill)
                                 <td class="skill-name">{{ $skill['name'] ?? '' }}</td>
-                                <td>{{ $skill['rating'] ?? '-' }}</td>
+                                <td class="skill-rating">{{ $skill['rating'] ?? '-' }}</td>
                             @endforeach
-                            @if(count($chunk) == 1)
+                            @for($i = count($chunk); $i < 4; $i++)
                                 <td class="skill-name"></td>
-                                <td></td>
-                            @endif
+                                <td class="skill-rating"></td>
+                            @endfor
                         </tr>
                     @endforeach
                 </tbody>
@@ -441,7 +427,7 @@
         @endif
 
         <!-- Rating Scale -->
-        <div class="grading-key" style="text-align: center;">
+        <div class="grading-key" style="text-align: center; font-size: 8pt; padding: 3px;">
             <strong>RATING SCALE:</strong> 5 - Excellent | 4 - Very Good | 3 - Good | 2 - Fair | 1 - Poor
         </div>
 
