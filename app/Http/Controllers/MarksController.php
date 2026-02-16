@@ -11,6 +11,7 @@ use App\Models\Section;
 use App\Models\Setting;
 use App\Models\StudentEnrollment;
 use App\Models\SubjectAssignment;
+use App\Models\Term;
 use App\Services\GradeComputationService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
