@@ -51,6 +51,9 @@ class MarksController extends Controller
             $allowedSectionIds = $sectionIds->merge($sectionIdsForClassWide)->unique()->values();
         }
 
+        $currentYear = AcademicYear::query()->where('is_current', true)->first();
+        $currentTerm = Term::query()->where('is_current', true)->first();
+
         return Inertia::render('Marks/Index', [
             'exams' => Exam::query()->orderByDesc('id')->get(),
             'classes' => SchoolClass::query()
@@ -66,6 +69,8 @@ class MarksController extends Controller
             'terms' => Term::query()->orderBy('order')->get(),
             'subjects' => $assignments,
             'numberOfCaComponents' => (int) (Setting::where('key', 'number_of_ca_components')->value('value') ?? 2),
+            'currentAcademicYearId' => $currentYear?->id,
+            'currentTermId' => $currentTerm?->id,
         ]);
     }
 
@@ -73,21 +78,20 @@ class MarksController extends Controller
     {
         $data = $request->validate([
             'class_id' => ['required', 'integer', 'exists:classes,id'],
-            'section_id' => ['nullable', 'integer', 'exists:sections,id'],
+            'term_id' => ['nullable', 'integer', 'exists:terms,id'],
             'academic_year_id' => ['nullable', 'integer', 'exists:academic_years,id'],
             'exam_id' => ['nullable', 'integer', 'exists:exams,id'],
             'subject_id' => ['nullable', 'integer', 'exists:subjects,id'],
         ]);
 
         $user = $request->user();
-        if ($this->isRestrictedTeacher($user) && ! $this->teacherHasClassAccess($user->id, $data['class_id'], $data['section_id'] ?? null)) {
-            abort(403, 'You are not assigned to this class/section.');
+        if ($this->isRestrictedTeacher($user) && ! $this->teacherHasClassAccess($user->id, $data['class_id'], null)) {
+            abort(403, 'You are not assigned to this class.');
         }
 
         $enrollments = StudentEnrollment::query()
             ->with(['student.user.profile'])
             ->where('class_id', $data['class_id'])
-            ->when($data['section_id'] ?? null, fn ($q) => $q->where('section_id', $data['section_id']))
             ->when($data['academic_year_id'] ?? null, fn ($q) => $q->where('academic_year_id', $data['academic_year_id']))
             ->get();
 
@@ -98,7 +102,6 @@ class MarksController extends Controller
                 ->where('exam_id', $data['exam_id'])
                 ->where('subject_id', $data['subject_id'])
                 ->where('class_id', $data['class_id'])
-                ->when($data['section_id'] ?? null, fn ($q) => $q->where('section_id', $data['section_id']))
                 ->when($data['academic_year_id'] ?? null, fn ($q) => $q->where('academic_year_id', $data['academic_year_id']))
                 ->get()
                 ->keyBy('student_id');
@@ -129,7 +132,7 @@ class MarksController extends Controller
         $data = $request->validate([
             'exam_id' => ['required', 'integer', 'exists:exams,id'],
             'class_id' => ['required', 'integer', 'exists:classes,id'],
-            'section_id' => ['nullable', 'integer', 'exists:sections,id'],
+            'term_id' => ['nullable', 'integer', 'exists:terms,id'],
             'academic_year_id' => ['nullable', 'integer', 'exists:academic_years,id'],
             'subject_id' => ['required', 'integer', 'exists:subjects,id'],
             'entries' => ['required', 'array'],
@@ -142,7 +145,7 @@ class MarksController extends Controller
         ]);
 
         $user = $request->user();
-        if ($this->isRestrictedTeacher($user) && ! $this->teacherHasSubjectAccess($user->id, $data['subject_id'], $data['class_id'], $data['section_id'] ?? null)) {
+        if ($this->isRestrictedTeacher($user) && ! $this->teacherHasSubjectAccess($user->id, $data['subject_id'], $data['class_id'], null)) {
             abort(403, 'You are not assigned to this subject or class.');
         }
 
@@ -156,7 +159,7 @@ class MarksController extends Controller
                 ],
                 [
                     'class_id' => $data['class_id'],
-                    'section_id' => $data['section_id'],
+                    'section_id' => null, // No longer using section_id
                     't1' => $entry['t1'] ?? null,
                     't2' => $entry['t2'] ?? null,
                     't3' => $entry['t3'] ?? null,
@@ -174,7 +177,7 @@ class MarksController extends Controller
                 $data['exam_id'],
                 $data['subject_id'],
                 $data['class_id'],
-                $data['section_id'] ?? null,
+                null, // section_id is null
                 $data['academic_year_id'] ?? null,
             );
         }

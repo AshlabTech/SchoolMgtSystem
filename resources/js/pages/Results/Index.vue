@@ -20,6 +20,8 @@ const props = defineProps({
     skills: Array,
     resultComments: Array,
     autoApplyComments: Boolean,
+    currentAcademicYearId: Number,
+    currentTermId: Number,
 });
 
 const studentOptions = computed(() =>
@@ -43,7 +45,7 @@ const openView = (record) => {
 const filters = useForm({
     student_id: props.selected?.student_id ?? null,
     exam_id: props.selected?.exam_id ?? null,
-    academic_year_id: props.selected?.academic_year_id ?? null,
+    academic_year_id: props.selected?.academic_year_id ?? props.currentAcademicYearId ?? null,
 });
 
 const submit = () => {

@@ -40,6 +40,9 @@ class ResultsController extends Controller
         $exams = Exam::orderBy('name')->get();
         $years = AcademicYear::orderByDesc('name')->get();
         $terms = Term::orderBy('order')->get();
+        
+        $currentYear = AcademicYear::query()->where('is_current', true)->first();
+        $currentTerm = Term::query()->where('is_current', true)->first();
 
         $marks = [];
         $selected = null;
@@ -97,6 +100,8 @@ class ResultsController extends Controller
                 ->orderBy('id')
                 ->get(),
             'autoApplyComments' => (bool) Setting::where('key', 'auto_apply_result_comment')->value('value'),
+            'currentAcademicYearId' => $currentYear?->id,
+            'currentTermId' => $currentTerm?->id,
         ]);
     }
 
