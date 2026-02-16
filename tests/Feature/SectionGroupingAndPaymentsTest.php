@@ -28,10 +28,11 @@ it('stores a grouped section across multiple classes', function () {
 
     $section = Section::query()->firstOrFail();
 
-    expect($section->class_id)->toBe($class1->id);
+    expect($section->class_id)->toBe($class1->id)
+        ->and($section->name)->toBe('Primary');
 
     if (Schema::hasTable('class_section')) {
-        $assigned = $section->schoolClasses()->pluck('classes.id')->sort()->values()->all();
+        $assigned = $section->schoolClasses()->pluck('id')->sort()->values()->all();
         expect($assigned)->toBe(collect([$class1->id, $class2->id])->sort()->values()->all());
     }
 });

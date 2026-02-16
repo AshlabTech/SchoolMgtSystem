@@ -34,10 +34,14 @@ class StaffRolesSeeder extends Seeder
                 $user->assignRole($role->name);
             }
 
+            $nameParts = preg_split('/\s+/', trim($user->name)) ?: [];
+            $firstName = $nameParts[0] ?? $user->name;
+            $lastName = count($nameParts) > 1 ? implode(' ', array_slice($nameParts, 1)) : 'Staff';
+
             StaffProfile::firstOrCreate(
                 ['user_id' => $user->id],
                 [
-                    'employee_code' => 'EMP'.str_pad((string) $user->id, 4, '0', STR_PAD_LEFT),
+                    'employee_code' => strtoupper(substr($role->name, 0, 3)).'-'.str_pad((string) $user->id, 4, '0', STR_PAD_LEFT),
                     'designation' => str($role->name)->replace('_', ' ')->title()->value(),
                     'employment_date' => now()->subYear(),
                 ]
@@ -46,8 +50,8 @@ class StaffRolesSeeder extends Seeder
             UserProfile::firstOrCreate(
                 ['user_id' => $user->id],
                 [
-                    'first_name' => str($user->name)->before(' ')->value(),
-                    'last_name' => str($user->name)->after(' ')->value(),
+                    'first_name' => $firstName,
+                    'last_name' => $lastName,
                 ]
             );
         }

@@ -41,7 +41,7 @@ class PaymentsController extends Controller
                 ->orderBy('name')
                 ->get(),
             'paymentSummary' => [
-                'total_billed' => (int) $records->sum(fn (FeeRecord $record) => $record->invoiceType?->amount ?? 0),
+                'total_billed' => (int) ($records->sum('amount_paid') + $records->sum('balance')),
                 'total_paid' => (int) $records->sum('amount_paid'),
                 'total_outstanding' => (int) $records->sum('balance'),
                 'paid_records' => (int) $records->where('is_paid', true)->count(),
@@ -62,19 +62,9 @@ class PaymentsController extends Controller
             'term_id' => ['nullable', 'integer', 'exists:terms,id'],
         ]);
 
-        if (!empty($data['class_id']) && empty($data['section_id'])) {
-            $data['section_id'] = Section::query()->forClass($data['class_id'])->value('id');
-        }
-
-        if (!empty($data['class_id']) && !empty($data['section_id'])) {
-            $isValidSection = Section::query()
-                ->forClass($data['class_id'])
-                ->where('id', $data['section_id'])
-                ->exists();
-
-            if (!$isValidSection) {
-                return back()->withErrors(['section_id' => 'Selected section does not belong to the selected class.']);
-            }
+        [$data, $validationError] = $this->inferAndValidateSection($data);
+        if ($validationError) {
+            return $validationError;
         }
 
         InvoiceType::create($data);
@@ -171,19 +161,9 @@ class PaymentsController extends Controller
             'term_id' => ['nullable', 'integer', 'exists:terms,id'],
         ]);
 
-        if (!empty($data['class_id']) && empty($data['section_id'])) {
-            $data['section_id'] = Section::query()->forClass($data['class_id'])->value('id');
-        }
-
-        if (!empty($data['class_id']) && !empty($data['section_id'])) {
-            $isValidSection = Section::query()
-                ->forClass($data['class_id'])
-                ->where('id', $data['section_id'])
-                ->exists();
-
-            if (!$isValidSection) {
-                return back()->withErrors(['section_id' => 'Selected section does not belong to the selected class.']);
-            }
+        [$data, $validationError] = $this->inferAndValidateSection($data);
+        if ($validationError) {
+            return $validationError;
         }
 
         $definition->update($data);
@@ -227,8 +207,24 @@ class PaymentsController extends Controller
             'term_id' => ['nullable', 'integer', 'exists:terms,id'],
         ]);
 
+        [$data, $validationError] = $this->inferAndValidateSection($data);
+        if ($validationError) {
+            return $validationError;
+        }
+
+        InvoiceType::create($data);
+
+        return back();
+    }
+
+    private function inferAndValidateSection(array $data): array
+    {
         if (!empty($data['class_id']) && empty($data['section_id'])) {
-            $data['section_id'] = Section::query()->forClass($data['class_id'])->value('id');
+            $data['section_id'] = Section::query()->forClass($data['class_id'])->orderBy('id')->value('id');
+
+            if (empty($data['section_id'])) {
+                return [$data, back()->withErrors(['section_id' => 'No section is currently mapped to the selected class.'])];
+            }
         }
 
         if (!empty($data['class_id']) && !empty($data['section_id'])) {
@@ -238,12 +234,10 @@ class PaymentsController extends Controller
                 ->exists();
 
             if (!$isValidSection) {
-                return back()->withErrors(['section_id' => 'Selected section does not belong to the selected class.']);
+                return [$data, back()->withErrors(['section_id' => 'Selected section does not belong to the selected class.'])];
             }
         }
 
-        InvoiceType::create($data);
-
-        return back();
+        return [$data, null];
     }
 }

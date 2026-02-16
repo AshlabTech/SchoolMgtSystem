@@ -50,12 +50,17 @@ const formatCurrency = (amount) =>
         maximumFractionDigits: 0,
     }).format(Number(amount ?? 0));
 
+const getStudentName = (record) => {
+    const profileName = `${record.student?.user?.profile?.first_name ?? ''} ${record.student?.user?.profile?.last_name ?? ''}`.trim();
+    return record.student?.user?.name || profileName || 'Unknown Student';
+};
+
 const filteredRecords = computed(() => {
     const term = recordSearch.value.trim().toLowerCase();
     if (!term) return props.records;
 
     return props.records.filter((record) => {
-        const studentName = `${record.student?.user?.name ?? ''} ${record.student?.user?.profile?.first_name ?? ''} ${record.student?.user?.profile?.last_name ?? ''}`;
+        const studentName = getStudentName(record);
         const invoiceName = record.invoice_type?.name ?? '';
         const reference = record.reference ?? '';
 
@@ -337,7 +342,7 @@ const selectedRecord = computed(() => props.records.find((record) => record.id =
                     <PDataTable :value="filteredRecords" stripedRows responsiveLayout="scroll" class="text-sm">
                         <PColumn header="Student">
                             <template #body="slotProps">
-                                <div class="font-medium">{{ slotProps.data.student?.user?.name ?? 'Unknown Student' }}</div>
+                                <div class="font-medium">{{ getStudentName(slotProps.data) }}</div>
                                 <div class="text-xs text-slate-500">
                                     {{ slotProps.data.student?.current_enrollment?.school_class?.name ?? '—' }}
                                 </div>
@@ -393,7 +398,7 @@ const selectedRecord = computed(() => props.records.find((record) => record.id =
                         <PButton label="Apply Payment" icon="pi pi-check" severity="success" @click="submitPay" />
                         <span class="text-xs text-slate-500">
                             <template v-if="selectedRecord">
-                                Selected: {{ selectedRecord.student?.user?.name ?? 'Unknown' }} • Balance {{ formatCurrency(selectedRecord.balance) }}
+                                Selected: {{ getStudentName(selectedRecord) }} • Balance {{ formatCurrency(selectedRecord.balance) }}
                             </template>
                             <template v-else>Select a record first.</template>
                         </span>

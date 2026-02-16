@@ -26,9 +26,9 @@ class SectionController extends Controller
             ->all();
 
         if (empty($classIds)) {
+            $field = !empty($data['class_ids']) ? 'class_ids' : 'class_id';
             return back()->withErrors([
-                'class_ids' => 'Select at least one class.',
-                'class_id' => 'Select at least one class.',
+                $field => 'Select at least one class.',
             ]);
         }
 
@@ -78,9 +78,9 @@ class SectionController extends Controller
             ->all();
 
         if (empty($classIds)) {
+            $field = !empty($data['class_ids']) ? 'class_ids' : 'class_id';
             return back()->withErrors([
-                'class_ids' => 'Select at least one class.',
-                'class_id' => 'Select at least one class.',
+                $field => 'Select at least one class.',
             ]);
         }
 
