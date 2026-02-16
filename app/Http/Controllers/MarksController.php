@@ -80,7 +80,7 @@ class MarksController extends Controller
         ]);
 
         $user = $request->user();
-        if ($this->isRestrictedTeacher($user) && !$this->teacherHasClassAccess($user->id, $data['class_id'], $data['section_id'] ?? null)) {
+        if ($this->isRestrictedTeacher($user) && ! $this->teacherHasClassAccess($user->id, $data['class_id'], $data['section_id'] ?? null)) {
             abort(403, 'You are not assigned to this class/section.');
         }
 
@@ -102,14 +102,14 @@ class MarksController extends Controller
                 ->when($data['academic_year_id'] ?? null, fn ($q) => $q->where('academic_year_id', $data['academic_year_id']))
                 ->get()
                 ->keyBy('student_id');
-            
+
             $marks = $existingMarks;
         }
 
         // Merge enrollment data with marks
         $result = $enrollments->map(function ($enrollment) use ($marks) {
             $mark = $marks[$enrollment->student_id] ?? null;
-            
+
             return [
                 'student_id' => $enrollment->student_id,
                 'student' => $enrollment->student,
@@ -142,7 +142,7 @@ class MarksController extends Controller
         ]);
 
         $user = $request->user();
-        if ($this->isRestrictedTeacher($user) && !$this->teacherHasSubjectAccess($user->id, $data['subject_id'], $data['class_id'], $data['section_id'] ?? null)) {
+        if ($this->isRestrictedTeacher($user) && ! $this->teacherHasSubjectAccess($user->id, $data['subject_id'], $data['class_id'], $data['section_id'] ?? null)) {
             abort(403, 'You are not assigned to this subject or class.');
         }
 
@@ -169,7 +169,7 @@ class MarksController extends Controller
         $autoCompute = (bool) Setting::where('key', 'auto_compute_grade')->value('value');
 
         if ($autoCompute) {
-            $service = new GradeComputationService();
+            $service = new GradeComputationService;
             $service->computeForExamSubject(
                 $data['exam_id'],
                 $data['subject_id'],
@@ -184,7 +184,7 @@ class MarksController extends Controller
 
     private function isRestrictedTeacher($user): bool
     {
-        if (!$user) {
+        if (! $user) {
             return false;
         }
 

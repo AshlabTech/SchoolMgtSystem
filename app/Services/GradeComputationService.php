@@ -84,7 +84,7 @@ class GradeComputationService
     private function computeCumulativeAverage(Mark $mark, int $currentTotal): ?string
     {
         $scores = [$currentTotal];
-        
+
         // Add previous term scores if they exist
         if ($mark->tex1 !== null) {
             $scores[] = $mark->tex1;
@@ -103,6 +103,7 @@ class GradeComputationService
         }
 
         $average = array_sum($scores) / $count;
+
         return number_format($average, 2);
     }
 
