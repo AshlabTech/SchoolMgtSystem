@@ -96,10 +96,8 @@ class PaymentsController extends Controller
             fputcsv($handle, $csvHeaders);
 
             foreach ($records as $record) {
-                $student = $record->student?->user?->name
-                    ?: trim(($record->student?->user?->profile?->first_name ?? '').' '.($record->student?->user?->profile?->last_name ?? ''));
                 fputcsv($handle, [
-                    $student ?: 'Unknown Student',
+                    $this->resolveStudentName($record->student),
                     $record->student?->currentEnrollment?->schoolClass?->name ?: '—',
                     $record->invoiceType?->name ?: '—',
                     $record->invoiceType?->paymentCategory?->name ?: '—',
@@ -325,5 +323,13 @@ class PaymentsController extends Controller
                 });
             })
             ->orderByDesc('id');
+    }
+
+    private function resolveStudentName(?Student $student): string
+    {
+        $name = $student?->user?->name
+            ?: trim(($student?->user?->profile?->first_name ?? '').' '.($student?->user?->profile?->last_name ?? ''));
+
+        return $name ?: 'Unknown Student';
     }
 }

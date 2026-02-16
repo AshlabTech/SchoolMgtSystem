@@ -37,6 +37,8 @@ const genderOptions = [
     { label: 'Female', value: 'female' },
 ];
 
+const studentDisplayName = (student) => student?.user?.name || student?.user?.profile?.first_name || 'Student';
+
 const filterForm = useForm({
     status: props.filters?.status ?? null,
     class_id: props.filters?.class_id ?? null,
@@ -69,7 +71,7 @@ const studentOptions = computed(() =>
         .filter((student) => !filterForm.class_id || student.current_enrollment?.class_id === filterForm.class_id)
         .map((student) => ({
             id: student.id,
-            name: `${student.user?.name ?? student.user?.profile?.first_name ?? 'Student'} (${student.current_enrollment?.school_class?.name ?? 'No Class'})`,
+            name: `${studentDisplayName(student)} (${student.current_enrollment?.school_class?.name ?? 'No Class'})`,
         }))
 );
 

@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Hash;
 
 class StudentSeeder extends Seeder
 {
+    public const SEEDED_CLASS_NAMES = ['Primary 1', 'Primary 2', 'Primary 3', 'JSS 1', 'JSS 2', 'SS 1'];
+
     public function run(): void
     {
         $academicYear = AcademicYear::query()->where('is_current', true)->first() ?? AcademicYear::query()->latest('id')->first();
@@ -27,8 +29,7 @@ class StudentSeeder extends Seeder
             ->where('is_current', true)
             ->first() ?? Term::query()->where('academic_year_id', $academicYear->id)->orderBy('order')->first();
 
-        $classNames = ['Primary 1', 'Primary 2', 'Primary 3', 'JSS 1', 'JSS 2', 'SS 1'];
-        $classes = SchoolClass::query()->whereIn('name', $classNames)->get()->keyBy('name');
+        $classes = SchoolClass::query()->whereIn('name', self::SEEDED_CLASS_NAMES)->get()->keyBy('name');
         $seedData = [
             ['first_name' => 'Amina', 'last_name' => 'Yusuf', 'class' => 'Primary 1'],
             ['first_name' => 'Daniel', 'last_name' => 'Okafor', 'class' => 'Primary 1'],

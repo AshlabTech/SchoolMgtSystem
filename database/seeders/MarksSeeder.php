@@ -35,7 +35,7 @@ class MarksSeeder extends Seeder
         $gradeService = new GradeComputationService();
         $resultService = new ResultComputationService();
 
-        foreach (['Primary 1', 'Primary 2', 'Primary 3', 'JSS 1', 'JSS 2', 'SS 1'] as $className) {
+        foreach (StudentSeeder::SEEDED_CLASS_NAMES as $className) {
             $class = SchoolClass::query()->where('name', $className)->first();
             if (!$class) {
                 continue;
