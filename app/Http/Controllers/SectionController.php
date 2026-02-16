@@ -18,15 +18,17 @@ class SectionController extends Controller
             'name' => ['required', 'string', 'max:255'],
         ]);
 
-        $classIds = $data['class_ids'] ?? [];
-        if (empty($classIds) && !empty($data['class_id'])) {
-            $classIds = [$data['class_id']];
-        }
+        $classIds = collect($data['class_ids'] ?? [])
+            ->when(!empty($data['class_id']), fn ($ids) => $ids->push($data['class_id']))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
 
         if (empty($classIds)) {
+            $field = !empty($data['class_ids']) ? 'class_ids' : 'class_id';
             return back()->withErrors([
-                'class_ids' => 'Select at least one class.',
-                'class_id' => 'Select at least one class.',
+                $field => 'Select at least one class.',
             ]);
         }
 
@@ -38,7 +40,7 @@ class SectionController extends Controller
         }
 
         $section = Section::create([
-            'class_id' => $classIds[0] ?? null,
+            'class_id' => $classIds[0],
             'teacher_id' => $data['teacher_id'] ?? null,
             'name' => $data['name'],
             'is_active' => true,
@@ -68,15 +70,17 @@ class SectionController extends Controller
             'name' => ['required', 'string', 'max:255'],
         ]);
 
-        $classIds = $data['class_ids'] ?? [];
-        if (empty($classIds) && !empty($data['class_id'])) {
-            $classIds = [$data['class_id']];
-        }
+        $classIds = collect($data['class_ids'] ?? [])
+            ->when(!empty($data['class_id']), fn ($ids) => $ids->push($data['class_id']))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
 
         if (empty($classIds)) {
+            $field = !empty($data['class_ids']) ? 'class_ids' : 'class_id';
             return back()->withErrors([
-                'class_ids' => 'Select at least one class.',
-                'class_id' => 'Select at least one class.',
+                $field => 'Select at least one class.',
             ]);
         }
 
@@ -88,7 +92,7 @@ class SectionController extends Controller
         }
 
         $section->update([
-            'class_id' => $classIds[0] ?? null,
+            'class_id' => $classIds[0],
             'teacher_id' => $data['teacher_id'] ?? null,
             'name' => $data['name'],
         ]);

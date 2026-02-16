@@ -271,7 +271,7 @@ const deleteSection = (id) => {
                 </PCard>
 
                 <PCard class="shadow-sm">
-                    <template #title>Sections</template>
+                    <template #title>Educational Sections</template>
                     <template #content>
                         <div class="space-y-3">
                             <div>
@@ -296,7 +296,7 @@ const deleteSection = (id) => {
                                 <FieldError :errors="sectionForm.errors" field="teacher_id" />
                             </div>
                             <div>
-                                <PInputText v-model="sectionForm.name" placeholder="Section name" class="w-full" />
+                                <PInputText v-model="sectionForm.name" placeholder="Section name (e.g. Nursery, Primary, Secondary)" class="w-full" />
                                 <FieldError :errors="sectionForm.errors" field="name" />
                             </div>
                             <div class="flex flex-wrap gap-2">
