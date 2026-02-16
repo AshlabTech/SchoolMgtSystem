@@ -153,8 +153,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/results', [ResultsController::class, 'index'])->name('results.index');
         Route::post('/results/compute', [ResultsController::class, 'compute'])->middleware('permission:manage.marks')->name('results.compute');
         Route::put('/results/{result}/comment', [ResultsController::class, 'updateComment'])->name('results.comment.update');
-        Route::get('/results/export/individual', [ResultsController::class, 'exportIndividual'])->name('results.export.individual');
-        Route::get('/results/export/class', [ResultsController::class, 'exportClass'])->name('results.export.class');
+        Route::get('/results/report-card', [ResultsController::class, 'downloadReportCard'])->name('results.report-card');
+        Route::get('/results/class-report-cards', [ResultsController::class, 'downloadClassReportCards'])->name('results.class-report-cards');
     });
 
     Route::middleware('permission:manage.pins')->group(function () {

@@ -86,7 +86,7 @@ const totalFor = (mark) => {
     return t1 + t2 + t3 + t4 + exm;
 };
 
-const exportIndividualResult = (format) => {
+const downloadReportCard = () => {
     if (!filters.student_id || !filters.exam_id) {
         showError('Please select a student and exam first');
         return;
@@ -95,14 +95,13 @@ const exportIndividualResult = (format) => {
     const params = new URLSearchParams({
         student_id: filters.student_id,
         exam_id: filters.exam_id,
-        format: format,
     });
     
     if (filters.academic_year_id) {
         params.append('academic_year_id', filters.academic_year_id);
     }
     
-    window.location.href = `/results/export/individual?${params.toString()}`;
+    window.location.href = `/results/report-card?${params.toString()}`;
 };
 
 const classExportForm = useForm({
@@ -112,7 +111,7 @@ const classExportForm = useForm({
     academic_year_id: props.currentAcademicYearId ?? null,
 });
 
-const exportClassResults = (format) => {
+const downloadClassReportCards = () => {
     if (!classExportForm.class_id || !classExportForm.exam_id) {
         showError('Please select a class and exam first');
         return;
@@ -121,7 +120,6 @@ const exportClassResults = (format) => {
     const params = new URLSearchParams({
         class_id: classExportForm.class_id,
         exam_id: classExportForm.exam_id,
-        format: format,
     });
     
     if (classExportForm.section_id) {
@@ -132,7 +130,7 @@ const exportClassResults = (format) => {
         params.append('academic_year_id', classExportForm.academic_year_id);
     }
     
-    window.location.href = `/results/export/class?${params.toString()}`;
+    window.location.href = `/results/class-report-cards?${params.toString()}`;
 };
 </script>
 
@@ -241,17 +239,10 @@ const exportClassResults = (format) => {
                         <PButton label="View Results" icon="pi pi-search" severity="info" @click="submit" />
                         <PButton 
                             v-if="selected && selected.student_id && selected.exam_id"
-                            label="Export (CSV)" 
-                            icon="pi pi-download" 
-                            severity="secondary" 
-                            @click="exportIndividualResult('csv')" 
-                        />
-                        <PButton 
-                            v-if="selected && selected.student_id && selected.exam_id"
-                            label="Export (JSON)" 
-                            icon="pi pi-file" 
-                            severity="secondary" 
-                            @click="exportIndividualResult('json')" 
+                            label="Download Report Card (PDF)" 
+                            icon="pi pi-file-pdf" 
+                            severity="success" 
+                            @click="downloadReportCard" 
                         />
                     </div>
                 </template>
@@ -369,7 +360,7 @@ const exportClassResults = (format) => {
             </PCard>
             
             <PCard class="shadow-sm">
-                <template #title>Class Results Export</template>
+                <template #title>Class Report Cards Download</template>
                 <template #content>
                     <div class="grid grid-cols-1 gap-3 md:grid-cols-4">
                         <div>
@@ -415,17 +406,14 @@ const exportClassResults = (format) => {
                     </div>
                     <div class="mt-4 flex gap-3">
                         <PButton 
-                            label="Export Class (CSV)" 
-                            icon="pi pi-download" 
+                            label="Download Class Report Cards (PDF)" 
+                            icon="pi pi-file-pdf" 
                             severity="success" 
-                            @click="exportClassResults('csv')" 
+                            @click="downloadClassReportCards" 
                         />
-                        <PButton 
-                            label="Export Class (JSON)" 
-                            icon="pi pi-file" 
-                            severity="secondary" 
-                            @click="exportClassResults('json')" 
-                        />
+                    </div>
+                    <div class="mt-3 text-sm text-slate-600">
+                        <strong>Note:</strong> This will download a sample report card. For bulk downloads, please contact the system administrator.
                     </div>
                 </template>
             </PCard>
