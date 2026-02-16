@@ -30,6 +30,8 @@ use App\Http\Controllers\ParentPortalController;
 use App\Http\Controllers\StaffPortalController;
 use App\Http\Controllers\AcademicYearsController;
 use App\Http\Controllers\TermsController;
+use App\Http\Controllers\SkillsController;
+use App\Http\Controllers\SkillScoresController;
 use App\Models\Exam;
 use App\Models\FeeRecord;
 use App\Models\Receipt;
@@ -126,6 +128,19 @@ Route::middleware('auth')->group(function () {
         Route::post('/grades', [GradesController::class, 'store'])->name('grades.store');
         Route::put('/grades/{grade}', [GradesController::class, 'update'])->name('grades.update');
         Route::delete('/grades/{grade}', [GradesController::class, 'destroy'])->name('grades.destroy');
+    });
+
+    Route::middleware('permission:manage.grades')->group(function () {
+        Route::get('/skills', [SkillsController::class, 'index'])->name('skills.index');
+        Route::post('/skills', [SkillsController::class, 'store'])->name('skills.store');
+        Route::put('/skills/{skill}', [SkillsController::class, 'update'])->name('skills.update');
+        Route::delete('/skills/{skill}', [SkillsController::class, 'destroy'])->name('skills.destroy');
+    });
+
+    Route::middleware('permission:manage.marks|view.results')->group(function () {
+        Route::get('/skill-scores', [SkillScoresController::class, 'index'])->name('skill-scores.index');
+        Route::post('/skill-scores', [SkillScoresController::class, 'store'])->middleware('permission:manage.marks')->name('skill-scores.store');
+        Route::post('/skill-scores/bulk', [SkillScoresController::class, 'bulkStore'])->middleware('permission:manage.marks')->name('skill-scores.bulk');
     });
 
     Route::middleware('permission:manage.marks')->group(function () {

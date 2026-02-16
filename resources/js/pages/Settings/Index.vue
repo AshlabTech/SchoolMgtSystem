@@ -4,10 +4,13 @@ import { router } from '@inertiajs/vue3';
 import AppShell from '../../layouts/AppShell.vue';
 import DateField from '../../components/DateField.vue';
 import RecordViewer from '../../components/RecordViewer.vue';
+import { useToast } from '../../composables/useToast';
 
 const props = defineProps({
     settings: Array,
 });
+
+const { showSuccess, showError } = useToast();
 
 const normalizeSetting = (setting) => {
     const normalized = { ...setting };
@@ -40,10 +43,28 @@ watch(
 );
 
 const updateSetting = (setting) => {
-    router.put(`/settings/${setting.id}`, {
-        group: setting.group,
-        value: setting.type === 'boolean' ? (setting.value ? 1 : 0) : setting.value,
-    }, { preserveScroll: true });
+    // Convert boolean to 0 or 1
+    let valueToSend = setting.value;
+    if (setting.type === 'boolean') {
+        valueToSend = setting.value ? 1 : 0;
+    }
+    
+    router.put(
+        `/settings/${setting.id}`,
+        {
+            group: setting.group,
+            value: valueToSend,
+        },
+        {
+            preserveScroll: true,
+            onSuccess: () => {
+                showSuccess('Setting updated successfully');
+            },
+            onError: (errors) => {
+                showError('Failed to update setting', Object.values(errors).join(', '));
+            },
+        }
+    );
 };
 </script>
 

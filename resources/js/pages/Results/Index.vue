@@ -6,6 +6,7 @@ import FieldError from '../../components/FieldError.vue';
 import ModelSelect from '../../components/ModelSelect.vue';
 import RecordViewer from '../../components/RecordViewer.vue';
 import { usePermissions } from '../../composables/usePermissions';
+import { useToast } from '../../composables/useToast';
 
 const props = defineProps({
     students: Array,
@@ -15,6 +16,8 @@ const props = defineProps({
     marks: Array,
     selected: Object,
     examResult: Object,
+    skillScores: Array,
+    skills: Array,
     resultComments: Array,
     autoApplyComments: Boolean,
 });
@@ -27,6 +30,7 @@ const studentOptions = computed(() =>
 );
 
 const { can } = usePermissions();
+const { showSuccess, showError } = useToast();
 
 const showView = ref(false);
 const viewRecord = ref(null);
@@ -54,9 +58,18 @@ const commentForm = useForm({
 });
 
 const saveComment = () => {
-    if (!props.examResult?.id) return;
+    if (!props.examResult?.id) {
+        showError('Please compute and view result first');
+        return;
+    }
     commentForm.put(`/results/${props.examResult.id}/comment`, {
         preserveScroll: true,
+        onSuccess: () => {
+            showSuccess('Comment saved successfully');
+        },
+        onError: (errors) => {
+            showError('Failed to save comment', Object.values(errors).join(', '));
+        },
     });
 };
 
@@ -228,6 +241,60 @@ const totalFor = (mark) => {
                             class="w-full"
                         />
                         <PButton label="Save Comment" icon="pi pi-save" severity="success" @click="saveComment" />
+                    </div>
+                </template>
+            </PCard>
+
+            <PCard v-if="examResult" class="shadow-sm">
+                <template #title>Domain Scores</template>
+                <template #content>
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div>
+                            <h3 class="mb-2 font-semibold text-slate-700">Psychomotor Domain</h3>
+                            <div class="rounded border border-slate-200 bg-slate-50 p-3">
+                                <div class="text-2xl font-bold text-blue-600">
+                                    {{ examResult.psychomotor || 'Not Computed' }}
+                                </div>
+                                <div v-if="skillScores.filter(s => s.skill?.skill_type === 'psychomotor').length > 0" class="mt-2 text-sm text-slate-600">
+                                    <div class="space-y-1">
+                                        <div
+                                            v-for="score in skillScores.filter(s => s.skill?.skill_type === 'psychomotor')"
+                                            :key="score.id"
+                                            class="flex justify-between"
+                                        >
+                                            <span>{{ score.skill?.name }}</span>
+                                            <span class="font-semibold">{{ score.rating }}/5</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div v-else class="mt-2 text-sm text-slate-500">
+                                    No psychomotor scores recorded
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="mb-2 font-semibold text-slate-700">Affective Domain</h3>
+                            <div class="rounded border border-slate-200 bg-slate-50 p-3">
+                                <div class="text-2xl font-bold text-purple-600">
+                                    {{ examResult.affective || 'Not Computed' }}
+                                </div>
+                                <div v-if="skillScores.filter(s => s.skill?.skill_type === 'affective').length > 0" class="mt-2 text-sm text-slate-600">
+                                    <div class="space-y-1">
+                                        <div
+                                            v-for="score in skillScores.filter(s => s.skill?.skill_type === 'affective')"
+                                            :key="score.id"
+                                            class="flex justify-between"
+                                        >
+                                            <span>{{ score.skill?.name }}</span>
+                                            <span class="font-semibold">{{ score.rating }}/5</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div v-else class="mt-2 text-sm text-slate-500">
+                                    No affective scores recorded
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </template>
             </PCard>

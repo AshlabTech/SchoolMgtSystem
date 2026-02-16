@@ -15,8 +15,16 @@ class Skill extends Model
         'class_level_id',
     ];
 
+    const SKILL_TYPE_PSYCHOMOTOR = 'psychomotor';
+    const SKILL_TYPE_AFFECTIVE = 'affective';
+
     public function classLevel()
     {
         return $this->belongsTo(ClassLevel::class);
+    }
+
+    public function skillScores()
+    {
+        return $this->hasMany(SkillScore::class);
     }
 }
