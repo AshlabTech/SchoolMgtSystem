@@ -197,4 +197,23 @@ class ResultsController extends Controller
             $data['academic_year_id'] ?? null
         );
     }
+
+    public function downloadClassBroadsheet(Request $request)
+    {
+        $data = $request->validate([
+            'class_id' => ['required', 'integer', 'exists:classes,id'],
+            'exam_id' => ['required', 'integer', 'exists:exams,id'],
+            'section_id' => ['nullable', 'integer', 'exists:sections,id'],
+            'academic_year_id' => ['nullable', 'integer', 'exists:academic_years,id'],
+        ]);
+
+        $service = new ReportCardService();
+        
+        return $service->generateClassBroadsheet(
+            $data['class_id'],
+            $data['exam_id'],
+            $data['section_id'] ?? null,
+            $data['academic_year_id'] ?? null
+        );
+    }
 }

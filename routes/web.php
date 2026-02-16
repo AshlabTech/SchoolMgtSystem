@@ -155,6 +155,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/results/{result}/comment', [ResultsController::class, 'updateComment'])->name('results.comment.update');
         Route::get('/results/report-card', [ResultsController::class, 'downloadReportCard'])->name('results.report-card');
         Route::get('/results/class-report-cards', [ResultsController::class, 'downloadClassReportCards'])->name('results.class-report-cards');
+        Route::get('/results/class-broadsheet', [ResultsController::class, 'downloadClassBroadsheet'])->name('results.class-broadsheet');
     });
 
     Route::middleware('permission:manage.pins')->group(function () {

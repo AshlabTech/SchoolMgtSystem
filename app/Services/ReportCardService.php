@@ -167,6 +167,7 @@ class ReportCardService
     public function generateClassReportCards(int $classId, int $examId, ?int $sectionId, ?int $academicYearId)
     {
         $students = Student::query()
+            ->with(['user', 'currentEnrollment'])
             ->whereHas('currentEnrollment', function ($q) use ($classId, $sectionId) {
                 $q->where('class_id', $classId);
                 if ($sectionId) {
@@ -176,12 +177,118 @@ class ReportCardService
             ->get();
 
         if ($students->isEmpty()) {
-            throw new \Exception('No students found in the selected class.');
+            // Return a proper error response instead of throwing exception
+            return response()->json([
+                'message' => 'No students found in the selected class. Please ensure students are enrolled in this class.',
+                'error' => 'no_students_found'
+            ], 404);
         }
 
         // For bulk download, we'll create a ZIP file with all PDFs
         // For now, return the first student's report as an example
         // In production, you'd want to create a ZIP or merge PDFs
         return $this->generateReportCard($students->first()->id, $examId, $academicYearId);
+    }
+
+    /**
+     * Generate class broadsheet showing all students by subjects.
+     */
+    public function generateClassBroadsheet(int $classId, int $examId, ?int $sectionId, ?int $academicYearId)
+    {
+        $class = \App\Models\SchoolClass::findOrFail($classId);
+        $exam = \App\Models\Exam::with(['academicYear', 'term'])->findOrFail($examId);
+        
+        $students = Student::query()
+            ->with(['user', 'currentEnrollment.schoolClass', 'currentEnrollment.section'])
+            ->whereHas('currentEnrollment', function ($q) use ($classId, $sectionId) {
+                $q->where('class_id', $classId);
+                if ($sectionId) {
+                    $q->where('section_id', $sectionId);
+                }
+            })
+            ->orderBy('id')
+            ->get();
+
+        if ($students->isEmpty()) {
+            return response()->json([
+                'message' => 'No students found in the selected class.',
+                'error' => 'no_students_found'
+            ], 404);
+        }
+
+        // Get all subjects for this class
+        $subjects = \App\Models\SubjectAssignment::query()
+            ->with('subject')
+            ->where('class_id', $classId)
+            ->when($sectionId, fn ($q) => $q->where('section_id', $sectionId))
+            ->get()
+            ->pluck('subject')
+            ->unique('id')
+            ->sortBy('name');
+
+        // Get marks for all students
+        $studentIds = $students->pluck('id');
+        $marks = Mark::query()
+            ->with(['subject', 'grade'])
+            ->whereIn('student_id', $studentIds)
+            ->where('exam_id', $examId)
+            ->when($academicYearId, fn ($q) => $q->where('academic_year_id', $academicYearId))
+            ->get()
+            ->groupBy('student_id');
+
+        // Get exam results for all students
+        $examResults = ExamResult::query()
+            ->whereIn('student_id', $studentIds)
+            ->where('exam_id', $examId)
+            ->when($academicYearId, fn ($q) => $q->where('academic_year_id', $academicYearId))
+            ->get()
+            ->keyBy('student_id');
+
+        // Prepare broadsheet data
+        $broadsheetData = $students->map(function ($student) use ($marks, $subjects, $examResults) {
+            $studentMarks = $marks->get($student->id, collect());
+            $studentResult = $examResults->get($student->id);
+            
+            $subjectScores = [];
+            foreach ($subjects as $subject) {
+                $mark = $studentMarks->firstWhere('subject_id', $subject->id);
+                $subjectScores[$subject->code ?? $subject->name] = [
+                    'total' => $mark?->cum ?? '-',
+                    'grade' => $mark?->grade?->name ?? '-',
+                    'position' => $mark?->sub_pos ?? '-',
+                ];
+            }
+
+            return [
+                'name' => $student->user?->name ?? '',
+                'admission_no' => $student->admission_no ?? '',
+                'subjects' => $subjectScores,
+                'total' => $studentResult?->total ?? 0,
+                'average' => $studentResult?->average ?? 0,
+                'position' => $studentResult?->position ?? '-',
+            ];
+        });
+
+        // Get school settings
+        $schoolName = Setting::where('key', 'school_name')->value('value') ?? config('app.name');
+        
+        $data = [
+            'schoolName' => $schoolName,
+            'className' => $class->name,
+            'sectionName' => $sectionId ? \App\Models\Section::find($sectionId)?->name : 'All Sections',
+            'academicYear' => $exam->academicYear?->name ?? '',
+            'term' => $exam->term?->name ?? '',
+            'examName' => $exam->name,
+            'subjects' => $subjects,
+            'students' => $broadsheetData,
+        ];
+
+        // Generate PDF
+        $pdf = Pdf::loadView('class-broadsheet', $data);
+        $pdf->setPaper('a4', 'landscape');
+
+        $filename = 'class_broadsheet_' . str_replace(' ', '_', $class->name) . '_' . now()->format('Y_m_d') . '.pdf';
+
+        return $pdf->download($filename);
     }
 }
