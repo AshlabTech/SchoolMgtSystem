@@ -9,8 +9,11 @@ use App\Models\Mark;
 use App\Models\ResultComment;
 use App\Models\Section;
 use App\Models\Setting;
+use App\Models\Skill;
+use App\Models\SkillScore;
 use App\Models\Student;
 use App\Models\Term;
+use App\Services\DomainComputationService;
 use App\Services\ResultComputationService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -64,7 +67,17 @@ class ResultsController extends Controller
                 ->where('exam_id', $selected['exam_id'])
                 ->when($selected['academic_year_id'], fn ($q) => $q->where('academic_year_id', $selected['academic_year_id']))
                 ->first();
+
+            // Get skill scores for this student
+            $skillScores = SkillScore::query()
+                ->with('skill')
+                ->where('student_id', $selected['student_id'])
+                ->where('exam_id', $selected['exam_id'])
+                ->when($selected['academic_year_id'], fn ($q) => $q->where('academic_year_id', $selected['academic_year_id']))
+                ->get();
         }
+
+        $skills = Skill::query()->orderBy('skill_type')->orderBy('name')->get();
 
         return Inertia::render('Results/Index', [
             'students' => $students,
@@ -74,6 +87,8 @@ class ResultsController extends Controller
             'marks' => $marks,
             'selected' => $selected,
             'examResult' => $examResult,
+            'skillScores' => $skillScores ?? collect([]),
+            'skills' => $skills ?? collect([]),
             'resultComments' => ResultComment::query()
                 ->where('type', 'teacher')
                 ->where('is_active', true)
@@ -96,6 +111,15 @@ class ResultsController extends Controller
 
         $service = new ResultComputationService();
         $service->computeForExamClass(
+            $data['exam_id'],
+            $data['class_id'],
+            $data['section_id'] ?? null,
+            $data['academic_year_id'] ?? null,
+        );
+
+        // Also compute domain scores
+        $domainService = new DomainComputationService();
+        $domainService->computeForExamClass(
             $data['exam_id'],
             $data['class_id'],
             $data['section_id'] ?? null,
