@@ -24,6 +24,10 @@ class SchoolClass extends Model
         return $this->belongsTo(ClassLevel::class, 'class_level_id');
     }
 
+    /**
+     * Alias for level() relationship for backward compatibility.
+     * Some parts of the codebase reference this as classLevel.
+     */
     public function classLevel()
     {
         return $this->belongsTo(ClassLevel::class, 'class_level_id');

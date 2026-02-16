@@ -80,6 +80,7 @@ class GradeComputationService
 
     /**
      * Compute the cumulative average from current and previous term scores.
+     * Returns string format to match database column type.
      */
     private function computeCumulativeAverage(Mark $mark, int $currentTotal): ?string
     {
@@ -96,13 +97,8 @@ class GradeComputationService
             $scores[] = $mark->tex3;
         }
 
-        // Calculate average
-        $count = count($scores);
-        if ($count === 0) {
-            return null;
-        }
-
-        $average = array_sum($scores) / $count;
+        // Calculate average (always has at least one score from current term)
+        $average = array_sum($scores) / count($scores);
 
         return number_format($average, 2);
     }
