@@ -29,6 +29,11 @@ use App\Http\Controllers\ParentPortalController;
 use App\Http\Controllers\StaffPortalController;
 use App\Http\Controllers\AcademicYearsController;
 use App\Http\Controllers\TermsController;
+use App\Models\Exam;
+use App\Models\FeeRecord;
+use App\Models\Receipt;
+use App\Models\Student;
+use App\Models\User;
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -38,13 +43,45 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/', function () {
-        return Inertia::render('Dashboard');
-    })->name('home');
+    $dashboard = function () {
+        return Inertia::render('Dashboard', [
+            'stats' => [
+                ['label' => 'Active Students', 'value' => Student::query()->where('status', 'active')->where('is_graduated', false)->count()],
+                ['label' => 'Outstanding Fees', 'value' => (int) FeeRecord::query()->sum('balance'), 'is_currency' => true],
+                ['label' => 'Published Exams', 'value' => Exam::query()->where('is_published', true)->count()],
+                ['label' => 'Active Staff', 'value' => User::query()->where('is_active', true)->whereHas('staffProfile')->count()],
+            ],
+            'payments' => Receipt::query()
+                ->with(['feeRecord.student.user', 'feeRecord.student.currentEnrollment.schoolClass', 'feeRecord.invoiceType'])
+                ->orderByDesc('issued_at')
+                ->take(5)
+                ->get()
+                ->map(fn (Receipt $receipt) => [
+                    'student' => $receipt->feeRecord?->student?->user?->name ?? 'Unknown',
+                    'class' => $receipt->feeRecord?->student?->currentEnrollment?->schoolClass?->name ?? '—',
+                    'amount' => (int) $receipt->amount_paid,
+                    'status' => ($receipt->feeRecord?->is_paid ?? false) ? 'Paid' : (($receipt->feeRecord?->balance ?? 0) > 0 ? 'Pending' : 'Paid'),
+                    'date' => optional($receipt->issued_at)->toDateString(),
+                ])
+                ->values(),
+            'events' => Exam::query()
+                ->with(['term', 'academicYear'])
+                ->whereNotNull('starts_at')
+                ->whereDate('starts_at', '>=', today())
+                ->orderBy('starts_at')
+                ->take(5)
+                ->get()
+                ->map(fn (Exam $exam) => [
+                    'title' => $exam->name,
+                    'date' => optional($exam->starts_at)->toDateString(),
+                    'owner' => $exam->term?->name ?? 'Academic Office',
+                ])
+                ->values(),
+        ]);
+    };
 
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('/', $dashboard)->name('home');
+    Route::get('/dashboard', $dashboard)->name('dashboard');
 
     Route::middleware('permission:manage.classes|manage.sections')->group(function () {
         Route::get('/academics', [AcademicsController::class, 'index'])->name('academics.index');

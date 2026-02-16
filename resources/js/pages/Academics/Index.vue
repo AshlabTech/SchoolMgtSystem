@@ -30,7 +30,7 @@ const classForm = useForm({
 });
 
 const sectionForm = useForm({
-    class_ids: [],
+    class_id: null,
     name: '',
     teacher_id: null,
 });
@@ -78,7 +78,7 @@ const cancelEditClass = () => {
 const startEditSection = (record) => {
     editingSectionId.value = record.id;
     sectionForm.clearErrors();
-    sectionForm.class_ids = record.school_classes?.map((item) => item.id) ?? (record.class_id ? [record.class_id] : []);
+    sectionForm.class_id = record.class_id ?? record.school_class?.id ?? record.school_classes?.[0]?.id ?? null;
     sectionForm.name = record.name ?? '';
     sectionForm.teacher_id = record.teacher_id ?? record.teacher?.id ?? null;
 };
@@ -275,15 +275,14 @@ const deleteSection = (id) => {
                     <template #content>
                         <div class="space-y-3">
                             <div>
-                                <PMultiSelect
-                                    v-model="sectionForm.class_ids"
+                                <ModelSelect
+                                    v-model="sectionForm.class_id"
                                     :options="classes"
                                     optionLabel="name"
                                     optionValue="id"
-                                    placeholder="Select class(es)"
-                                    class="w-full"
+                                    placeholder="Select class"
                                 />
-                                <FieldError :errors="sectionForm.errors" field="class_ids" />
+                                <FieldError :errors="sectionForm.errors" field="class_id" />
                             </div>
                             <div>
                                 <ModelSelect
@@ -296,7 +295,7 @@ const deleteSection = (id) => {
                                 <FieldError :errors="sectionForm.errors" field="teacher_id" />
                             </div>
                             <div>
-                                <PInputText v-model="sectionForm.name" placeholder="Section name" class="w-full" />
+                                <PInputText v-model="sectionForm.name" placeholder="Section/Arm name" class="w-full" />
                                 <FieldError :errors="sectionForm.errors" field="name" />
                             </div>
                             <div class="flex flex-wrap gap-2">
@@ -309,12 +308,7 @@ const deleteSection = (id) => {
                                 <PColumn field="name" header="Section" />
                                 <PColumn header="Class">
                                     <template #body="slotProps">
-                                        <span v-if="slotProps.data.school_classes?.length">
-                                            {{ slotProps.data.school_classes.map(item => item.name).join(', ') }}
-                                        </span>
-                                        <span v-else>
-                                            {{ slotProps.data.school_class?.name ?? '—' }}
-                                        </span>
+                                        {{ slotProps.data.school_class?.name ?? slotProps.data.school_classes?.[0]?.name ?? '—' }}
                                     </template>
                                 </PColumn>
                                 <PColumn header="Form Teacher">
