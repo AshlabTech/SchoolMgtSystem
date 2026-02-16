@@ -18,6 +18,7 @@ use App\Http\Controllers\PromotionsController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\DormsController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\ResultCommentsController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\MyAccountController;
 use App\Http\Controllers\ParentController;
@@ -136,6 +137,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('permission:manage.marks|view.results')->group(function () {
         Route::get('/results', [ResultsController::class, 'index'])->name('results.index');
         Route::post('/results/compute', [ResultsController::class, 'compute'])->middleware('permission:manage.marks')->name('results.compute');
+        Route::put('/results/{result}/comment', [ResultsController::class, 'updateComment'])->name('results.comment.update');
     });
 
     Route::middleware('permission:manage.pins')->group(function () {
@@ -154,6 +156,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/payments/records/{record}/pay', [PaymentsController::class, 'payNow'])->name('payments.records.pay');
         Route::post('/payments/records/{record}/reset', [PaymentsController::class, 'resetRecord'])->name('payments.records.reset');
         Route::get('/payments/records/{record}/receipts', [PaymentsController::class, 'receipts'])->name('payments.records.receipts');
+        Route::get('/payments/export', [PaymentsController::class, 'export'])->name('payments.export');
     });
 
     Route::middleware('permission:manage.timetables')->group(function () {
@@ -197,6 +200,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
         Route::post('/settings', [SettingsController::class, 'store'])->name('settings.store');
         Route::put('/settings/{setting}', [SettingsController::class, 'update'])->name('settings.update');
+        Route::get('/comments', [ResultCommentsController::class, 'index'])->name('comments.index');
+        Route::post('/comments', [ResultCommentsController::class, 'store'])->name('comments.store');
+        Route::put('/comments/{comment}', [ResultCommentsController::class, 'update'])->name('comments.update');
         Route::post('/academic-years', [AcademicYearsController::class, 'store'])->name('academic-years.store');
         Route::post('/terms', [TermsController::class, 'store'])->name('terms.store');
     });

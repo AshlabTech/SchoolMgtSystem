@@ -22,6 +22,10 @@ class DatabaseSeeder extends Seeder
             SettingsSeeder::class,
             StaffRolesSeeder::class,
             CoreModelsSeeder::class,
+            ResultCommentsSeeder::class,
+            StudentSeeder::class,
+            MarksSeeder::class,
+            TimetableSeeder::class,
         ]);
     }
 }

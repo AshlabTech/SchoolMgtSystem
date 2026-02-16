@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\ExamResult;
 use App\Models\Mark;
+use App\Models\ResultComment;
 use App\Models\Setting;
 
 class ResultComputationService
@@ -26,6 +27,16 @@ class ResultComputationService
 
         $studentMarks = $marks->groupBy('student_id');
         $showPosition = (bool) Setting::where('key', 'show_position_on_result')->value('value');
+        $autoApplyComment = (bool) Setting::where('key', 'auto_apply_result_comment')->value('value');
+        $defaultTeacherComment = $autoApplyComment
+            ? ResultComment::query()
+                ->where('type', 'teacher')
+                ->where('is_active', true)
+                ->orderByDesc('is_default')
+                ->orderBy('sort_order')
+                ->orderBy('id')
+                ->value('comment')
+            : null;
 
         $aggregates = [];
 
@@ -67,20 +78,26 @@ class ResultComputationService
         unset($agg);
 
         foreach ($aggregates as $agg) {
+            $payload = [
+                'class_id' => $classId,
+                'section_id' => $agg['section_id'],
+                'total' => $agg['total'],
+                'average' => (string) $agg['average'],
+                'class_average' => (string) $classAverage,
+                'position' => $agg['position'],
+            ];
+
+            if ($defaultTeacherComment) {
+                $payload['teacher_comment'] = $defaultTeacherComment;
+            }
+
             ExamResult::updateOrCreate(
                 [
                     'exam_id' => $examId,
                     'student_id' => $agg['student_id'],
                     'academic_year_id' => $academicYearId,
                 ],
-                [
-                    'class_id' => $classId,
-                    'section_id' => $agg['section_id'],
-                    'total' => $agg['total'],
-                    'average' => (string) $agg['average'],
-                    'class_average' => (string) $classAverage,
-                    'position' => $agg['position'],
-                ]
+                $payload
             );
         }
     }

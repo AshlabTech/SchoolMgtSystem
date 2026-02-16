@@ -1,9 +1,8 @@
 <script setup>
 import { reactive, watch, ref } from 'vue';
-import { router, useForm } from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3';
 import AppShell from '../../layouts/AppShell.vue';
 import DateField from '../../components/DateField.vue';
-import FieldError from '../../components/FieldError.vue';
 import RecordViewer from '../../components/RecordViewer.vue';
 
 const props = defineProps({
@@ -40,31 +39,6 @@ watch(
     }
 );
 
-const form = useForm({
-    key: '',
-    label: '',
-    group: '',
-    type: 'text',
-    value: '',
-});
-
-const typeOptions = [
-    { label: 'Text', value: 'text' },
-    { label: 'Number', value: 'number' },
-    { label: 'Boolean', value: 'boolean' },
-    { label: 'Select', value: 'select' },
-    { label: 'Date', value: 'date' },
-];
-
-const submit = () => {
-    form.post('/settings', {
-        preserveScroll: true,
-        onSuccess: () => {
-            form.reset();
-        },
-    });
-};
-
 const updateSetting = (setting) => {
     router.put(`/settings/${setting.id}`, {
         group: setting.group,
@@ -76,37 +50,6 @@ const updateSetting = (setting) => {
 <template>
     <AppShell>
         <div class="grid grid-cols-1 gap-6">
-            <PCard class="shadow-sm">
-                <template #title>Add Setting</template>
-                <template #content>
-                    <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
-                        <div>
-                            <PInputText v-model="form.key" placeholder="Key" class="w-full" />
-                            <FieldError :errors="form.errors" field="key" />
-                        </div>
-                        <div>
-                            <PInputText v-model="form.label" placeholder="Label" class="w-full" />
-                            <FieldError :errors="form.errors" field="label" />
-                        </div>
-                        <div>
-                            <PInputText v-model="form.group" placeholder="Group" class="w-full" />
-                            <FieldError :errors="form.errors" field="group" />
-                        </div>
-                    </div>
-                    <div class="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
-                        <div>
-                            <PDropdown v-model="form.type" :options="typeOptions" optionLabel="label" optionValue="value" placeholder="Type" class="w-full" />
-                            <FieldError :errors="form.errors" field="type" />
-                        </div>
-                        <div>
-                            <PInputText v-model="form.value" placeholder="Value" class="w-full" />
-                            <FieldError :errors="form.errors" field="value" />
-                        </div>
-                    </div>
-                    <PButton label="Save" icon="pi pi-plus" severity="success" class="mt-4" @click="submit" />
-                </template>
-            </PCard>
-
             <PCard class="shadow-sm">
                 <template #title>Settings</template>
                 <template #content>
