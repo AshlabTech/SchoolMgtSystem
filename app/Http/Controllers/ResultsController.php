@@ -15,6 +15,7 @@ use App\Models\Student;
 use App\Models\Term;
 use App\Services\DomainComputationService;
 use App\Services\ResultComputationService;
+use App\Services\ResultExportService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -40,6 +41,8 @@ class ResultsController extends Controller
         $exams = Exam::orderBy('name')->get();
         $years = AcademicYear::orderByDesc('name')->get();
         $terms = Term::orderBy('order')->get();
+        $classes = \App\Models\SchoolClass::orderBy('name')->get();
+        $sections = \App\Models\Section::orderBy('name')->get();
         
         $currentYear = AcademicYear::query()->where('is_current', true)->first();
         $currentTerm = Term::query()->where('is_current', true)->first();
@@ -87,6 +90,8 @@ class ResultsController extends Controller
             'exams' => $exams,
             'years' => $years,
             'terms' => $terms,
+            'classes' => $classes,
+            'sections' => $sections,
             'marks' => $marks,
             'selected' => $selected,
             'examResult' => $examResult,
@@ -155,5 +160,142 @@ class ResultsController extends Controller
         ]);
 
         return back();
+    }
+
+    public function exportIndividual(Request $request)
+    {
+        $data = $request->validate([
+            'student_id' => ['required', 'integer', 'exists:students,id'],
+            'exam_id' => ['required', 'integer', 'exists:exams,id'],
+            'academic_year_id' => ['nullable', 'integer', 'exists:academic_years,id'],
+            'format' => ['nullable', 'string', 'in:json,csv'],
+        ]);
+
+        $service = new ResultExportService();
+        $result = $service->exportIndividualResult(
+            $data['student_id'],
+            $data['exam_id'],
+            $data['academic_year_id'] ?? null
+        );
+
+        $format = $data['format'] ?? 'json';
+
+        if ($format === 'csv') {
+            return $this->exportAsCSV($result, 'student_result_' . $data['student_id']);
+        }
+
+        return response()->json($result);
+    }
+
+    public function exportClass(Request $request)
+    {
+        $data = $request->validate([
+            'class_id' => ['required', 'integer', 'exists:classes,id'],
+            'exam_id' => ['required', 'integer', 'exists:exams,id'],
+            'section_id' => ['nullable', 'integer', 'exists:sections,id'],
+            'academic_year_id' => ['nullable', 'integer', 'exists:academic_years,id'],
+            'format' => ['nullable', 'string', 'in:json,csv'],
+        ]);
+
+        $service = new ResultExportService();
+        $results = $service->exportClassResults(
+            $data['class_id'],
+            $data['exam_id'],
+            $data['section_id'] ?? null,
+            $data['academic_year_id'] ?? null
+        );
+
+        $format = $data['format'] ?? 'json';
+
+        if ($format === 'csv') {
+            return $this->exportClassAsCSV($results, 'class_results_' . $data['class_id']);
+        }
+
+        return response()->json($results);
+    }
+
+    private function exportAsCSV(array $data, string $filename)
+    {
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '.csv"',
+        ];
+
+        $callback = function () use ($data) {
+            $file = fopen('php://output', 'w');
+
+            // Student info
+            fputcsv($file, ['Student Information']);
+            fputcsv($file, ['Name', $data['student']['name']]);
+            fputcsv($file, ['Admission No', $data['student']['admission_no']]);
+            fputcsv($file, ['Class', $data['student']['class']]);
+            fputcsv($file, ['Section', $data['student']['section']]);
+            fputcsv($file, []);
+
+            // Marks
+            fputcsv($file, ['Marks']);
+            fputcsv($file, ['Subject', 'T1', 'T2', 'T3', 'T4', 'TCA', 'Exam', 'Total', 'Cum Avg', 'Grade', 'Remark', 'Position']);
+            foreach ($data['marks'] as $mark) {
+                fputcsv($file, [
+                    $mark['subject'],
+                    $mark['t1'],
+                    $mark['t2'],
+                    $mark['t3'],
+                    $mark['t4'],
+                    $mark['tca'],
+                    $mark['exam'],
+                    $mark['total'],
+                    $mark['cum_ave'],
+                    $mark['grade'],
+                    $mark['remark'],
+                    $mark['position'],
+                ]);
+            }
+
+            // Overall result
+            if ($data['result']) {
+                fputcsv($file, []);
+                fputcsv($file, ['Overall Result']);
+                fputcsv($file, ['Total', $data['result']['total']]);
+                fputcsv($file, ['Average', $data['result']['average']]);
+                fputcsv($file, ['Class Average', $data['result']['class_average']]);
+                fputcsv($file, ['Position', $data['result']['position']]);
+                fputcsv($file, ['Psychomotor', $data['result']['psychomotor']]);
+                fputcsv($file, ['Affective', $data['result']['affective']]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    private function exportClassAsCSV($results, string $filename)
+    {
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '.csv"',
+        ];
+
+        $callback = function () use ($results) {
+            $file = fopen('php://output', 'w');
+
+            // Header
+            fputcsv($file, ['Student Name', 'Admission No', 'Total', 'Average', 'Position']);
+
+            foreach ($results as $result) {
+                fputcsv($file, [
+                    $result['student']['name'],
+                    $result['student']['admission_no'],
+                    $result['result']['total'] ?? '',
+                    $result['result']['average'] ?? '',
+                    $result['result']['position'] ?? '',
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

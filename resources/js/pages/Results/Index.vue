@@ -13,6 +13,8 @@ const props = defineProps({
     exams: Array,
     years: Array,
     terms: Array,
+    classes: Array,
+    sections: Array,
     marks: Array,
     selected: Object,
     examResult: Object,
@@ -82,6 +84,55 @@ const totalFor = (mark) => {
     const t4 = Number(mark.t4 || 0);
     const exm = Number(mark.exm || 0);
     return t1 + t2 + t3 + t4 + exm;
+};
+
+const exportIndividualResult = (format) => {
+    if (!filters.student_id || !filters.exam_id) {
+        showError('Please select a student and exam first');
+        return;
+    }
+    
+    const params = new URLSearchParams({
+        student_id: filters.student_id,
+        exam_id: filters.exam_id,
+        format: format,
+    });
+    
+    if (filters.academic_year_id) {
+        params.append('academic_year_id', filters.academic_year_id);
+    }
+    
+    window.location.href = `/results/export/individual?${params.toString()}`;
+};
+
+const classExportForm = useForm({
+    class_id: null,
+    exam_id: null,
+    section_id: null,
+    academic_year_id: props.currentAcademicYearId ?? null,
+});
+
+const exportClassResults = (format) => {
+    if (!classExportForm.class_id || !classExportForm.exam_id) {
+        showError('Please select a class and exam first');
+        return;
+    }
+    
+    const params = new URLSearchParams({
+        class_id: classExportForm.class_id,
+        exam_id: classExportForm.exam_id,
+        format: format,
+    });
+    
+    if (classExportForm.section_id) {
+        params.append('section_id', classExportForm.section_id);
+    }
+    
+    if (classExportForm.academic_year_id) {
+        params.append('academic_year_id', classExportForm.academic_year_id);
+    }
+    
+    window.location.href = `/results/export/class?${params.toString()}`;
 };
 </script>
 
@@ -186,7 +237,23 @@ const totalFor = (mark) => {
                             <FieldError :errors="filters.errors" field="academic_year_id" />
                         </div>
                     </div>
-                    <PButton label="View Results" icon="pi pi-search" severity="info" class="mt-4" @click="submit" />
+                    <div class="mt-4 flex gap-3">
+                        <PButton label="View Results" icon="pi pi-search" severity="info" @click="submit" />
+                        <PButton 
+                            v-if="selected && selected.student_id && selected.exam_id"
+                            label="Export (CSV)" 
+                            icon="pi pi-download" 
+                            severity="secondary" 
+                            @click="exportIndividualResult('csv')" 
+                        />
+                        <PButton 
+                            v-if="selected && selected.student_id && selected.exam_id"
+                            label="Export (JSON)" 
+                            icon="pi pi-file" 
+                            severity="secondary" 
+                            @click="exportIndividualResult('json')" 
+                        />
+                    </div>
                 </template>
             </PCard>
 
@@ -297,6 +364,68 @@ const totalFor = (mark) => {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </template>
+            </PCard>
+            
+            <PCard class="shadow-sm">
+                <template #title>Class Results Export</template>
+                <template #content>
+                    <div class="grid grid-cols-1 gap-3 md:grid-cols-4">
+                        <div>
+                            <ModelSelect
+                                v-model="classExportForm.class_id"
+                                :options="classes"
+                                optionLabel="name"
+                                optionValue="id"
+                                placeholder="Class"
+                            />
+                            <FieldError :errors="classExportForm.errors" field="class_id" />
+                        </div>
+                        <div>
+                            <ModelSelect
+                                v-model="classExportForm.exam_id"
+                                :options="exams"
+                                optionLabel="name"
+                                optionValue="id"
+                                placeholder="Exam"
+                            />
+                            <FieldError :errors="classExportForm.errors" field="exam_id" />
+                        </div>
+                        <div>
+                            <ModelSelect
+                                v-model="classExportForm.section_id"
+                                :options="sections"
+                                optionLabel="name"
+                                optionValue="id"
+                                placeholder="Section (Optional)"
+                            />
+                            <FieldError :errors="classExportForm.errors" field="section_id" />
+                        </div>
+                        <div>
+                            <ModelSelect
+                                v-model="classExportForm.academic_year_id"
+                                :options="years"
+                                optionLabel="name"
+                                optionValue="id"
+                                placeholder="Academic Year"
+                            />
+                            <FieldError :errors="classExportForm.errors" field="academic_year_id" />
+                        </div>
+                    </div>
+                    <div class="mt-4 flex gap-3">
+                        <PButton 
+                            label="Export Class (CSV)" 
+                            icon="pi pi-download" 
+                            severity="success" 
+                            @click="exportClassResults('csv')" 
+                        />
+                        <PButton 
+                            label="Export Class (JSON)" 
+                            icon="pi pi-file" 
+                            severity="secondary" 
+                            @click="exportClassResults('json')" 
+                        />
                     </div>
                 </template>
             </PCard>
