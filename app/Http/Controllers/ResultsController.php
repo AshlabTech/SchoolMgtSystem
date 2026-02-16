@@ -1,0 +1,67 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\AcademicYear;
+use App\Models\Exam;
+use App\Models\Mark;
+use App\Models\Section;
+use App\Models\Student;
+use App\Models\Term;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+
+class ResultsController extends Controller
+{
+    public function index(Request $request)
+    {
+        $user = $request->user();
+        if ($user && $user->hasRole('teacher') && !$user->hasRole('form_teacher') && !$user->hasAnyRole(['admin', 'super_admin'])) {
+            abort(403, 'Teachers cannot view results without form teacher access.');
+        }
+
+        $isFormTeacher = $user && $user->hasRole('form_teacher') && !$user->hasAnyRole(['admin', 'super_admin']);
+        $sectionIds = collect([]);
+        if ($isFormTeacher) {
+            $sectionIds = Section::where('teacher_id', $user->id)->pluck('id');
+        }
+
+        $students = Student::with('user.profile')
+            ->when($isFormTeacher, fn ($q) => $q->whereHas('currentEnrollment', fn ($enroll) => $enroll->whereIn('section_id', $sectionIds)))
+            ->orderByDesc('created_at')
+            ->get();
+        $exams = Exam::orderBy('name')->get();
+        $years = AcademicYear::orderByDesc('name')->get();
+        $terms = Term::orderBy('order')->get();
+
+        $marks = [];
+        $selected = null;
+
+        if ($request->filled('student_id') && $request->filled('exam_id')) {
+            $selected = [
+                'student_id' => (int) $request->input('student_id'),
+                'exam_id' => (int) $request->input('exam_id'),
+                'academic_year_id' => $request->input('academic_year_id') ? (int) $request->input('academic_year_id') : null,
+            ];
+
+            if ($isFormTeacher && !$students->pluck('id')->contains($selected['student_id'])) {
+                abort(403, 'You can only view results for your class.');
+            }
+
+            $marks = Mark::with(['subject', 'grade'])
+                ->where('student_id', $selected['student_id'])
+                ->where('exam_id', $selected['exam_id'])
+                ->when($selected['academic_year_id'], fn ($q) => $q->where('academic_year_id', $selected['academic_year_id']))
+                ->get();
+        }
+
+        return Inertia::render('Results/Index', [
+            'students' => $students,
+            'exams' => $exams,
+            'years' => $years,
+            'terms' => $terms,
+            'marks' => $marks,
+            'selected' => $selected,
+        ]);
+    }
+}
