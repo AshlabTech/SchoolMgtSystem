@@ -19,15 +19,17 @@ class PaymentsController extends Controller
 {
     public function index()
     {
+        $records = FeeRecord::query()
+            ->with(['invoiceType.paymentCategory', 'student.user.profile', 'student.currentEnrollment.schoolClass'])
+            ->orderByDesc('id')
+            ->get();
+
         return Inertia::render('Payments/Index', [
             'definitions' => InvoiceType::query()
                 ->with(['paymentCategory', 'section', 'schoolClass', 'academicYear', 'term'])
                 ->orderByDesc('id')
                 ->get(),
-            'records' => FeeRecord::query()
-                ->with(['invoiceType.paymentCategory', 'student.user.profile'])
-                ->orderByDesc('id')
-                ->get(),
+            'records' => $records,
             'classes' => SchoolClass::query()->with('level')->orderBy('name')->get(),
             'classLevels' => ClassLevel::query()->orderBy('name')->get(),
             'sections' => Section::query()->orderBy('name')->get(),
@@ -38,6 +40,12 @@ class PaymentsController extends Controller
                 ->with(['paymentCategory', 'section', 'schoolClass', 'academicYear', 'term'])
                 ->orderBy('name')
                 ->get(),
+            'paymentSummary' => [
+                'total_billed' => (int) $records->sum(fn (FeeRecord $record) => $record->invoiceType?->amount ?? 0),
+                'total_paid' => (int) $records->sum('amount_paid'),
+                'total_outstanding' => (int) $records->sum('balance'),
+                'paid_records' => (int) $records->where('is_paid', true)->count(),
+            ],
         ]);
     }
 
@@ -54,6 +62,21 @@ class PaymentsController extends Controller
             'term_id' => ['nullable', 'integer', 'exists:terms,id'],
         ]);
 
+        if (!empty($data['class_id']) && empty($data['section_id'])) {
+            $data['section_id'] = Section::query()->forClass($data['class_id'])->value('id');
+        }
+
+        if (!empty($data['class_id']) && !empty($data['section_id'])) {
+            $isValidSection = Section::query()
+                ->forClass($data['class_id'])
+                ->where('id', $data['section_id'])
+                ->exists();
+
+            if (!$isValidSection) {
+                return back()->withErrors(['section_id' => 'Selected section does not belong to the selected class.']);
+            }
+        }
+
         InvoiceType::create($data);
 
         return back();
@@ -68,6 +91,7 @@ class PaymentsController extends Controller
         $invoiceType = InvoiceType::query()->findOrFail($data['invoice_type_id']);
 
         $students = StudentEnrollment::query()
+            ->where('is_current', true)
             ->when($invoiceType->class_id, fn ($q) => $q->where('class_id', $invoiceType->class_id))
             ->when($invoiceType->section_id, fn ($q) => $q->where('section_id', $invoiceType->section_id))
             ->when($invoiceType->academic_year_id, fn ($q) => $q->where('academic_year_id', $invoiceType->academic_year_id))
@@ -104,7 +128,7 @@ class PaymentsController extends Controller
     public function payNow(Request $request, FeeRecord $record)
     {
         $data = $request->validate([
-            'amount' => ['required', 'integer', 'min:1'],
+            'amount' => ['required', 'integer', 'min:1', 'max:'.$record->balance],
         ]);
 
         $newPaid = $record->amount_paid + $data['amount'];
@@ -147,6 +171,21 @@ class PaymentsController extends Controller
             'term_id' => ['nullable', 'integer', 'exists:terms,id'],
         ]);
 
+        if (!empty($data['class_id']) && empty($data['section_id'])) {
+            $data['section_id'] = Section::query()->forClass($data['class_id'])->value('id');
+        }
+
+        if (!empty($data['class_id']) && !empty($data['section_id'])) {
+            $isValidSection = Section::query()
+                ->forClass($data['class_id'])
+                ->where('id', $data['section_id'])
+                ->exists();
+
+            if (!$isValidSection) {
+                return back()->withErrors(['section_id' => 'Selected section does not belong to the selected class.']);
+            }
+        }
+
         $definition->update($data);
 
         return back();
@@ -187,6 +226,21 @@ class PaymentsController extends Controller
             'gender' => ['nullable', 'string', 'max:20'],
             'term_id' => ['nullable', 'integer', 'exists:terms,id'],
         ]);
+
+        if (!empty($data['class_id']) && empty($data['section_id'])) {
+            $data['section_id'] = Section::query()->forClass($data['class_id'])->value('id');
+        }
+
+        if (!empty($data['class_id']) && !empty($data['section_id'])) {
+            $isValidSection = Section::query()
+                ->forClass($data['class_id'])
+                ->where('id', $data['section_id'])
+                ->exists();
+
+            if (!$isValidSection) {
+                return back()->withErrors(['section_id' => 'Selected section does not belong to the selected class.']);
+            }
+        }
 
         InvoiceType::create($data);
 

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
 import AppShell from '../../layouts/AppShell.vue';
 import FieldError from '../../components/FieldError.vue';
@@ -17,6 +17,7 @@ const props = defineProps({
     terms: Array,
     paymentCategories: Array,
     invoiceTypes: Array,
+    paymentSummary: Object,
 });
 
 const { can } = usePermissions();
@@ -36,10 +37,31 @@ const editingDefinitionId = ref(null);
 const showView = ref(false);
 const viewRecord = ref(null);
 const showDefinitionForm = ref(false);
+const recordSearch = ref('');
 const genderOptions = [
     { label: 'Male', value: 'male' },
     { label: 'Female', value: 'female' },
 ];
+
+const formatCurrency = (amount) =>
+    new Intl.NumberFormat('en-NG', {
+        style: 'currency',
+        currency: 'NGN',
+        maximumFractionDigits: 0,
+    }).format(Number(amount ?? 0));
+
+const filteredRecords = computed(() => {
+    const term = recordSearch.value.trim().toLowerCase();
+    if (!term) return props.records;
+
+    return props.records.filter((record) => {
+        const studentName = `${record.student?.user?.name ?? ''} ${record.student?.user?.profile?.first_name ?? ''} ${record.student?.user?.profile?.last_name ?? ''}`;
+        const invoiceName = record.invoice_type?.name ?? '';
+        const reference = record.reference ?? '';
+
+        return `${studentName} ${invoiceName} ${reference}`.toLowerCase().includes(term);
+    });
+});
 
 const openView = (record) => {
     viewRecord.value = record;
@@ -132,11 +154,40 @@ const resetRecord = (id) => {
     if (!confirm('Reset this payment record?')) return;
     router.post(`/payments/records/${id}/reset`, {}, { preserveScroll: true });
 };
+
+const selectedRecord = computed(() => props.records.find((record) => record.id === payForm.record_id) ?? null);
 </script>
 
 <template>
     <AppShell>
         <div class="grid grid-cols-1 gap-6">
+            <section class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+                <PCard class="shadow-sm">
+                    <template #content>
+                        <div class="text-xs uppercase tracking-[0.2em] text-slate-400">Total Billed</div>
+                        <div class="mt-2 text-xl font-semibold">{{ formatCurrency(props.paymentSummary?.total_billed) }}</div>
+                    </template>
+                </PCard>
+                <PCard class="shadow-sm">
+                    <template #content>
+                        <div class="text-xs uppercase tracking-[0.2em] text-slate-400">Collected</div>
+                        <div class="mt-2 text-xl font-semibold text-emerald-700">{{ formatCurrency(props.paymentSummary?.total_paid) }}</div>
+                    </template>
+                </PCard>
+                <PCard class="shadow-sm">
+                    <template #content>
+                        <div class="text-xs uppercase tracking-[0.2em] text-slate-400">Outstanding</div>
+                        <div class="mt-2 text-xl font-semibold text-amber-700">{{ formatCurrency(props.paymentSummary?.total_outstanding) }}</div>
+                    </template>
+                </PCard>
+                <PCard class="shadow-sm">
+                    <template #content>
+                        <div class="text-xs uppercase tracking-[0.2em] text-slate-400">Paid Records</div>
+                        <div class="mt-2 text-xl font-semibold">{{ props.paymentSummary?.paid_records ?? 0 }}</div>
+                    </template>
+                </PCard>
+            </section>
+
             <section class="grid grid-cols-1 gap-6 xl:grid-cols-[1fr_320px]">
                 <PCard class="shadow-sm">
                     <template #title>
@@ -217,7 +268,7 @@ const resetRecord = (id) => {
                                         },
                                         {
                                             name: 'section_id',
-                                            label: 'Section',
+                                            label: 'Section (optional, auto from class)',
                                             type: 'model-select',
                                             options: sections,
                                             optionLabel: 'name',
@@ -276,12 +327,20 @@ const resetRecord = (id) => {
             </section>
 
             <PCard class="shadow-sm">
-                <template #title>Payment Records</template>
+                <template #title>
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <span>Payment Records</span>
+                        <PInputText v-model="recordSearch" placeholder="Search student, invoice, reference..." class="w-full sm:w-80" />
+                    </div>
+                </template>
                 <template #content>
-                    <PDataTable :value="records" stripedRows responsiveLayout="scroll" class="text-sm">
+                    <PDataTable :value="filteredRecords" stripedRows responsiveLayout="scroll" class="text-sm">
                         <PColumn header="Student">
                             <template #body="slotProps">
-                                {{ slotProps.data.student?.user?.profile?.first_name ?? '' }} {{ slotProps.data.student?.user?.profile?.last_name ?? '' }}
+                                <div class="font-medium">{{ slotProps.data.student?.user?.name ?? 'Unknown Student' }}</div>
+                                <div class="text-xs text-slate-500">
+                                    {{ slotProps.data.student?.current_enrollment?.school_class?.name ?? '—' }}
+                                </div>
                             </template>
                         </PColumn>
                         <PColumn header="Invoice">
@@ -294,8 +353,21 @@ const resetRecord = (id) => {
                                 {{ slotProps.data.invoice_type?.payment_category?.name ?? '—' }}
                             </template>
                         </PColumn>
-                        <PColumn field="amount_paid" header="Paid" />
-                        <PColumn field="balance" header="Balance" />
+                        <PColumn header="Paid">
+                            <template #body="slotProps">
+                                {{ formatCurrency(slotProps.data.amount_paid) }}
+                            </template>
+                        </PColumn>
+                        <PColumn header="Balance">
+                            <template #body="slotProps">
+                                {{ formatCurrency(slotProps.data.balance) }}
+                            </template>
+                        </PColumn>
+                        <PColumn header="Status">
+                            <template #body="slotProps">
+                                <PTag :value="slotProps.data.is_paid ? 'Paid' : 'Pending'" :severity="slotProps.data.is_paid ? 'success' : 'warning'" />
+                            </template>
+                        </PColumn>
                         <PColumn header="">
                             <template #body="slotProps">
                                 <div class="flex gap-2">
@@ -313,13 +385,18 @@ const resetRecord = (id) => {
             <PCard class="shadow-sm">
                 <template #title>Pay Now</template>
                 <template #content>
-                    <div class="flex items-center gap-3">
+                    <div class="flex flex-col gap-3 md:flex-row md:items-center">
                         <div>
                             <PInputText v-model="payForm.amount" placeholder="Amount to pay" class="w-60" />
                             <FieldError :errors="payForm.errors" field="amount" />
                         </div>
                         <PButton label="Apply Payment" icon="pi pi-check" severity="success" @click="submitPay" />
-                        <span class="text-xs text-slate-500">Select a record first.</span>
+                        <span class="text-xs text-slate-500">
+                            <template v-if="selectedRecord">
+                                Selected: {{ selectedRecord.student?.user?.name ?? 'Unknown' }} • Balance {{ formatCurrency(selectedRecord.balance) }}
+                            </template>
+                            <template v-else>Select a record first.</template>
+                        </span>
                     </div>
                 </template>
             </PCard>
@@ -363,7 +440,7 @@ const resetRecord = (id) => {
                         :options="sections"
                         optionLabel="name"
                         optionValue="id"
-                        placeholder="Section (optional)"
+                        placeholder="Section (optional, auto from class)"
                     />
                     <FieldError :errors="definitionForm.errors" field="section_id" />
                 </div>
