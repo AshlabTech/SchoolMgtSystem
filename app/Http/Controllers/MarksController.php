@@ -8,9 +8,10 @@ use App\Models\Exam;
 use App\Models\Mark;
 use App\Models\SchoolClass;
 use App\Models\Section;
+use App\Models\Setting;
 use App\Models\StudentEnrollment;
 use App\Models\SubjectAssignment;
-use App\Models\Term;
+use App\Services\GradeComputationService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -119,6 +120,19 @@ class MarksController extends Controller
                     't4' => $entry['t4'] ?? null,
                     'exm' => $entry['exm'] ?? null,
                 ]
+            );
+        }
+
+        $autoCompute = (bool) Setting::where('key', 'auto_compute_grade')->value('value');
+
+        if ($autoCompute) {
+            $service = new GradeComputationService();
+            $service->computeForExamSubject(
+                $data['exam_id'],
+                $data['subject_id'],
+                $data['class_id'],
+                $data['section_id'] ?? null,
+                $data['academic_year_id'] ?? null,
             );
         }
 

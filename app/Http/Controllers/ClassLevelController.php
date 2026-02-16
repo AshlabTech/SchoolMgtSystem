@@ -13,6 +13,7 @@ class ClassLevelController extends Controller
             'name' => ['required', 'string', 'max:255', 'unique:class_levels,name'],
             'code' => ['nullable', 'string', 'max:20'],
             'description' => ['nullable', 'string', 'max:255'],
+            'school_type' => ['nullable', 'string', 'in:primary,secondary'],
         ]);
 
         ClassLevel::create($data);
@@ -33,6 +34,7 @@ class ClassLevelController extends Controller
             'name' => ['required', 'string', 'max:255', 'unique:class_levels,name,'.$classLevel->id],
             'code' => ['nullable', 'string', 'max:20'],
             'description' => ['nullable', 'string', 'max:255'],
+            'school_type' => ['nullable', 'string', 'in:primary,secondary'],
         ]);
 
         $classLevel->update($data);

@@ -52,12 +52,19 @@ class HandleInertiaRequests extends Middleware
             $currentTerm = $currentYear->terms()->orderBy('order')->first();
         }
 
+        $schoolSettings = Setting::query()
+            ->where('group', 'school_profile')
+            ->pluck('value', 'key');
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
             'schoolContext' => [
                 'academicYear' => $currentYear?->only(['id', 'name']),
                 'term' => $currentTerm?->only(['id', 'name']),
+                'schoolName' => $schoolSettings['school_name'] ?? '',
+                'schoolMotto' => $schoolSettings['school_motto'] ?? '',
+                'schoolType' => $schoolSettings['school_type'] ?? 'combined',
             ],
             'auth' => [
                 'user' => $request->user(),
