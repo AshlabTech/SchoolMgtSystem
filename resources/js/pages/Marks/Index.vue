@@ -60,6 +60,8 @@ const loadStudents = async () => {
                 class_id: filter.class_id,
                 section_id: filter.section_id,
                 academic_year_id: filter.academic_year_id,
+                exam_id: filter.exam_id,
+                subject_id: filter.subject_id,
             }),
         });
         
@@ -71,11 +73,11 @@ const loadStudents = async () => {
         students.value = data.map((item) => ({
             student_id: item.student_id,
             name: `${item.student.user.profile.first_name} ${item.student.user.profile.last_name}`,
-            t1: '',
-            t2: '',
-            t3: '',
-            t4: '',
-            exm: '',
+            t1: item.t1 ?? '',
+            t2: item.t2 ?? '',
+            t3: item.t3 ?? '',
+            t4: item.t4 ?? '',
+            exm: item.exm ?? '',
         }));
         showSuccess('Students loaded successfully');
     } catch (error) {

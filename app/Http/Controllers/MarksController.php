@@ -75,6 +75,8 @@ class MarksController extends Controller
             'class_id' => ['required', 'integer', 'exists:classes,id'],
             'section_id' => ['nullable', 'integer', 'exists:sections,id'],
             'academic_year_id' => ['nullable', 'integer', 'exists:academic_years,id'],
+            'exam_id' => ['nullable', 'integer', 'exists:exams,id'],
+            'subject_id' => ['nullable', 'integer', 'exists:subjects,id'],
         ]);
 
         $user = $request->user();
@@ -89,7 +91,37 @@ class MarksController extends Controller
             ->when($data['academic_year_id'] ?? null, fn ($q) => $q->where('academic_year_id', $data['academic_year_id']))
             ->get();
 
-        return response()->json($enrollments);
+        // Load existing marks if exam_id and subject_id are provided
+        $marks = [];
+        if (isset($data['exam_id']) && isset($data['subject_id'])) {
+            $existingMarks = Mark::query()
+                ->where('exam_id', $data['exam_id'])
+                ->where('subject_id', $data['subject_id'])
+                ->where('class_id', $data['class_id'])
+                ->when($data['section_id'] ?? null, fn ($q) => $q->where('section_id', $data['section_id']))
+                ->when($data['academic_year_id'] ?? null, fn ($q) => $q->where('academic_year_id', $data['academic_year_id']))
+                ->get()
+                ->keyBy('student_id');
+            
+            $marks = $existingMarks;
+        }
+
+        // Merge enrollment data with marks
+        $result = $enrollments->map(function ($enrollment) use ($marks) {
+            $mark = $marks[$enrollment->student_id] ?? null;
+            
+            return [
+                'student_id' => $enrollment->student_id,
+                'student' => $enrollment->student,
+                't1' => $mark?->t1 ?? null,
+                't2' => $mark?->t2 ?? null,
+                't3' => $mark?->t3 ?? null,
+                't4' => $mark?->t4 ?? null,
+                'exm' => $mark?->exm ?? null,
+            ];
+        });
+
+        return response()->json($result);
     }
 
     public function store(Request $request)

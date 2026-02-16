@@ -46,9 +46,13 @@ class GradeComputationService
 
             $grade = $this->resolveGrade($total, $grades, $classLevelId);
 
+            // Compute cumulative average from current and previous terms
+            $cumAverage = $this->computeCumulativeAverage($mark, $total);
+
             $mark->update([
                 'tca' => $tca,
                 'cum' => $total,
+                'cum_ave' => $cumAverage,
                 'grade_id' => $grade?->id,
             ]);
         }
@@ -72,6 +76,34 @@ class GradeComputationService
         }
 
         return $tca;
+    }
+
+    /**
+     * Compute the cumulative average from current and previous term scores.
+     */
+    private function computeCumulativeAverage(Mark $mark, int $currentTotal): ?string
+    {
+        $scores = [$currentTotal];
+        
+        // Add previous term scores if they exist
+        if ($mark->tex1 !== null) {
+            $scores[] = $mark->tex1;
+        }
+        if ($mark->tex2 !== null) {
+            $scores[] = $mark->tex2;
+        }
+        if ($mark->tex3 !== null) {
+            $scores[] = $mark->tex3;
+        }
+
+        // Calculate average
+        $count = count($scores);
+        if ($count === 0) {
+            return null;
+        }
+
+        $average = array_sum($scores) / $count;
+        return number_format($average, 2);
     }
 
     /**
