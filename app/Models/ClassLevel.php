@@ -14,6 +14,7 @@ class ClassLevel extends Model
         'code',
         'description',
         'is_active',
+        'school_type',
     ];
 
     public function classes()

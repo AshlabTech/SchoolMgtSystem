@@ -8,6 +8,7 @@ use App\Models\Mark;
 use App\Models\Section;
 use App\Models\Student;
 use App\Models\Term;
+use App\Services\ResultComputationService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -63,5 +64,25 @@ class ResultsController extends Controller
             'marks' => $marks,
             'selected' => $selected,
         ]);
+    }
+
+    public function compute(Request $request)
+    {
+        $data = $request->validate([
+            'exam_id' => ['required', 'integer', 'exists:exams,id'],
+            'class_id' => ['required', 'integer', 'exists:classes,id'],
+            'section_id' => ['nullable', 'integer', 'exists:sections,id'],
+            'academic_year_id' => ['nullable', 'integer', 'exists:academic_years,id'],
+        ]);
+
+        $service = new ResultComputationService();
+        $service->computeForExamClass(
+            $data['exam_id'],
+            $data['class_id'],
+            $data['section_id'] ?? null,
+            $data['academic_year_id'] ?? null,
+        );
+
+        return back();
     }
 }

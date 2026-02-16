@@ -98,6 +98,7 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('permission:manage.marks|view.results')->group(function () {
         Route::get('/results', [ResultsController::class, 'index'])->name('results.index');
+        Route::post('/results/compute', [ResultsController::class, 'compute'])->middleware('permission:manage.marks')->name('results.compute');
     });
 
     Route::middleware('permission:manage.pins')->group(function () {

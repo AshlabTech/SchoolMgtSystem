@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AcademicYear;
+use App\Models\ClassLevel;
 use App\Models\Setting;
 use App\Models\Term;
 use Illuminate\Http\Request;
@@ -93,6 +94,10 @@ class SettingsController extends Controller
                     ->map(fn ($item) => ['label' => $item->{$labelKey}, 'value' => $item->{$valueKey}])
                     ->all(),
                 'terms' => Term::orderBy('order')
+                    ->get([$valueKey, $labelKey])
+                    ->map(fn ($item) => ['label' => $item->{$labelKey}, 'value' => $item->{$valueKey}])
+                    ->all(),
+                'class_levels' => ClassLevel::orderBy('name')
                     ->get([$valueKey, $labelKey])
                     ->map(fn ($item) => ['label' => $item->{$labelKey}, 'value' => $item->{$valueKey}])
                     ->all(),
