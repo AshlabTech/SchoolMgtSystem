@@ -5,6 +5,7 @@ use App\Models\ClassLevel;
 use App\Models\Exam;
 use App\Models\ExamResult;
 use App\Models\Mark;
+use App\Models\ResultComment;
 use App\Models\SchoolClass;
 use App\Models\Section;
 use App\Models\Setting;
@@ -57,6 +58,7 @@ beforeEach(function () {
     ]);
 
     Setting::create(['key' => 'show_position_on_result', 'group' => 'results', 'type' => 'boolean', 'value' => '1']);
+    Setting::create(['key' => 'auto_apply_result_comment', 'group' => 'results', 'type' => 'boolean', 'value' => '0']);
 });
 
 function createStudentForResult(): Student
@@ -199,4 +201,39 @@ it('computes class average across all students', function () {
 
     expect((float) $result1->class_average)->toBe(70.0)
         ->and((float) $result2->class_average)->toBe(70.0);
+});
+
+it('auto applies default predefined teacher comment when enabled', function () {
+    Setting::where('key', 'auto_apply_result_comment')->update(['value' => '1']);
+    ResultComment::create([
+        'comment' => 'Excellent performance. Keep it up.',
+        'type' => 'teacher',
+        'is_active' => true,
+        'is_default' => true,
+        'sort_order' => 1,
+    ]);
+
+    $student = createStudentForResult();
+    Mark::create([
+        'student_id' => $student->id,
+        'subject_id' => $this->subject1->id,
+        'class_id' => $this->schoolClass->id,
+        'section_id' => $this->section->id,
+        'exam_id' => $this->exam->id,
+        'academic_year_id' => $this->academicYear->id,
+        'cum' => 80,
+    ]);
+
+    $service = new ResultComputationService();
+    $service->computeForExamClass(
+        $this->exam->id,
+        $this->schoolClass->id,
+        $this->section->id,
+        $this->academicYear->id,
+    );
+
+    $result = ExamResult::where('student_id', $student->id)->first();
+
+    expect($result)->not->toBeNull()
+        ->and($result->teacher_comment)->toBe('Excellent performance. Keep it up.');
 });

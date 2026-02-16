@@ -47,6 +47,7 @@ it('seeds all required Nigerian school settings', function () {
         'show_position_on_result',
         'position_format',
         'result_approval_required',
+        'auto_apply_result_comment',
         'next_term_resumption_date',
         'promotion_pass_mark',
         'number_of_terms',

@@ -129,6 +129,10 @@ const currentYear = computed(() => page.props.schoolContext?.academicYear?.name 
                             <i class="pi pi-cog"></i>
                             Settings
                         </a>
+                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/comments">
+                            <i class="pi pi-comments"></i>
+                            Comments
+                        </a>
                         <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/my-account">
                             <i class="pi pi-user"></i>
                             My Account

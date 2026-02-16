@@ -10,6 +10,7 @@ use App\Models\SchoolClass;
 use App\Models\Section;
 use App\Models\Setting;
 use App\Models\StudentEnrollment;
+use App\Models\Subject;
 use App\Models\SubjectAssignment;
 use App\Models\Term;
 use App\Services\GradeComputationService;
@@ -23,15 +24,19 @@ class MarksController extends Controller
         $user = request()->user();
         $isRestrictedTeacher = $this->isRestrictedTeacher($user);
 
-        $assignmentsQuery = SubjectAssignment::query()
-            ->with('subject')
-            ->orderByDesc('id');
-
-        if ($isRestrictedTeacher) {
-            $assignmentsQuery->where('teacher_id', $user->id);
-        }
-
-        $assignments = $assignmentsQuery->get();
+        $assignments = $isRestrictedTeacher
+            ? SubjectAssignment::query()
+                ->with('subject')
+                ->where('teacher_id', $user->id)
+                ->orderByDesc('id')
+                ->get()
+            : Subject::query()
+                ->orderBy('name')
+                ->get()
+                ->map(fn (Subject $subject) => [
+                    'subject_id' => $subject->id,
+                    'subject' => $subject,
+                ]);
         $classIds = $assignments->pluck('class_id')->unique()->values();
         $sectionIds = $assignments->whereNotNull('section_id')->pluck('section_id')->unique();
         $classWideIds = $assignments->whereNull('section_id')->pluck('class_id')->unique();

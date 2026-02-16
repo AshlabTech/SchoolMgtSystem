@@ -252,6 +252,15 @@ class SettingsSeeder extends Seeder
                 'is_locked' => true,
             ],
             [
+                'key' => 'auto_apply_result_comment',
+                'label' => 'Auto Apply Result Comment',
+                'group' => 'results',
+                'type' => 'boolean',
+                'value' => 0,
+                'description' => 'Automatically apply the default predefined result comment during result computation.',
+                'is_locked' => true,
+            ],
+            [
                 'key' => 'next_term_resumption_date',
                 'label' => 'Next Term Resumption Date',
                 'group' => 'results',

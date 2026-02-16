@@ -14,6 +14,9 @@ const props = defineProps({
     terms: Array,
     marks: Array,
     selected: Object,
+    examResult: Object,
+    resultComments: Array,
+    autoApplyComments: Boolean,
 });
 
 const studentOptions = computed(() =>
@@ -43,6 +46,18 @@ const submit = () => {
     filters.get('/results', {
         preserveState: true,
         replace: true,
+    });
+};
+
+const commentForm = useForm({
+    result_comment_id:
+        (props.resultComments || []).find((comment) => comment.comment === props.examResult?.teacher_comment)?.id ?? null,
+});
+
+const saveComment = () => {
+    if (!props.examResult?.id) return;
+    commentForm.put(`/results/${props.examResult.id}/comment`, {
+        preserveScroll: true,
     });
 };
 
@@ -191,6 +206,30 @@ const totalFor = (mark) => {
                             </template>
                         </PColumn>
                     </PDataTable>
+                </template>
+            </PCard>
+
+            <PCard class="shadow-sm">
+                <template #title>Result Comment</template>
+                <template #content>
+                    <div v-if="!examResult" class="text-sm text-slate-500">
+                        Compute and view result first before assigning a comment.
+                    </div>
+                    <div v-else-if="autoApplyComments" class="text-sm text-slate-600">
+                        Auto comment is enabled in settings. Current comment:
+                        <span class="font-medium">{{ examResult.teacher_comment || '—' }}</span>
+                    </div>
+                    <div v-else class="grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto]">
+                        <PDropdown
+                            v-model="commentForm.result_comment_id"
+                            :options="resultComments"
+                            optionLabel="comment"
+                            optionValue="id"
+                            placeholder="Select predefined comment"
+                            class="w-full"
+                        />
+                        <PButton label="Save Comment" icon="pi pi-save" severity="success" @click="saveComment" />
+                    </div>
                 </template>
             </PCard>
         </div>
