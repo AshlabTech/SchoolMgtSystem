@@ -58,11 +58,11 @@ const totalFor = (mark) => {
 
 <template>
     <AppShell>
-        <div class="grid gap-6">
+        <div class="grid grid-cols-1 gap-6">
             <PCard class="shadow-sm">
                 <template #title>Result Viewer</template>
                 <template #content>
-                    <div class="grid gap-3 md:grid-cols-3">
+                    <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
                         <div>
                             <ModelSelect v-model="filters.student_id" :options="studentOptions" optionLabel="label" optionValue="value" placeholder="Student" />
                             <FieldError :errors="filters.errors" field="student_id" />

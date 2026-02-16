@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Section;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class SectionController extends Controller
 {
@@ -29,6 +30,13 @@ class SectionController extends Controller
             ]);
         }
 
+        $hasPivot = Schema::hasTable('class_section');
+        if (!$hasPivot && count($classIds) > 1) {
+            return back()->withErrors([
+                'class_ids' => 'Run migrations to enable multiple classes per section.',
+            ]);
+        }
+
         $section = Section::create([
             'class_id' => $classIds[0] ?? null,
             'teacher_id' => $data['teacher_id'] ?? null,
@@ -36,7 +44,9 @@ class SectionController extends Controller
             'is_active' => true,
         ]);
 
-        $section->schoolClasses()->sync($classIds);
+        if ($hasPivot) {
+            $section->schoolClasses()->sync($classIds);
+        }
 
         return back();
     }
@@ -70,13 +80,22 @@ class SectionController extends Controller
             ]);
         }
 
+        $hasPivot = Schema::hasTable('class_section');
+        if (!$hasPivot && count($classIds) > 1) {
+            return back()->withErrors([
+                'class_ids' => 'Run migrations to enable multiple classes per section.',
+            ]);
+        }
+
         $section->update([
             'class_id' => $classIds[0] ?? null,
             'teacher_id' => $data['teacher_id'] ?? null,
             'name' => $data['name'],
         ]);
 
-        $section->schoolClasses()->sync($classIds);
+        if ($hasPivot) {
+            $section->schoolClasses()->sync($classIds);
+        }
 
         return back();
     }

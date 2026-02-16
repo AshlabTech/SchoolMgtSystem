@@ -10,7 +10,7 @@ class FeeRecord extends Model
     use HasFactory;
 
     protected $fillable = [
-        'fee_definition_id',
+        'invoice_type_id',
         'student_id',
         'reference',
         'amount_paid',
@@ -23,9 +23,9 @@ class FeeRecord extends Model
         'is_paid' => 'boolean',
     ];
 
-    public function feeDefinition()
+    public function invoiceType()
     {
-        return $this->belongsTo(FeeDefinition::class);
+        return $this->belongsTo(InvoiceType::class);
     }
 
     public function student()

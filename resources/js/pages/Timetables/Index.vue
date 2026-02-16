@@ -86,7 +86,7 @@ const submit = () => {
 
 <template>
     <AppShell>
-        <div class="grid gap-6 lg:grid-cols-[360px_1fr]">
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-[360px_1fr]">
             <PCard class="shadow-sm">
                 <template #title>Create Timetable</template>
                 <template #content>

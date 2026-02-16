@@ -1,15 +1,44 @@
 <script setup>
-import { router } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
+import { computed, ref } from 'vue';
 
 const logout = () => {
     router.post('/logout');
 };
+
+const isSidebarOpen = ref(false);
+
+const toggleSidebar = () => {
+    isSidebarOpen.value = !isSidebarOpen.value;
+};
+
+const closeSidebar = () => {
+    isSidebarOpen.value = false;
+};
+
+const onNavClick = (event) => {
+    if (window.innerWidth < 1024 && event.target.closest('a')) {
+        closeSidebar();
+    }
+};
+
+const page = usePage();
+const currentTerm = computed(() => page.props.schoolContext?.term?.name ?? 'Current Term');
+const currentYear = computed(() => page.props.schoolContext?.academicYear?.name ?? 'Academic Year');
 </script>
 
 <template>
-    <div class="min-h-screen text-slate-900">
-        <div class="grid min-h-screen grid-cols-[260px_1fr] gap-0">
-            <aside class="relative overflow-hidden border-r border-slate-200 bg-white/70 backdrop-blur">
+    <div class="h-screen overflow-hidden text-slate-900">
+        <div class="grid h-full grid-cols-1 gap-0 lg:grid-cols-[260px_1fr]">
+            <div
+                class="fixed inset-0 z-30 bg-slate-900/50 backdrop-blur-sm transition-opacity lg:hidden"
+                :class="isSidebarOpen ? 'opacity-100' : 'pointer-events-none opacity-0'"
+                @click="closeSidebar"
+            ></div>
+            <aside
+                class="fixed inset-y-0 left-0 z-40 h-full w-62 overflow-y-auto border-r border-slate-200 bg-white/90 backdrop-blur transition-transform lg:static lg:translate-x-0 lg:bg-white/70"
+                :class="isSidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+            >
                 <div class="flex h-16 items-center gap-3 px-6">
                     <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-600 text-white">
                         <i class="pi pi-sparkles text-base"></i>
@@ -19,7 +48,13 @@ const logout = () => {
                         <div class="text-xs text-slate-400">Academic Suite</div>
                     </div>
                 </div>
-                <nav class="px-4 py-6">
+                <div class="px-6 pb-2">
+                    <div class="text-[11px] uppercase tracking-[0.2em] text-slate-400">Current Term</div>
+                    <div class="text-xs font-semibold text-slate-600">{{ currentTerm }}</div>
+                    <div class="mt-2 text-[11px] uppercase tracking-[0.2em] text-slate-400">Academic Year</div>
+                    <div class="text-xs text-slate-500">{{ currentYear }}</div>
+                </div>
+                <nav class="px-4 py-6" @click="onNavClick">
                     <div class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Core</div>
                     <div class="flex flex-col gap-2">
                         <a class="flex items-center gap-3 rounded-xl bg-teal-50 px-4 py-2 text-sm font-medium text-teal-800" href="/dashboard">
@@ -116,38 +151,31 @@ const logout = () => {
                         </a>
                     </div>
                 </nav>
-                <div class="absolute bottom-6 left-6 right-6 rounded-2xl bg-slate-900 p-4 text-white">
-                    <div class="text-xs uppercase tracking-[0.2em] text-slate-400">Status</div>
-                    <div class="mt-2 flex items-center justify-between">
-                        <div>
-                            <div class="text-sm font-semibold">Term 2</div>
-                            <div class="text-xs text-slate-400">2025/2026</div>
-                        </div>
-                        <PTag value="Live" severity="success" />
-                    </div>
-                </div>
             </aside>
 
-            <div class="flex flex-col">
-                <header class="flex h-16 items-center justify-between border-b border-slate-200 bg-white/70 px-6 backdrop-blur">
+            <div class="flex h-full min-w-0 flex-col overflow-hidden lg:pl-0">
+                <header class="flex min-h-[4rem] items-center justify-between gap-4 border-b border-slate-200 bg-white/70 px-4 py-3 backdrop-blur lg:h-16 lg:px-6">
                     <div class="flex items-center gap-4">
+                        <button class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 lg:hidden" @click="toggleSidebar">
+                            <i class="pi pi-bars"></i>
+                        </button>
                         <div class="text-lg font-semibold" :style="{ fontFamily: 'var(--font-display)' }">Overview</div>
                         <div class="hidden items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-500 md:flex">
                             <span class="h-2 w-2 rounded-full bg-teal-500"></span>
                             Next exam cycle in 12 days
                         </div>
                     </div>
-                    <div class="flex items-center gap-3">
+                    <div class="flex flex-wrap items-center justify-end gap-2">
                         <span class="hidden text-xs text-slate-500 md:inline">Search</span>
-                        <PInputText placeholder="Quick find" class="w-44" />
-                        <PButton icon="pi pi-bell" severity="secondary" text rounded />
-                        <PButton icon="pi pi-plus" label="New" severity="success" rounded />
+                        <PInputText placeholder="Quick find" class="w-32 sm:w-44" />
+                        <PButton icon="pi pi-bell" severity="secondary" text rounded class="hidden sm:inline-flex" />
+                        <PButton icon="pi pi-plus" label="New" severity="success" rounded class="hidden sm:inline-flex" />
                         <PButton icon="pi pi-sign-out" severity="secondary" text rounded @click="logout" />
-                        <PAvatar label="SA" shape="circle" class="bg-teal-600 text-white" />
+                        <PAvatar label="SA" shape="circle" class="hidden sm:inline-flex bg-teal-600 text-white" />
                     </div>
                 </header>
 
-                <main class="flex-1 px-6 py-8">
+                <main class="flex-1 min-w-0 overflow-y-auto px-4 py-6 lg:px-6 lg:py-8">
                     <slot />
                 </main>
             </div>

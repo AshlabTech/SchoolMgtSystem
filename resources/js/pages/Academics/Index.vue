@@ -167,7 +167,7 @@ const deleteSection = (id) => {
 
 <template>
     <AppShell>
-        <div class="grid gap-6">
+        <div class="grid grid-cols-1 gap-6">
             <section class="grid grid-cols-1 gap-6 xl:grid-cols-3">
                 <PCard class="shadow-sm">
                     <template #title>Class Levels</template>

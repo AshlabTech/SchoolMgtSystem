@@ -18,3 +18,17 @@ body {
         linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
     min-height: 100vh;
 }
+
+.p-card {
+    width: 100%;
+    min-width: 0;
+}
+
+.p-card .p-card-body,
+.p-card .p-card-content {
+    min-width: 0;
+}
+
+.p-datatable-wrapper {
+    overflow-x: auto;
+}

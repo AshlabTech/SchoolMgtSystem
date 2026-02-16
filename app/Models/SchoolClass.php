@@ -28,4 +28,9 @@ class SchoolClass extends Model
     {
         return $this->belongsToMany(Section::class, 'class_section', 'class_id', 'section_id');
     }
+
+    public function legacySections()
+    {
+        return $this->hasMany(Section::class, 'class_id');
+    }
 }

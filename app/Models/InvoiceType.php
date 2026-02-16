@@ -5,25 +5,30 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class FeeDefinition extends Model
+class InvoiceType extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'name',
         'amount',
-        'reference',
-        'method',
-        'class_id',
-        'description',
+        'payment_category_id',
+        'section_id',
         'academic_year_id',
-        'created_by',
-        'is_active',
+        'class_id',
+        'gender',
+        'term_id',
     ];
 
-    protected $casts = [
-        'is_active' => 'boolean',
-    ];
+    public function paymentCategory()
+    {
+        return $this->belongsTo(PaymentCategory::class);
+    }
+
+    public function section()
+    {
+        return $this->belongsTo(Section::class);
+    }
 
     public function schoolClass()
     {
@@ -34,4 +39,10 @@ class FeeDefinition extends Model
     {
         return $this->belongsTo(AcademicYear::class);
     }
+
+    public function term()
+    {
+        return $this->belongsTo(Term::class);
+    }
+
 }

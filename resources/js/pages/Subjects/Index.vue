@@ -126,7 +126,7 @@ const deleteAssignment = (id) => {
 
 <template>
     <AppShell>
-        <div class="grid gap-6">
+        <div class="grid grid-cols-1 gap-6">
             <section class="grid grid-cols-1 gap-6 xl:grid-cols-[360px_1fr]">
                 <PCard class="shadow-sm">
                     <template #title>New Subject</template>
@@ -170,7 +170,7 @@ const deleteAssignment = (id) => {
                 <PCard class="shadow-sm">
                     <template #title>Subject Assignments</template>
                     <template #content>
-                        <div class="grid gap-3 md:grid-cols-2">
+                        <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
                             <div>
                                 <ModelSelect
                                     v-model="assignmentForm.subject_id"

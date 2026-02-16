@@ -6,16 +6,25 @@ const props = defineProps({
 });
 
 const studentName = `${props.record.student?.user?.profile?.first_name ?? ''} ${props.record.student?.user?.profile?.last_name ?? ''}`.trim();
+
+const printPage = () => {
+    window.print();
+};
 </script>
 
 <template>
     <AppShell>
-        <div class="grid gap-6">
+        <div class="grid grid-cols-1 gap-6">
             <PCard class="shadow-sm">
-                <template #title>Receipts</template>
+                <template #title>
+                    <div class="flex items-center justify-between">
+                        <span>Receipts</span>
+                        <PButton icon="pi pi-print" label="Print" severity="secondary" @click="printPage" />
+                    </div>
+                </template>
                 <template #content>
                     <div class="mb-4 text-sm text-slate-500">
-                        {{ studentName }} — {{ record.fee_definition?.name ?? '' }}
+                        {{ studentName }} — {{ record.invoice_type?.name ?? '' }}
                     </div>
                     <PDataTable :value="record.receipts" stripedRows responsiveLayout="scroll" class="text-sm">
                         <PColumn field="amount_paid" header="Amount" />

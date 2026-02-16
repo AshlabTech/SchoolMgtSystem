@@ -1,13 +1,40 @@
 <script setup>
+import { ref, watch } from 'vue';
+import { router } from '@inertiajs/vue3';
 import AppShell from '../../layouts/AppShell.vue';
 
-defineProps({
+const props = defineProps({
     student: Object,
     marks: Array,
     feeRecords: Array,
     loans: Array,
     timetables: Array,
+    adminView: Boolean,
+    studentOptions: Array,
+    selectedStudentId: Number,
 });
+
+const showPicker = ref(false);
+const selectedId = ref(props.selectedStudentId ?? null);
+
+watch(
+    () => props.selectedStudentId,
+    (value) => {
+        selectedId.value = value ?? null;
+    }
+);
+
+const applySelection = () => {
+    if (!selectedId.value) return;
+    router.get('/portal/student', { student_id: selectedId.value }, { replace: true, preserveScroll: true });
+    showPicker.value = false;
+};
+
+const clearSelection = () => {
+    selectedId.value = null;
+    router.get('/portal/student', {}, { replace: true, preserveScroll: true });
+    showPicker.value = false;
+};
 
 const totalFor = (mark) => {
     const t1 = Number(mark.t1 || 0);
@@ -21,11 +48,30 @@ const totalFor = (mark) => {
 
 <template>
     <AppShell>
-        <div class="grid gap-6">
+        <div class="grid grid-cols-1 gap-6">
+            <PCard v-if="adminView" class="shadow-sm">
+                <template #title>Portal Preview</template>
+                <template #content>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="text-sm text-slate-600">
+                            Viewing:
+                            <span class="font-semibold text-slate-900">{{ student?.user?.name ?? 'Not selected' }}</span>
+                        </div>
+                        <PButton label="Select Student" icon="pi pi-user" severity="secondary" @click="showPicker = true" />
+                        <PButton label="Clear" icon="pi pi-times" text severity="secondary" @click="clearSelection" />
+                    </div>
+                </template>
+            </PCard>
+
+            <div v-if="!student" class="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-10 text-center text-sm text-slate-500">
+                Select a student to preview the portal.
+            </div>
+
+            <template v-else>
             <PCard class="shadow-sm">
                 <template #title>My Profile</template>
                 <template #content>
-                    <div class="grid gap-3 md:grid-cols-3">
+                    <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
                         <div>
                             <div class="text-xs uppercase tracking-[0.2em] text-slate-400">Name</div>
                             <div class="text-sm font-semibold">
@@ -46,7 +92,7 @@ const totalFor = (mark) => {
                 </template>
             </PCard>
 
-            <div class="grid gap-6 lg:grid-cols-2">
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <PCard class="shadow-sm">
                     <template #title>Recent Marks</template>
                     <template #content>
@@ -79,11 +125,11 @@ const totalFor = (mark) => {
                     <template #title>Payments</template>
                     <template #content>
                         <PDataTable :value="feeRecords" stripedRows responsiveLayout="scroll" class="text-sm">
-                            <PColumn header="Fee">
-                                <template #body="slotProps">
-                                    {{ slotProps.data.fee_definition?.name ?? '—' }}
-                                </template>
-                            </PColumn>
+                                <PColumn header="Fee">
+                                    <template #body="slotProps">
+                                        {{ slotProps.data.invoice_type?.name ?? '—' }}
+                                    </template>
+                                </PColumn>
                             <PColumn field="amount_paid" header="Paid" />
                             <PColumn field="balance" header="Balance" />
                             <PColumn header="Status">
@@ -96,7 +142,7 @@ const totalFor = (mark) => {
                 </PCard>
             </div>
 
-            <div class="grid gap-6 lg:grid-cols-2">
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <PCard class="shadow-sm">
                     <template #title>Library Loans</template>
                     <template #content>
@@ -141,6 +187,25 @@ const totalFor = (mark) => {
                     </template>
                 </PCard>
             </div>
+            </template>
         </div>
+
+        <PDialog v-model:visible="showPicker" modal header="Select Student" class="w-full max-w-md">
+            <div class="space-y-4">
+                <PDropdown
+                    v-model="selectedId"
+                    :options="studentOptions || []"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Choose a student"
+                    class="w-full"
+                    filter
+                />
+                <div class="flex justify-end gap-2">
+                    <PButton label="Cancel" text severity="secondary" @click="showPicker = false" />
+                    <PButton label="Load Portal" icon="pi pi-check" severity="success" @click="applySelection" />
+                </div>
+            </div>
+        </PDialog>
     </AppShell>
 </template>

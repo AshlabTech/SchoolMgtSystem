@@ -77,11 +77,11 @@ const submit = () => {
 
 <template>
     <AppShell>
-        <div class="grid gap-6">
+        <div class="grid grid-cols-1 gap-6">
             <PCard class="shadow-sm">
                 <template #title>Marks Entry</template>
                 <template #content>
-                    <div class="grid gap-3 md:grid-cols-3 xl:grid-cols-5">
+                    <div class="grid grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-5">
                         <div>
                             <ModelSelect
                                 v-model="filter.exam_id"

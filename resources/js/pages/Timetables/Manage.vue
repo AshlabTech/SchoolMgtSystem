@@ -148,7 +148,7 @@ const deleteEntry = (id) => {
 
 <template>
     <AppShell>
-        <div class="grid gap-6">
+        <div class="grid grid-cols-1 gap-6">
             <div class="flex items-center justify-between">
                 <div>
                     <div class="text-sm text-slate-500">Timetable</div>
@@ -157,7 +157,7 @@ const deleteEntry = (id) => {
                 <a href="/timetables" class="text-sm text-teal-700 hover:underline">Back to list</a>
             </div>
 
-            <div class="grid gap-6 lg:grid-cols-[320px_1fr]">
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-[320px_1fr]">
                 <PCard class="shadow-sm">
                     <template #title>Add Time Slot</template>
                     <template #content>
@@ -189,7 +189,7 @@ const deleteEntry = (id) => {
                 <PCard class="shadow-sm">
                     <template #title>Assign Subjects</template>
                     <template #content>
-                        <div class="grid gap-3 md:grid-cols-2">
+                        <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
                             <div>
                                 <ModelSelect
                                     v-model="entryForm.timeslot_id"
@@ -234,7 +234,7 @@ const deleteEntry = (id) => {
                 </PCard>
             </div>
 
-            <div class="grid gap-6 lg:grid-cols-2">
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <PCard class="shadow-sm">
                     <template #title>Time Slots</template>
                     <template #content>

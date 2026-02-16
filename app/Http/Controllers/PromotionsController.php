@@ -11,6 +11,7 @@ use App\Models\Student;
 use App\Models\StudentEnrollment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 
 class PromotionsController extends Controller
@@ -22,11 +23,17 @@ class PromotionsController extends Controller
         $sectionIds = collect([]);
         $classIds = collect([]);
         if ($isFormTeacher) {
-            $sections = Section::with('schoolClasses')->where('teacher_id', $user->id)->get();
-            $sectionIds = $sections->pluck('id');
-            $classIds = $sections->flatMap(function ($section) {
-                return $section->schoolClasses->pluck('id');
-            })->unique();
+            if (Schema::hasTable('class_section')) {
+                $sections = Section::with('schoolClasses')->where('teacher_id', $user->id)->get();
+                $sectionIds = $sections->pluck('id');
+                $classIds = $sections->flatMap(function ($section) {
+                    return $section->schoolClasses->pluck('id');
+                })->unique();
+            } else {
+                $sections = Section::where('teacher_id', $user->id)->get();
+                $sectionIds = $sections->pluck('id');
+                $classIds = $sections->pluck('class_id')->filter()->unique();
+            }
         }
 
         return Inertia::render('Promotions/Index', [

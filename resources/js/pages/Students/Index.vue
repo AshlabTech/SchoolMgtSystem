@@ -44,6 +44,7 @@ const showForm = ref(false);
 const showView = ref(false);
 const viewRecord = ref(null);
 const selectedClassId = ref(null);
+const selectedYearId = ref(null);
 const globalFilter = ref('');
 const originalClassId = ref(null);
 
@@ -120,20 +121,29 @@ const deactivate = (id) => {
 
 const classesWithCounts = computed(() =>
     (props.classes || []).map((cls) => {
-        const count = (props.students || []).filter(
-            (student) => student.current_enrollment?.class_id === cls.id
-        ).length;
+        const count = (props.students || []).filter((student) => {
+            const matchesYear = selectedYearId.value
+                ? student.current_enrollment?.academic_year_id === selectedYearId.value
+                : true;
+            return matchesYear && student.current_enrollment?.class_id === cls.id;
+        }).length;
         return { ...cls, count };
     })
 );
 
 const filteredStudents = computed(() => {
     let list = props.students || [];
+    if (selectedYearId.value) {
+        list = list.filter((student) => student.current_enrollment?.academic_year_id === selectedYearId.value);
+    }
     if (selectedClassId.value) {
         list = list.filter((student) => student.current_enrollment?.class_id === selectedClassId.value);
     }
     return list;
 });
+
+const totalCount = computed(() => filteredStudents.value.length);
+const readyToShow = computed(() => Boolean(selectedYearId.value || selectedClassId.value));
 
 watch(
     () => form.class_id,
@@ -147,11 +157,22 @@ watch(
 
 <template>
     <AppShell>
-        <div class="grid gap-6 lg:grid-cols-[260px_1fr]">
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-[260px_1fr]">
             <aside class="space-y-4">
                 <PCard class="shadow-sm">
                     <template #title>Classes</template>
                     <template #content>
+                        <div class="mb-3">
+                            <PDropdown
+                                v-model="selectedYearId"
+                                :options="years"
+                                optionLabel="name"
+                                optionValue="id"
+                                placeholder="All academic years"
+                                showClear
+                                class="w-full"
+                            />
+                        </div>
                         <div class="flex flex-col gap-2">
                             <button
                                 type="button"
@@ -160,7 +181,7 @@ watch(
                                 @click="selectedClassId = null"
                             >
                                 <span>All Classes</span>
-                                <span class="text-xs text-slate-400">{{ students?.length ?? 0 }}</span>
+                                <span class="text-xs text-slate-400">{{ totalCount }}</span>
                             </button>
                             <button
                                 v-for="cls in classesWithCounts"
@@ -178,7 +199,7 @@ watch(
                 </PCard>
             </aside>
 
-            <div class="grid gap-6">
+            <div class="grid grid-cols-1 gap-6">
                 <PCard class="shadow-sm">
                     <template #title>Students</template>
                     <template #content>
@@ -186,10 +207,19 @@ watch(
                             <PButton label="New Student" icon="pi pi-user-plus" severity="success" @click="openCreate" />
                             <span class="text-xs text-slate-500">Click a class on the left to filter.</span>
                             <div class="ml-auto">
-                                <PInputText v-model="globalFilter" placeholder="Search students..." class="w-64" />
+                                <PInputText
+                                    v-model="globalFilter"
+                                    :disabled="!readyToShow"
+                                    :placeholder="readyToShow ? 'Search students...' : 'Select a year or class to search'"
+                                    class="w-64"
+                                />
                             </div>
                         </div>
+                        <div v-if="!readyToShow" class="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-10 text-center text-sm text-slate-500">
+                            Select an academic year or a class to view enrolled students.
+                        </div>
                         <PDataTable
+                            v-else
                             :value="filteredStudents"
                             stripedRows
                             responsiveLayout="scroll"
@@ -242,7 +272,7 @@ watch(
             class="w-full max-w-3xl"
             @update:visible="(value) => { if (!value) cancelEdit(); }"
         >
-            <div class="grid gap-3 md:grid-cols-2">
+            <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
                 <div>
                     <PInputText v-model="form.first_name" placeholder="First name" class="w-full" />
                     <FieldError :errors="form.errors" field="first_name" />

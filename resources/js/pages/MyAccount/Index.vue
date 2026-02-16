@@ -42,11 +42,11 @@ const changePassword = () => {
 
 <template>
     <AppShell>
-        <div class="grid gap-6">
+        <div class="grid grid-cols-1 gap-6">
             <PCard class="shadow-sm">
                 <template #title>Profile</template>
                 <template #content>
-                    <div class="grid gap-3 md:grid-cols-2">
+                    <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
                         <div>
                             <PInputText v-model="form.name" placeholder="Display name" class="w-full" />
                             <FieldError :errors="form.errors" field="name" />
@@ -87,7 +87,7 @@ const changePassword = () => {
             <PCard class="shadow-sm">
                 <template #title>Change Password</template>
                 <template #content>
-                    <div class="grid gap-3 md:grid-cols-3">
+                    <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
                         <div>
                             <PInputText v-model="passwordForm.current_password" type="password" placeholder="Current password" class="w-full" />
                             <FieldError :errors="passwordForm.errors" field="current_password" />

@@ -17,6 +17,9 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             SuperAdminSeeder::class,
             AcademicYearSeeder::class,
+            TermSeeder::class,
+            PaymentCategorySeeder::class,
+            SettingsSeeder::class,
         ]);
     }
 }

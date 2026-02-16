@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\AcademicYear;
 use App\Models\ClassLevel;
-use App\Models\FeeDefinition;
 use App\Models\FeeRecord;
+use App\Models\InvoiceType;
+use App\Models\PaymentCategory;
 use App\Models\Receipt;
 use App\Models\SchoolClass;
+use App\Models\Section;
 use App\Models\StudentEnrollment;
+use App\Models\Term;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class PaymentsController extends Controller
@@ -18,11 +20,24 @@ class PaymentsController extends Controller
     public function index()
     {
         return Inertia::render('Payments/Index', [
-            'definitions' => FeeDefinition::query()->with(['schoolClass', 'academicYear'])->orderByDesc('id')->get(),
-            'records' => FeeRecord::query()->with(['feeDefinition', 'student.user.profile'])->orderByDesc('id')->get(),
+            'definitions' => InvoiceType::query()
+                ->with(['paymentCategory', 'section', 'schoolClass', 'academicYear', 'term'])
+                ->orderByDesc('id')
+                ->get(),
+            'records' => FeeRecord::query()
+                ->with(['invoiceType.paymentCategory', 'student.user.profile'])
+                ->orderByDesc('id')
+                ->get(),
             'classes' => SchoolClass::query()->with('level')->orderBy('name')->get(),
             'classLevels' => ClassLevel::query()->orderBy('name')->get(),
+            'sections' => Section::query()->orderBy('name')->get(),
             'years' => AcademicYear::query()->orderByDesc('name')->get(),
+            'terms' => Term::query()->orderBy('order')->get(),
+            'paymentCategories' => PaymentCategory::query()->orderBy('name')->get(),
+            'invoiceTypes' => InvoiceType::query()
+                ->with(['paymentCategory', 'section', 'schoolClass', 'academicYear', 'term'])
+                ->orderBy('name')
+                ->get(),
         ]);
     }
 
@@ -31,18 +46,15 @@ class PaymentsController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'amount' => ['required', 'integer', 'min:0'],
-            'class_id' => ['nullable', 'integer', 'exists:classes,id'],
-            'description' => ['nullable', 'string', 'max:255'],
+            'payment_category_id' => ['required', 'integer', 'exists:payment_categories,id'],
+            'section_id' => ['nullable', 'integer', 'exists:sections,id'],
             'academic_year_id' => ['nullable', 'integer', 'exists:academic_years,id'],
+            'class_id' => ['nullable', 'integer', 'exists:classes,id'],
+            'gender' => ['nullable', 'string', 'max:20'],
+            'term_id' => ['nullable', 'integer', 'exists:terms,id'],
         ]);
 
-        FeeDefinition::create([
-            ...$data,
-            'reference' => Str::upper(Str::random(10)),
-            'method' => 'cash',
-            'created_by' => $request->user()?->id,
-            'is_active' => true,
-        ]);
+        InvoiceType::create($data);
 
         return back();
     }
@@ -50,41 +62,39 @@ class PaymentsController extends Controller
     public function generateRecords(Request $request)
     {
         $data = $request->validate([
-            'class_id' => ['required', 'integer', 'exists:classes,id'],
-            'academic_year_id' => ['nullable', 'integer', 'exists:academic_years,id'],
+            'invoice_type_id' => ['required', 'integer', 'exists:invoice_types,id'],
         ]);
 
-        $definitions = FeeDefinition::query()
-            ->where(function ($query) use ($data) {
-                $query->whereNull('class_id')->orWhere('class_id', $data['class_id']);
-            })
-            ->when($data['academic_year_id'] ?? null, fn ($q) => $q->where('academic_year_id', $data['academic_year_id']))
-            ->get();
+        $invoiceType = InvoiceType::query()->findOrFail($data['invoice_type_id']);
 
         $students = StudentEnrollment::query()
-            ->where('class_id', $data['class_id'])
-            ->when($data['academic_year_id'] ?? null, fn ($q) => $q->where('academic_year_id', $data['academic_year_id']))
+            ->when($invoiceType->class_id, fn ($q) => $q->where('class_id', $invoiceType->class_id))
+            ->when($invoiceType->section_id, fn ($q) => $q->where('section_id', $invoiceType->section_id))
+            ->when($invoiceType->academic_year_id, fn ($q) => $q->where('academic_year_id', $invoiceType->academic_year_id))
+            ->when($invoiceType->term_id, fn ($q) => $q->where('term_id', $invoiceType->term_id))
+            ->when($invoiceType->gender, function ($q) use ($invoiceType) {
+                $q->whereHas('student.user.profile', fn ($profile) => $profile->where('gender', $invoiceType->gender));
+            })
             ->get();
 
-        foreach ($definitions as $definition) {
-            foreach ($students as $enrollment) {
-                $record = FeeRecord::firstOrCreate(
-                    [
-                        'fee_definition_id' => $definition->id,
-                        'student_id' => $enrollment->student_id,
-                        'academic_year_id' => $data['academic_year_id'],
-                    ],
-                    [
-                        'reference' => (string) random_int(100000, 99999999),
-                        'amount_paid' => 0,
-                        'balance' => $definition->amount,
-                        'is_paid' => false,
-                    ]
-                );
+        foreach ($students as $enrollment) {
+            $academicYearId = $invoiceType->academic_year_id ?: $enrollment->academic_year_id;
+            $record = FeeRecord::firstOrCreate(
+                [
+                    'invoice_type_id' => $invoiceType->id,
+                    'student_id' => $enrollment->student_id,
+                    'academic_year_id' => $academicYearId,
+                ],
+                [
+                    'reference' => (string) random_int(100000, 99999999),
+                    'amount_paid' => 0,
+                    'balance' => $invoiceType->amount,
+                    'is_paid' => false,
+                ]
+            );
 
-                if (!$record->reference) {
-                    $record->update(['reference' => (string) random_int(100000, 99999999)]);
-                }
+            if (!$record->reference) {
+                $record->update(['reference' => (string) random_int(100000, 99999999)]);
             }
         }
 
@@ -98,7 +108,7 @@ class PaymentsController extends Controller
         ]);
 
         $newPaid = $record->amount_paid + $data['amount'];
-        $balance = max(0, $record->feeDefinition->amount - $newPaid);
+        $balance = max(0, ($record->invoiceType?->amount ?? 0) - $newPaid);
 
         $record->update([
             'amount_paid' => $newPaid,
@@ -120,18 +130,21 @@ class PaymentsController extends Controller
     public function receipts(FeeRecord $record)
     {
         return Inertia::render('Payments/Receipts', [
-            'record' => $record->load(['feeDefinition', 'student.user.profile', 'receipts']),
+            'record' => $record->load(['invoiceType.paymentCategory', 'student.user.profile', 'receipts']),
         ]);
     }
 
-    public function updateDefinition(Request $request, FeeDefinition $definition)
+    public function updateDefinition(Request $request, InvoiceType $definition)
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'amount' => ['required', 'integer', 'min:0'],
-            'class_id' => ['nullable', 'integer', 'exists:classes,id'],
-            'description' => ['nullable', 'string', 'max:255'],
+            'payment_category_id' => ['required', 'integer', 'exists:payment_categories,id'],
+            'section_id' => ['nullable', 'integer', 'exists:sections,id'],
             'academic_year_id' => ['nullable', 'integer', 'exists:academic_years,id'],
+            'class_id' => ['nullable', 'integer', 'exists:classes,id'],
+            'gender' => ['nullable', 'string', 'max:20'],
+            'term_id' => ['nullable', 'integer', 'exists:terms,id'],
         ]);
 
         $definition->update($data);
@@ -143,10 +156,39 @@ class PaymentsController extends Controller
     {
         $record->update([
             'amount_paid' => 0,
-            'balance' => $record->feeDefinition->amount,
+            'balance' => $record->invoiceType?->amount ?? $record->balance,
             'is_paid' => false,
         ]);
         $record->receipts()->delete();
+
+        return back();
+    }
+
+    public function storeCategory(Request $request)
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:120', 'unique:payment_categories,name'],
+        ]);
+
+        PaymentCategory::create($data);
+
+        return back();
+    }
+
+    public function storeInvoiceType(Request $request)
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:150'],
+            'amount' => ['required', 'integer', 'min:0'],
+            'payment_category_id' => ['required', 'integer', 'exists:payment_categories,id'],
+            'section_id' => ['nullable', 'integer', 'exists:sections,id'],
+            'academic_year_id' => ['nullable', 'integer', 'exists:academic_years,id'],
+            'class_id' => ['nullable', 'integer', 'exists:classes,id'],
+            'gender' => ['nullable', 'string', 'max:20'],
+            'term_id' => ['nullable', 'integer', 'exists:terms,id'],
+        ]);
+
+        InvoiceType::create($data);
 
         return back();
     }

@@ -100,8 +100,8 @@ const releaseAssignment = (id) => {
 
 <template>
     <AppShell>
-        <div class="grid gap-6">
-            <div class="grid gap-6 lg:grid-cols-[360px_1fr]">
+        <div class="grid grid-cols-1 gap-6">
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-[360px_1fr]">
                 <PCard class="shadow-sm">
                     <template #title>Add Dormitory</template>
                     <template #content>
@@ -153,7 +153,7 @@ const releaseAssignment = (id) => {
             <PCard class="shadow-sm">
                 <template #title>Assign Students</template>
                 <template #content>
-                    <div class="grid gap-3 md:grid-cols-2">
+                    <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
                         <div>
                             <ModelSelect
                                 v-model="assignmentForm.dormitory_id"

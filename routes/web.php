@@ -110,6 +110,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/payments', [PaymentsController::class, 'index'])->name('payments.index');
         Route::post('/payments/definitions', [PaymentsController::class, 'storeDefinition'])->name('payments.definitions.store');
         Route::put('/payments/definitions/{definition}', [PaymentsController::class, 'updateDefinition'])->name('payments.definitions.update');
+        Route::post('/payments/categories', [PaymentsController::class, 'storeCategory'])->name('payments.categories.store');
+        Route::post('/payments/invoice-types', [PaymentsController::class, 'storeInvoiceType'])->name('payments.invoice-types.store');
         Route::post('/payments/records/generate', [PaymentsController::class, 'generateRecords'])->name('payments.records.generate');
         Route::post('/payments/records/{record}/pay', [PaymentsController::class, 'payNow'])->name('payments.records.pay');
         Route::post('/payments/records/{record}/reset', [PaymentsController::class, 'resetRecord'])->name('payments.records.reset');
@@ -157,7 +159,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
         Route::post('/settings', [SettingsController::class, 'store'])->name('settings.store');
         Route::put('/settings/{setting}', [SettingsController::class, 'update'])->name('settings.update');
-        Route::delete('/settings/{setting}', [SettingsController::class, 'destroy'])->name('settings.destroy');
         Route::post('/academic-years', [AcademicYearsController::class, 'store'])->name('academic-years.store');
         Route::post('/terms', [TermsController::class, 'store'])->name('terms.store');
     });
@@ -178,11 +179,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/my-children', [ParentController::class, 'index'])->name('parent.children');
     });
 
-    Route::middleware('role:student')->group(function () {
+    Route::middleware('role:student|admin|super_admin')->group(function () {
         Route::get('/portal/student', [StudentPortalController::class, 'index'])->name('portal.student');
     });
 
-    Route::middleware('role:parent')->group(function () {
+    Route::middleware('role:parent|admin|super_admin')->group(function () {
         Route::get('/portal/parent', [ParentPortalController::class, 'index'])->name('portal.parent');
     });
 

@@ -30,7 +30,7 @@ const statusSeverity = (status) => {
 
 <template>
     <AppShell>
-        <div class="grid gap-6">
+        <div class="grid grid-cols-1 gap-6">
             <section class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
                 <PCard v-for="item in stats" :key="item.label" class="shadow-sm">
                     <template #content>
@@ -66,7 +66,7 @@ const statusSeverity = (status) => {
                     </template>
                 </PCard>
 
-                <div class="grid gap-6">
+                <div class="grid grid-cols-1 gap-6">
                     <PCard class="shadow-sm">
                         <template #title>Upcoming Events</template>
                         <template #content>
@@ -86,7 +86,7 @@ const statusSeverity = (status) => {
                     <PCard class="shadow-sm">
                         <template #title>Quick Actions</template>
                         <template #content>
-                            <div class="grid gap-3">
+                            <div class="grid grid-cols-1 gap-3">
                                 <PButton label="Create Exam" icon="pi pi-file-edit" severity="secondary" outlined class="w-full" />
                                 <PButton label="Record Payment" icon="pi pi-credit-card" severity="success" class="w-full" />
                                 <PButton label="Assign Subjects" icon="pi pi-book" severity="info" class="w-full" />

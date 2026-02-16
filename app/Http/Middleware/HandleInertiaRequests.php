@@ -2,6 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\AcademicYear;
+use App\Models\Setting;
+use App\Models\Term;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -35,9 +38,27 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $currentYearId = Setting::query()->where('key', 'set_current_academic_year')->value('value');
+        $currentTermId = Setting::query()->where('key', 'set_current_term')->value('value');
+
+        $currentYear = $currentYearId
+            ? AcademicYear::query()->find($currentYearId)
+            : AcademicYear::query()->where('is_current', true)->first();
+
+        $currentTerm = $currentTermId
+            ? Term::query()->find($currentTermId)
+            : Term::query()->where('is_current', true)->first();
+        if (!$currentTerm && $currentYear) {
+            $currentTerm = $currentYear->terms()->orderBy('order')->first();
+        }
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
+            'schoolContext' => [
+                'academicYear' => $currentYear?->only(['id', 'name']),
+                'term' => $currentTerm?->only(['id', 'name']),
+            ],
             'auth' => [
                 'user' => $request->user(),
                 'roles' => $request->user()?->getRoleNames(),

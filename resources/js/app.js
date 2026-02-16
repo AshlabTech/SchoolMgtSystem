@@ -16,6 +16,7 @@ import Tag from 'primevue/tag';
 import Toast from 'primevue/toast';
 import ToastService from 'primevue/toastservice';
 import InputNumber from 'primevue/inputnumber';
+import InputSwitch from 'primevue/inputswitch';
 import Aura from '@primevue/themes/aura';
 import 'primeicons/primeicons.css';
 import '../css/app.css';
@@ -44,6 +45,7 @@ createInertiaApp({
         vueApp.component('PInputText', InputText);
         vueApp.component('PDatePicker', DatePicker);
         vueApp.component('PInputNumber', InputNumber);
+        vueApp.component('PInputSwitch', InputSwitch);
         vueApp.component('PTag', Tag);
         vueApp.component('PDialog', Dialog);
         vueApp.component('PToast', Toast);

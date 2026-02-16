@@ -11,7 +11,20 @@ class Setting extends Model
 
     protected $fillable = [
         'key',
+        'label',
         'group',
         'value',
+        'type',
+        'options',
+        'options_source',
+        'options_label',
+        'options_value',
+        'description',
+        'is_locked',
+    ];
+
+    protected $casts = [
+        'options' => 'array',
+        'is_locked' => 'boolean',
     ];
 }

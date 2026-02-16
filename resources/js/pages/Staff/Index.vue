@@ -87,11 +87,11 @@ const deleteStaff = (id) => {
 
 <template>
     <AppShell>
-        <div class="grid gap-6">
+        <div class="grid grid-cols-1 gap-6">
             <PCard class="shadow-sm">
                 <template #title>Add Staff</template>
                 <template #content>
-                    <div class="grid gap-3 md:grid-cols-3">
+                    <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
                         <div>
                             <PInputText v-model="form.name" placeholder="Display name" class="w-full" />
                             <FieldError :errors="form.errors" field="name" />

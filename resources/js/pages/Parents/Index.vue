@@ -8,7 +8,7 @@ defineProps({
 
 <template>
     <AppShell>
-        <div class="grid gap-6">
+        <div class="grid grid-cols-1 gap-6">
             <PCard class="shadow-sm">
                 <template #title>My Children</template>
                 <template #content>

@@ -62,11 +62,11 @@ const resetPromotion = (id) => {
 
 <template>
     <AppShell>
-        <div class="grid gap-6">
+        <div class="grid grid-cols-1 gap-6">
             <PCard class="shadow-sm">
                 <template #title>Promote Student</template>
                 <template #content>
-                    <div class="grid gap-3 md:grid-cols-2">
+                    <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
                         <div>
                             <ModelSelect v-model="form.student_id" :options="studentOptions" optionLabel="label" optionValue="value" placeholder="Select student" />
                             <FieldError :errors="form.errors" field="student_id" />
