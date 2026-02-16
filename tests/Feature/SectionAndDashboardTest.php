@@ -112,10 +112,10 @@ it('loads dashboard with computed data instead of static values', function () {
         ->assertSuccessful()
         ->assertInertia(fn (Assert $page) => $page
             ->component('Dashboard')
-            ->where('stats.0.value', 1)
-            ->where('stats.1.value', 90000)
-            ->where('stats.2.value', 1)
-            ->where('stats.3.value', 1)
+            ->where('stats', fn (array $stats) => collect($stats)->contains(fn ($item) => $item['label'] === 'Active Students' && $item['value'] === 1)
+                && collect($stats)->contains(fn ($item) => $item['label'] === 'Outstanding Fees' && $item['value'] === 90000)
+                && collect($stats)->contains(fn ($item) => $item['label'] === 'Published Exams' && $item['value'] === 1)
+                && collect($stats)->contains(fn ($item) => $item['label'] === 'Active Staff' && $item['value'] === 1))
             ->has('payments', 1)
             ->has('events', 1)
         );

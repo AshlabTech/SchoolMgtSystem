@@ -60,7 +60,7 @@ Route::middleware('auth')->group(function () {
                     'student' => $receipt->feeRecord?->student?->user?->name ?? 'Unknown',
                     'class' => $receipt->feeRecord?->student?->currentEnrollment?->schoolClass?->name ?? '—',
                     'amount' => (int) $receipt->amount_paid,
-                    'status' => ($receipt->feeRecord?->is_paid ?? false) ? 'Paid' : (($receipt->feeRecord?->balance ?? 0) > 0 ? 'Pending' : 'Paid'),
+                    'status' => ($receipt->feeRecord?->is_paid ?? false) ? 'Paid' : 'Pending',
                     'date' => optional($receipt->issued_at)->toDateString(),
                 ])
                 ->values(),
