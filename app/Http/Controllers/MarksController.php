@@ -65,6 +65,7 @@ class MarksController extends Controller
             'years' => AcademicYear::query()->orderByDesc('name')->get(),
             'terms' => Term::query()->orderBy('order')->get(),
             'subjects' => $assignments,
+            'numberOfCaComponents' => (int) (Setting::where('key', 'number_of_ca_components')->value('value') ?? 2),
         ]);
     }
 

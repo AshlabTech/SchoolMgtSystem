@@ -5,6 +5,7 @@ import AppShell from '../../layouts/AppShell.vue';
 import FieldError from '../../components/FieldError.vue';
 import ModelSelect from '../../components/ModelSelect.vue';
 import { usePermissions } from '../../composables/usePermissions';
+import { useToast } from '../../composables/useToast';
 
 const props = defineProps({
     classes: Array,
@@ -18,6 +19,7 @@ const props = defineProps({
 });
 
 const { can } = usePermissions();
+const { showSuccess, showError } = useToast();
 
 const filters = useForm({
     class_id: props.selected?.class_id ?? null,
@@ -102,7 +104,7 @@ const updateScore = (studentId, skillId, rating) => {
 
 const saveBulk = () => {
     if (bulkForm.scores.length === 0) {
-        alert('No scores to save');
+        showError('No scores to save');
         return;
     }
 
@@ -110,6 +112,10 @@ const saveBulk = () => {
         preserveScroll: true,
         onSuccess: () => {
             bulkForm.scores = [];
+            showSuccess(`${bulkForm.scores.length} skill score(s) saved successfully`);
+        },
+        onError: (errors) => {
+            showError('Failed to save skill scores', Object.values(errors).join(', '));
         },
     });
 };

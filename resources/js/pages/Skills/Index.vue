@@ -6,6 +6,7 @@ import FieldError from '../../components/FieldError.vue';
 import ModelSelect from '../../components/ModelSelect.vue';
 import RecordViewer from '../../components/RecordViewer.vue';
 import { usePermissions } from '../../composables/usePermissions';
+import { useToast } from '../../composables/useToast';
 
 const props = defineProps({
     skills: Array,
@@ -13,6 +14,7 @@ const props = defineProps({
 });
 
 const { can } = usePermissions();
+const { showSuccess, showError } = useToast();
 
 const form = useForm({
     name: '',
@@ -55,6 +57,10 @@ const submit = () => {
             onSuccess: () => {
                 editingId.value = null;
                 form.reset();
+                showSuccess('Skill updated successfully');
+            },
+            onError: (errors) => {
+                showError('Failed to update skill', Object.values(errors).join(', '));
             },
         });
         return;
@@ -64,13 +70,25 @@ const submit = () => {
         preserveScroll: true,
         onSuccess: () => {
             form.reset();
+            showSuccess('Skill created successfully');
+        },
+        onError: (errors) => {
+            showError('Failed to create skill', Object.values(errors).join(', '));
         },
     });
 };
 
 const remove = (id) => {
     if (!confirm('Delete this skill?')) return;
-    router.delete(`/skills/${id}`, { preserveScroll: true });
+    router.delete(`/skills/${id}`, {
+        preserveScroll: true,
+        onSuccess: () => {
+            showSuccess('Skill deleted successfully');
+        },
+        onError: (errors) => {
+            showError('Failed to delete skill', Object.values(errors).join(', '));
+        },
+    });
 };
 
 const getSkillTypeLabel = (type) => {

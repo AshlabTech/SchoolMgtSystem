@@ -6,6 +6,7 @@ import FieldError from '../../components/FieldError.vue';
 import ModelSelect from '../../components/ModelSelect.vue';
 import RecordViewer from '../../components/RecordViewer.vue';
 import { usePermissions } from '../../composables/usePermissions';
+import { useToast } from '../../composables/useToast';
 
 const props = defineProps({
     students: Array,
@@ -29,6 +30,7 @@ const studentOptions = computed(() =>
 );
 
 const { can } = usePermissions();
+const { showSuccess, showError } = useToast();
 
 const showView = ref(false);
 const viewRecord = ref(null);
@@ -56,9 +58,18 @@ const commentForm = useForm({
 });
 
 const saveComment = () => {
-    if (!props.examResult?.id) return;
+    if (!props.examResult?.id) {
+        showError('Please compute and view result first');
+        return;
+    }
     commentForm.put(`/results/${props.examResult.id}/comment`, {
         preserveScroll: true,
+        onSuccess: () => {
+            showSuccess('Comment saved successfully');
+        },
+        onError: (errors) => {
+            showError('Failed to save comment', Object.values(errors).join(', '));
+        },
     });
 };
 

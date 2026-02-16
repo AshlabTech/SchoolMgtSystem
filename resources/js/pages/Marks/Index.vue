@@ -5,6 +5,7 @@ import AppShell from '../../layouts/AppShell.vue';
 import FieldError from '../../components/FieldError.vue';
 import ModelSelect from '../../components/ModelSelect.vue';
 import { usePermissions } from '../../composables/usePermissions';
+import { useToast } from '../../composables/useToast';
 
 const props = defineProps({
     exams: Array,
@@ -14,6 +15,7 @@ const props = defineProps({
     years: Array,
     terms: Array,
     subjects: Array,
+    numberOfCaComponents: Number,
 });
 
 const subjectOptions = computed(() =>
@@ -24,6 +26,7 @@ const subjectOptions = computed(() =>
 );
 
 const { can } = usePermissions();
+const { showSuccess, showError } = useToast();
 
 const filter = useForm({
     exam_id: null,
@@ -37,42 +40,67 @@ const filter = useForm({
 const students = ref([]);
 
 const loadStudents = async () => {
-    if (!filter.class_id) return;
-    const token =
-        typeof document !== 'undefined'
-            ? document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
-            : null;
-    const response = await fetch('/marks/students', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-            ...(token ? { 'X-CSRF-TOKEN': token } : {}),
-        },
-        body: JSON.stringify({
-            class_id: filter.class_id,
-            section_id: filter.section_id,
-            academic_year_id: filter.academic_year_id,
-        }),
-    });
-    const data = await response.json();
-    students.value = data.map((item) => ({
-        student_id: item.student_id,
-        name: `${item.student.user.profile.first_name} ${item.student.user.profile.last_name}`,
-        t1: '',
-        t2: '',
-        t3: '',
-        t4: '',
-        exm: '',
-    }));
+    if (!filter.class_id) {
+        showError('Please select a class first');
+        return;
+    }
+    try {
+        const token =
+            typeof document !== 'undefined'
+                ? document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                : null;
+        const response = await fetch('/marks/students', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                ...(token ? { 'X-CSRF-TOKEN': token } : {}),
+            },
+            body: JSON.stringify({
+                class_id: filter.class_id,
+                section_id: filter.section_id,
+                academic_year_id: filter.academic_year_id,
+            }),
+        });
+        
+        if (!response.ok) {
+            throw new Error('Failed to load students');
+        }
+        
+        const data = await response.json();
+        students.value = data.map((item) => ({
+            student_id: item.student_id,
+            name: `${item.student.user.profile.first_name} ${item.student.user.profile.last_name}`,
+            t1: '',
+            t2: '',
+            t3: '',
+            t4: '',
+            exm: '',
+        }));
+        showSuccess('Students loaded successfully');
+    } catch (error) {
+        showError('Failed to load students', error.message);
+    }
 };
 
 const submit = () => {
     filter.entries = students.value;
     filter.post('/marks', {
         preserveScroll: true,
+        onSuccess: () => {
+            showSuccess('Marks saved successfully');
+        },
+        onError: (errors) => {
+            showError('Failed to save marks', Object.values(errors).join(', '));
+        },
     });
 };
+
+// Show/hide CA columns based on settings
+const showT1 = computed(() => props.numberOfCaComponents >= 1);
+const showT2 = computed(() => props.numberOfCaComponents >= 2);
+const showT3 = computed(() => props.numberOfCaComponents >= 3);
+const showT4 = computed(() => props.numberOfCaComponents >= 4);
 </script>
 
 <template>
@@ -266,22 +294,22 @@ const submit = () => {
                     <div class="mt-6">
                         <PDataTable :value="students" stripedRows responsiveLayout="scroll" class="text-sm">
                             <PColumn field="name" header="Student" />
-                            <PColumn header="T1">
+                            <PColumn v-if="showT1" header="T1">
                                 <template #body="slotProps">
                                     <PInputText v-model="slotProps.data.t1" class="w-20" />
                                 </template>
                             </PColumn>
-                            <PColumn header="T2">
+                            <PColumn v-if="showT2" header="T2">
                                 <template #body="slotProps">
                                     <PInputText v-model="slotProps.data.t2" class="w-20" />
                                 </template>
                             </PColumn>
-                            <PColumn header="T3">
+                            <PColumn v-if="showT3" header="T3">
                                 <template #body="slotProps">
                                     <PInputText v-model="slotProps.data.t3" class="w-20" />
                                 </template>
                             </PColumn>
-                            <PColumn header="T4">
+                            <PColumn v-if="showT4" header="T4">
                                 <template #body="slotProps">
                                     <PInputText v-model="slotProps.data.t4" class="w-20" />
                                 </template>

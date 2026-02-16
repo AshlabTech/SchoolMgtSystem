@@ -29,6 +29,7 @@ const currentYear = computed(() => page.props.schoolContext?.academicYear?.name 
 
 <template>
     <div class="h-screen overflow-hidden text-slate-900">
+        <PToast position="top-right" />
         <div class="grid h-full grid-cols-1 gap-0 lg:grid-cols-[260px_1fr]">
             <div
                 class="fixed inset-0 z-30 bg-slate-900/50 backdrop-blur-sm transition-opacity lg:hidden"
@@ -100,6 +101,14 @@ const currentYear = computed(() => page.props.schoolContext?.academicYear?.name 
                         <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/grades">
                             <i class="pi pi-star"></i>
                             Grades
+                        </a>
+                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/skills">
+                            <i class="pi pi-list-check"></i>
+                            Skills
+                        </a>
+                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/skill-scores">
+                            <i class="pi pi-chart-pie"></i>
+                            Skill Scores
                         </a>
                         <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/payments">
                             <i class="pi pi-credit-card"></i>
