@@ -54,6 +54,22 @@ class MarksController extends Controller
         $currentYear = AcademicYear::query()->where('is_current', true)->first();
         $currentTerm = Term::query()->where('is_current', true)->first();
 
+        // Get sections with their CA component counts
+        $sections = Section::query()
+            ->when($isRestrictedTeacher, fn ($q) => $q->whereIn('id', $allowedSectionIds))
+            ->orderBy('name')
+            ->get()
+            ->map(function ($section) {
+                return [
+                    'id' => $section->id,
+                    'class_id' => $section->class_id,
+                    'teacher_id' => $section->teacher_id,
+                    'name' => $section->name,
+                    'is_active' => $section->is_active,
+                    'number_of_ca_components' => $section->getNumberOfCaComponents(),
+                ];
+            });
+
         return Inertia::render('Marks/Index', [
             'exams' => Exam::query()->orderByDesc('id')->get(),
             'classes' => SchoolClass::query()
@@ -61,10 +77,7 @@ class MarksController extends Controller
                 ->orderBy('name')
                 ->get(),
             'classLevels' => ClassLevel::query()->orderBy('name')->get(),
-            'sections' => Section::query()
-                ->when($isRestrictedTeacher, fn ($q) => $q->whereIn('id', $allowedSectionIds))
-                ->orderBy('name')
-                ->get(),
+            'sections' => $sections,
             'years' => AcademicYear::query()->orderByDesc('name')->get(),
             'terms' => Term::query()->orderBy('order')->get(),
             'subjects' => $assignments,
@@ -90,7 +103,7 @@ class MarksController extends Controller
         }
 
         $enrollments = StudentEnrollment::query()
-            ->with(['student.user.profile'])
+            ->with(['student.user.profile', 'section'])
             ->where('class_id', $data['class_id'])
             ->when($data['academic_year_id'] ?? null, fn ($q) => $q->where('academic_year_id', $data['academic_year_id']))
             ->get();
@@ -109,13 +122,33 @@ class MarksController extends Controller
             $marks = $existingMarks;
         }
 
+        // Group enrollments by section to determine CA components
+        $sectionCaComponents = [];
+        foreach ($enrollments as $enrollment) {
+            if ($enrollment->section_id && !isset($sectionCaComponents[$enrollment->section_id])) {
+                $section = $enrollment->section ?? Section::find($enrollment->section_id);
+                $sectionCaComponents[$enrollment->section_id] = $section ? $section->getNumberOfCaComponents() : null;
+            }
+        }
+
+        // Get the most common CA component count (or global default)
+        $caComponentsCount = !empty($sectionCaComponents) 
+            ? max(array_values($sectionCaComponents)) 
+            : (int) (Setting::where('key', 'number_of_ca_components')->value('value') ?? 2);
+
         // Merge enrollment data with marks
-        $result = $enrollments->map(function ($enrollment) use ($marks) {
+        $result = $enrollments->map(function ($enrollment) use ($marks, $sectionCaComponents) {
             $mark = $marks[$enrollment->student_id] ?? null;
+            $sectionId = $enrollment->section_id;
+            $studentCaComponents = $sectionId && isset($sectionCaComponents[$sectionId]) 
+                ? $sectionCaComponents[$sectionId] 
+                : null;
 
             return [
                 'student_id' => $enrollment->student_id,
                 'student' => $enrollment->student,
+                'section_id' => $sectionId,
+                'section_ca_components' => $studentCaComponents,
                 't1' => $mark?->t1 ?? null,
                 't2' => $mark?->t2 ?? null,
                 't3' => $mark?->t3 ?? null,
@@ -124,7 +157,10 @@ class MarksController extends Controller
             ];
         });
 
-        return response()->json($result);
+        return response()->json([
+            'students' => $result,
+            'ca_components' => $caComponentsCount,
+        ]);
     }
 
     public function store(Request $request)

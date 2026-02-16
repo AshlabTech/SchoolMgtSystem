@@ -40,6 +40,12 @@ const filter = useForm({
 });
 
 const students = ref([]);
+const dynamicCaComponents = ref(null);
+
+// Get the number of CA components to use (from loaded students or global)
+const effectiveCaComponents = computed(() => {
+    return dynamicCaComponents.value ?? props.numberOfCaComponents;
+});
 
 const loadStudents = async () => {
     if (!filter.class_id) {
@@ -72,9 +78,15 @@ const loadStudents = async () => {
         }
         
         const data = await response.json();
-        students.value = data.map((item) => ({
+        
+        // Update CA components based on response
+        dynamicCaComponents.value = data.ca_components || null;
+        
+        students.value = data.students.map((item) => ({
             student_id: item.student_id,
             name: `${item.student.user.profile.first_name} ${item.student.user.profile.last_name}`,
+            section_id: item.section_id,
+            section_ca_components: item.section_ca_components,
             t1: item.t1 ?? '',
             t2: item.t2 ?? '',
             t3: item.t3 ?? '',
@@ -100,11 +112,11 @@ const submit = () => {
     });
 };
 
-// Show/hide CA columns based on settings
-const showT1 = computed(() => props.numberOfCaComponents >= 1);
-const showT2 = computed(() => props.numberOfCaComponents >= 2);
-const showT3 = computed(() => props.numberOfCaComponents >= 3);
-const showT4 = computed(() => props.numberOfCaComponents >= 4);
+// Show/hide CA columns based on effective CA components (section-specific or global)
+const showT1 = computed(() => effectiveCaComponents.value >= 1);
+const showT2 = computed(() => effectiveCaComponents.value >= 2);
+const showT3 = computed(() => effectiveCaComponents.value >= 3);
+const showT4 = computed(() => effectiveCaComponents.value >= 4);
 </script>
 
 <template>

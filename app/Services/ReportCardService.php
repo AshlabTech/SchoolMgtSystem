@@ -60,8 +60,9 @@ class ReportCardService
             ->orderByDesc('mark_from')
             ->get();
 
-        // Get CA components count
-        $caComponents = (int) (Setting::where('key', 'number_of_ca_components')->value('value') ?? 2);
+        // Get CA components count - use section-specific if available
+        $section = $student->currentEnrollment?->section;
+        $caComponents = $section ? $section->getNumberOfCaComponents() : (int) (Setting::where('key', 'number_of_ca_components')->value('value') ?? 2);
         $caWeight = (int) (Setting::where('key', 'ca_total_weight')->value('value') ?? 40);
         $examWeight = (int) (Setting::where('key', 'exam_weight')->value('value') ?? 60);
 
