@@ -37,15 +37,19 @@ class MarksController extends Controller
                     'subject_id' => $subject->id,
                     'subject' => $subject,
                 ]);
-        $classIds = $assignments->pluck('class_id')->unique()->values();
-        $sectionIds = $assignments->whereNotNull('section_id')->pluck('section_id')->unique();
-        $classWideIds = $assignments->whereNull('section_id')->pluck('class_id')->unique();
-        $sectionIdsForClassWide = $classWideIds->isEmpty()
-            ? collect([])
-            : Section::query()
-                ->forClasses($classWideIds)
-                ->pluck('id');
-        $allowedSectionIds = $sectionIds->merge($sectionIdsForClassWide)->unique()->values();
+        $classIds = collect([]);
+        $allowedSectionIds = collect([]);
+        if ($isRestrictedTeacher) {
+            $classIds = $assignments->pluck('class_id')->unique()->values();
+            $sectionIds = $assignments->whereNotNull('section_id')->pluck('section_id')->unique();
+            $classWideIds = $assignments->whereNull('section_id')->pluck('class_id')->unique();
+            $sectionIdsForClassWide = $classWideIds->isEmpty()
+                ? collect([])
+                : Section::query()
+                    ->forClasses($classWideIds)
+                    ->pluck('id');
+            $allowedSectionIds = $sectionIds->merge($sectionIdsForClassWide)->unique()->values();
+        }
 
         return Inertia::render('Marks/Index', [
             'exams' => Exam::query()->orderByDesc('id')->get(),

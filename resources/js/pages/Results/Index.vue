@@ -50,8 +50,7 @@ const submit = () => {
 };
 
 const commentForm = useForm({
-    result_comment_id:
-        (props.resultComments || []).find((comment) => comment.comment === props.examResult?.teacher_comment)?.id ?? null,
+    result_comment_id: null,
 });
 
 const saveComment = () => {
