@@ -174,6 +174,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/payments/records/{record}/pay', [PaymentsController::class, 'payNow'])->name('payments.records.pay');
         Route::post('/payments/records/{record}/reset', [PaymentsController::class, 'resetRecord'])->name('payments.records.reset');
         Route::get('/payments/records/{record}/receipts', [PaymentsController::class, 'receipts'])->name('payments.records.receipts');
+        Route::get('/payments/records/{record}/receipts/download', [PaymentsController::class, 'downloadReceipt'])->name('payments.records.receipts.download');
         Route::get('/payments/export', [PaymentsController::class, 'export'])->name('payments.export');
     });
 

@@ -9,9 +9,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('fee_records', function (Blueprint $table) {
+            $table->dropForeign(['fee_definition_id']);
             $table->dropUnique('fee_records_unique');
-            $table->dropConstrainedForeignId('fee_definition_id');
-            $table->foreignId('invoice_type_id')->nullable()->change();
+            $table->dropColumn('fee_definition_id');
             $table->unique(['invoice_type_id', 'student_id', 'academic_year_id'], 'fee_records_invoice_unique');
         });
     }
