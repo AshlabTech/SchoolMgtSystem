@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import AppShell from '../../layouts/AppShell.vue';
 import FieldError from '../../components/FieldError.vue';
@@ -27,6 +27,14 @@ const subjectOptions = computed(() =>
     }))
 );
 
+const filteredExams = computed(() =>
+    (props.exams || []).filter((exam) => {
+        const matchesTerm = !filter.term_id || Number(exam.term_id) === Number(filter.term_id);
+        const matchesYear = !filter.academic_year_id || Number(exam.academic_year_id) === Number(filter.academic_year_id);
+        return matchesTerm && matchesYear;
+    })
+);
+
 const { can } = usePermissions();
 const { showSuccess, showError } = useToast();
 
@@ -41,6 +49,14 @@ const filter = useForm({
 
 const students = ref([]);
 const dynamicCaComponents = ref(null);
+
+watch(filteredExams, (options) => {
+    if (!filter.exam_id) return;
+    const stillValid = options.some((exam) => Number(exam.id) === Number(filter.exam_id));
+    if (!stillValid) {
+        filter.exam_id = null;
+    }
+});
 
 // Get the number of CA components to use (from loaded students or global)
 const effectiveCaComponents = computed(() => {
@@ -129,7 +145,7 @@ const showT4 = computed(() => effectiveCaComponents.value >= 4);
                         <div>
                             <ModelSelect
                                 v-model="filter.exam_id"
-                                :options="exams"
+                                :options="filteredExams"
                                 optionLabel="name"
                                 optionValue="id"
                                 placeholder="Exam"

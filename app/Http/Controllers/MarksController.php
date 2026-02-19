@@ -97,6 +97,21 @@ class MarksController extends Controller
             'subject_id' => ['nullable', 'integer', 'exists:subjects,id'],
         ]);
 
+        if (! empty($data['exam_id']) && ! empty($data['term_id'])) {
+            $examBelongsToTerm = Exam::query()
+                ->whereKey($data['exam_id'])
+                ->where('term_id', $data['term_id'])
+                ->exists();
+
+            if (! $examBelongsToTerm) {
+                return response()->json([
+                    'students' => [],
+                    'ca_components' => (int) (Setting::where('key', 'number_of_ca_components')->value('value') ?? 2),
+                    'message' => 'Selected exam does not belong to the selected term.',
+                ], 422);
+            }
+        }
+
         $user = $request->user();
         if ($this->isRestrictedTeacher($user) && ! $this->teacherHasClassAccess($user->id, $data['class_id'], null)) {
             abort(403, 'You are not assigned to this class.');
@@ -116,6 +131,10 @@ class MarksController extends Controller
                 ->where('subject_id', $data['subject_id'])
                 ->where('class_id', $data['class_id'])
                 ->when($data['academic_year_id'] ?? null, fn ($q) => $q->where('academic_year_id', $data['academic_year_id']))
+                ->when(
+                    $data['term_id'] ?? null,
+                    fn ($q, $termId) => $q->whereHas('exam', fn ($exam) => $exam->where('term_id', $termId))
+                )
                 ->get()
                 ->keyBy('student_id');
 
@@ -179,6 +198,19 @@ class MarksController extends Controller
             'entries.*.t4' => ['nullable', 'integer'],
             'entries.*.exm' => ['nullable', 'integer'],
         ]);
+
+        if (! empty($data['term_id'])) {
+            $examBelongsToTerm = Exam::query()
+                ->whereKey($data['exam_id'])
+                ->where('term_id', $data['term_id'])
+                ->exists();
+
+            if (! $examBelongsToTerm) {
+                return back()->withErrors([
+                    'term_id' => 'Selected exam does not belong to the selected term.',
+                ]);
+            }
+        }
 
         $user = $request->user();
         if ($this->isRestrictedTeacher($user) && ! $this->teacherHasSubjectAccess($user->id, $data['subject_id'], $data['class_id'], null)) {

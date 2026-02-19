@@ -35,18 +35,23 @@ const openView = (record) => {
 };
 
 const startEdit = (record) => {
+    const [fallbackFirstName, ...restName] = String(record.name ?? '').trim().split(' ');
+    const fallbackLastName = restName.join(' ').trim();
+    const staffProfile = record.staff_profile ?? record.staffProfile ?? null;
+    const selectedRole = record.roles?.[0]?.name ?? null;
+
     editingId.value = record.id;
     form.clearErrors();
     form.name = record.name ?? '';
     form.email = record.email ?? '';
     form.username = record.username ?? '';
     form.password = '';
-    form.role = record.roles?.[0]?.name ?? null;
-    form.first_name = record.profile?.first_name ?? '';
-    form.last_name = record.profile?.last_name ?? '';
+    form.role = selectedRole;
+    form.first_name = record.profile?.first_name ?? fallbackFirstName ?? '';
+    form.last_name = record.profile?.last_name ?? fallbackLastName ?? '';
     form.phone = record.profile?.phone ?? '';
-    form.designation = record.staff_profile?.designation ?? '';
-    form.employment_date = record.staff_profile?.employment_date ?? '';
+    form.designation = staffProfile?.designation ?? '';
+    form.employment_date = staffProfile?.employment_date ?? '';
 };
 
 const cancelEdit = () => {
@@ -57,7 +62,11 @@ const cancelEdit = () => {
 
 const submit = () => {
     if (editingId.value) {
-        form.put(`/staff/${editingId.value}`, {
+        form.transform((data) => ({
+            ...data,
+            role: typeof data.role === 'object' ? data.role?.name : data.role,
+            _method: 'put',
+        })).post(`/staff/${editingId.value}`, {
             preserveScroll: true,
             onSuccess: () => {
                 editingId.value = null;
@@ -67,7 +76,10 @@ const submit = () => {
         return;
     }
 
-    form.post('/staff', {
+    form.transform((data) => ({
+        ...data,
+        role: typeof data.role === 'object' ? data.role?.name : data.role,
+    })).post('/staff', {
         preserveScroll: true,
         onSuccess: () => {
             form.reset();
