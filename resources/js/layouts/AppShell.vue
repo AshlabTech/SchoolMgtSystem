@@ -37,129 +37,129 @@ const currentYear = computed(() => page.props.schoolContext?.academicYear?.name 
                 @click="closeSidebar"
             ></div>
             <aside
-                class="fixed inset-y-0 left-0 z-40 h-full w-62 overflow-y-auto border-r border-slate-200 bg-white/90 backdrop-blur transition-transform lg:static lg:translate-x-0 lg:bg-white/70"
+                class="fixed inset-y-0 left-0 z-40 h-full w-64 overflow-y-auto border-r border-slate-200/80 bg-white/95 backdrop-blur-xl shadow-xl transition-transform lg:static lg:translate-x-0 lg:bg-white/80 lg:shadow-none"
                 :class="isSidebarOpen ? 'translate-x-0' : '-translate-x-full'"
             >
-                <div class="flex h-16 items-center gap-3 px-6">
-                    <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-600 text-white">
-                        <i class="pi pi-sparkles text-base"></i>
+                <div class="flex h-18 items-center gap-3 px-6 py-4">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 text-white shadow-lg shadow-teal-500/30">
+                        <i class="pi pi-sparkles text-lg"></i>
                     </div>
                     <div>
-                        <div class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500">SchoolApp</div>
-                        <div class="text-xs text-slate-400">Academic Suite</div>
+                        <div class="font-display text-base font-bold tracking-tight text-slate-800">SchoolApp</div>
+                        <div class="text-xs font-medium text-slate-500">Academic Suite</div>
                     </div>
                 </div>
-                <div class="px-6 pb-2">
-                    <div class="text-[11px] uppercase tracking-[0.2em] text-slate-400">Current Term</div>
-                    <div class="text-xs font-semibold text-slate-600">{{ currentTerm }}</div>
-                    <div class="mt-2 text-[11px] uppercase tracking-[0.2em] text-slate-400">Academic Year</div>
-                    <div class="text-xs text-slate-500">{{ currentYear }}</div>
+                <div class="mx-4 mb-4 rounded-xl bg-gradient-to-br from-teal-50 to-orange-50 p-4 shadow-sm">
+                    <div class="text-[10px] font-semibold uppercase tracking-[0.15em] text-teal-700">Current Term</div>
+                    <div class="mt-0.5 text-sm font-semibold text-slate-800">{{ currentTerm }}</div>
+                    <div class="mt-3 text-[10px] font-semibold uppercase tracking-[0.15em] text-orange-700">Academic Year</div>
+                    <div class="mt-0.5 text-sm font-medium text-slate-700">{{ currentYear }}</div>
                 </div>
-                <nav class="px-4 py-6" @click="onNavClick">
-                    <div class="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Core</div>
-                    <div class="flex flex-col gap-2">
-                        <a class="flex items-center gap-3 rounded-xl bg-teal-50 px-4 py-2 text-sm font-medium text-teal-800" href="/dashboard">
-                            <i class="pi pi-chart-line"></i>
+                <nav class="px-4 py-2" @click="onNavClick">
+                    <div class="mb-2 px-2 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Core</div>
+                    <div class="flex flex-col gap-1">
+                        <a class="group flex items-center gap-3 rounded-xl bg-gradient-to-r from-teal-500 to-teal-600 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-teal-500/20 transition-all hover:shadow-lg hover:shadow-teal-500/30" href="/dashboard">
+                            <i class="pi pi-chart-line text-base"></i>
                             Dashboard
                         </a>
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/students">
-                            <i class="pi pi-users"></i>
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/students">
+                            <i class="pi pi-users text-base transition-colors group-hover:text-teal-600"></i>
                             Students
                         </a>
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/my-children">
-                            <i class="pi pi-heart"></i>
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/my-children">
+                            <i class="pi pi-heart text-base transition-colors group-hover:text-teal-600"></i>
                             My Children
                         </a>
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/promotions">
-                            <i class="pi pi-arrow-up-right"></i>
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/promotions">
+                            <i class="pi pi-arrow-up-right text-base transition-colors group-hover:text-teal-600"></i>
                             Promotions
                         </a>
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/marks">
-                            <i class="pi pi-pencil"></i>
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/marks">
+                            <i class="pi pi-pencil text-base transition-colors group-hover:text-teal-600"></i>
                             Marks
                         </a>
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/results">
-                            <i class="pi pi-chart-bar"></i>
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/results">
+                            <i class="pi pi-chart-bar text-base transition-colors group-hover:text-teal-600"></i>
                             Results
                         </a>
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/staff">
-                            <i class="pi pi-briefcase"></i>
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/staff">
+                            <i class="pi pi-briefcase text-base transition-colors group-hover:text-teal-600"></i>
                             Staff
                         </a>
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/academics">
-                            <i class="pi pi-book"></i>
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/academics">
+                            <i class="pi pi-book text-base transition-colors group-hover:text-teal-600"></i>
                             Academics
                         </a>
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/subjects">
-                            <i class="pi pi-bookmark"></i>
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/subjects">
+                            <i class="pi pi-bookmark text-base transition-colors group-hover:text-teal-600"></i>
                             Subjects
                         </a>
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/exams">
-                            <i class="pi pi-file-edit"></i>
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/exams">
+                            <i class="pi pi-file-edit text-base transition-colors group-hover:text-teal-600"></i>
                             Exams
                         </a>
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/grades">
-                            <i class="pi pi-star"></i>
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/grades">
+                            <i class="pi pi-star text-base transition-colors group-hover:text-teal-600"></i>
                             Grades
                         </a>
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/skills">
-                            <i class="pi pi-list-check"></i>
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/skills">
+                            <i class="pi pi-list-check text-base transition-colors group-hover:text-teal-600"></i>
                             Skills
                         </a>
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/skill-scores">
-                            <i class="pi pi-chart-pie"></i>
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/skill-scores">
+                            <i class="pi pi-chart-pie text-base transition-colors group-hover:text-teal-600"></i>
                             Skill Scores
                         </a>
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/payments">
-                            <i class="pi pi-credit-card"></i>
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/payments">
+                            <i class="pi pi-credit-card text-base transition-colors group-hover:text-teal-600"></i>
                             Payments
                         </a>
                     </div>
 
-                    <div class="mt-8 mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Operations</div>
-                    <div class="flex flex-col gap-2">
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/timetables">
-                            <i class="pi pi-calendar"></i>
+                    <div class="mb-2 mt-6 px-2 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Operations</div>
+                    <div class="flex flex-col gap-1">
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/timetables">
+                            <i class="pi pi-calendar text-base transition-colors group-hover:text-teal-600"></i>
                             Timetable
                         </a>
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/pins">
-                            <i class="pi pi-key"></i>
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/pins">
+                            <i class="pi pi-key text-base transition-colors group-hover:text-teal-600"></i>
                             Pins
                         </a>
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/library">
-                            <i class="pi pi-book"></i>
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/library">
+                            <i class="pi pi-book text-base transition-colors group-hover:text-teal-600"></i>
                             Library
                         </a>
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/dorms">
-                            <i class="pi pi-home"></i>
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/dorms">
+                            <i class="pi pi-home text-base transition-colors group-hover:text-teal-600"></i>
                             Dorms
                         </a>
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/settings">
-                            <i class="pi pi-cog"></i>
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/settings">
+                            <i class="pi pi-cog text-base transition-colors group-hover:text-teal-600"></i>
                             Settings
                         </a>
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/comments">
-                            <i class="pi pi-comments"></i>
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/comments">
+                            <i class="pi pi-comments text-base transition-colors group-hover:text-teal-600"></i>
                             Comments
                         </a>
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/my-account">
-                            <i class="pi pi-user"></i>
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/my-account">
+                            <i class="pi pi-user text-base transition-colors group-hover:text-teal-600"></i>
                             My Account
                         </a>
                     </div>
 
-                    <div class="mt-8 mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Portals</div>
-                    <div class="flex flex-col gap-2">
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/portal/student">
-                            <i class="pi pi-id-card"></i>
+                    <div class="mb-2 mt-6 px-2 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Portals</div>
+                    <div class="flex flex-col gap-1 pb-6">
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/portal/student">
+                            <i class="pi pi-id-card text-base transition-colors group-hover:text-teal-600"></i>
                             Student Portal
                         </a>
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/portal/parent">
-                            <i class="pi pi-users"></i>
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/portal/parent">
+                            <i class="pi pi-users text-base transition-colors group-hover:text-teal-600"></i>
                             Parent Portal
                         </a>
-                        <a class="flex items-center gap-3 rounded-xl px-4 py-2 text-sm text-slate-600 hover:bg-slate-100" href="/portal/staff">
-                            <i class="pi pi-briefcase"></i>
+                        <a class="group flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900" href="/portal/staff">
+                            <i class="pi pi-briefcase text-base transition-colors group-hover:text-teal-600"></i>
                             Staff Portal
                         </a>
                     </div>
@@ -167,28 +167,27 @@ const currentYear = computed(() => page.props.schoolContext?.academicYear?.name 
             </aside>
 
             <div class="flex h-full min-w-0 flex-col overflow-hidden lg:pl-0">
-                <header class="flex min-h-[4rem] items-center justify-between gap-4 border-b border-slate-200 bg-white/70 px-4 py-3 backdrop-blur lg:h-16 lg:px-6">
+                <header class="flex min-h-[4.5rem] items-center justify-between gap-4 border-b border-slate-200/80 bg-white/80 px-4 py-4 shadow-sm backdrop-blur-xl lg:h-18 lg:px-8">
                     <div class="flex items-center gap-4">
-                        <button class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 lg:hidden" @click="toggleSidebar">
-                            <i class="pi pi-bars"></i>
+                        <button class="flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 shadow-sm transition-all hover:border-teal-300 hover:bg-teal-50 hover:text-teal-700 lg:hidden" @click="toggleSidebar">
+                            <i class="pi pi-bars text-base"></i>
                         </button>
-                        <div class="text-lg font-semibold" :style="{ fontFamily: 'var(--font-display)' }">Overview</div>
-                        <div class="hidden items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-500 md:flex">
-                            <span class="h-2 w-2 rounded-full bg-teal-500"></span>
+                        <div class="font-display text-xl font-bold tracking-tight text-slate-900">Overview</div>
+                        <div class="hidden items-center gap-2 rounded-full bg-gradient-to-r from-teal-50 to-teal-100 px-3 py-1.5 text-xs font-medium text-teal-700 shadow-sm md:flex">
+                            <span class="h-2 w-2 animate-pulse rounded-full bg-teal-500 shadow-sm shadow-teal-500/50"></span>
                             Next exam cycle in 12 days
                         </div>
                     </div>
                     <div class="flex flex-wrap items-center justify-end gap-2">
-                        <span class="hidden text-xs text-slate-500 md:inline">Search</span>
-                        <PInputText placeholder="Quick find" class="w-32 sm:w-44" />
+                        <PInputText placeholder="Quick find..." class="w-32 rounded-xl sm:w-48" />
                         <PButton icon="pi pi-bell" severity="secondary" text rounded class="hidden sm:inline-flex" />
-                        <PButton icon="pi pi-plus" label="New" severity="success" rounded class="hidden sm:inline-flex" />
+                        <PButton icon="pi pi-plus" label="New" severity="success" class="hidden rounded-xl sm:inline-flex" />
                         <PButton icon="pi pi-sign-out" severity="secondary" text rounded @click="logout" />
-                        <PAvatar label="SA" shape="circle" class="hidden sm:inline-flex bg-teal-600 text-white" />
+                        <PAvatar label="SA" shape="circle" class="hidden bg-gradient-to-br from-teal-500 to-teal-600 text-white shadow-md shadow-teal-500/30 sm:inline-flex" />
                     </div>
                 </header>
 
-                <main class="flex-1 min-w-0 overflow-y-auto px-4 py-6 lg:px-6 lg:py-8">
+                <main class="flex-1 min-w-0 overflow-y-auto px-4 py-6 lg:px-8 lg:py-8">
                     <slot />
                 </main>
             </div>

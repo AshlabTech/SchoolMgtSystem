@@ -4,6 +4,7 @@ import { router, useForm } from '@inertiajs/vue3';
 import AppShell from '../../layouts/AppShell.vue';
 import FieldError from '../../components/FieldError.vue';
 import ModelSelect from '../../components/ModelSelect.vue';
+import StudentSelector from '../../components/StudentSelector.vue';
 import RecordViewer from '../../components/RecordViewer.vue';
 import { usePermissions } from '../../composables/usePermissions';
 
@@ -250,12 +251,10 @@ const resetRecord = (id) => {
                             optionValue="id"
                             placeholder="Load by class"
                         />
-                        <ModelSelect
+                        <StudentSelector
                             v-model="filterForm.student_id"
-                            :options="studentOptions"
-                            optionLabel="name"
-                            optionValue="id"
-                            placeholder="Specific student"
+                            :students="students"
+                            placeholder="Search student..."
                         />
                         <PDropdown
                             v-model="filterForm.status"
