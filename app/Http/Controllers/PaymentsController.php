@@ -10,9 +10,11 @@ use App\Models\PaymentCategory;
 use App\Models\Receipt;
 use App\Models\SchoolClass;
 use App\Models\Section;
+use App\Models\Setting;
 use App\Models\Student;
 use App\Models\StudentEnrollment;
 use App\Models\Term;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -171,7 +173,7 @@ class PaymentsController extends Controller
                 ]
             );
 
-            if (!$record->reference) {
+            if (! $record->reference) {
                 $record->update(['reference' => (string) random_int(100000, 99999999)]);
             }
         }
@@ -210,6 +212,48 @@ class PaymentsController extends Controller
         return Inertia::render('Payments/Receipts', [
             'record' => $record->load(['invoiceType.paymentCategory', 'student.user.profile', 'receipts']),
         ]);
+    }
+
+    public function downloadReceipt(FeeRecord $record)
+    {
+        $record->load(['invoiceType.paymentCategory', 'student.user.profile', 'receipts']);
+
+        // Get school settings
+        $schoolSettings = Setting::query()
+            ->where('group', 'school_profile')
+            ->pluck('value', 'key');
+
+        // Prepare student name
+        $studentName = trim(
+            ($record->student?->user?->profile?->first_name ?? '').' '.
+            ($record->student?->user?->profile?->last_name ?? '')
+        ) ?: 'Unknown Student';
+
+        // Prepare data for PDF
+        $data = [
+            'schoolName' => $schoolSettings['school_name'] ?? config('app.name'),
+            'schoolAddress' => $schoolSettings['school_address'] ?? '',
+            'schoolPhone' => $schoolSettings['school_phone'] ?? '',
+            'schoolEmail' => $schoolSettings['school_email'] ?? '',
+            'schoolMotto' => $schoolSettings['school_motto'] ?? '',
+            'studentName' => $studentName,
+            'invoiceName' => $record->invoiceType?->name ?? 'N/A',
+            'categoryName' => $record->invoiceType?->paymentCategory?->name ?? 'N/A',
+            'reference' => $record->reference ?? 'N/A',
+            'receipts' => $record->receipts,
+            'totalPaid' => $record->amount_paid,
+            'currentBalance' => $record->balance,
+            'isPaid' => $record->is_paid,
+        ];
+
+        // Generate PDF with thermal receipt size (80mm width)
+        $pdf = Pdf::loadView('payment-receipt', $data);
+        // 80mm width = ~226.77pt, auto height for thermal receipt
+        $pdf->setPaper([0, 0, 226.77, 841.89], 'portrait');
+
+        $filename = 'payment_receipt_'.($record->reference ?? $record->id).'_'.now()->format('Y_m_d').'.pdf';
+
+        return $pdf->download($filename);
     }
 
     public function updateDefinition(Request $request, InvoiceType $definition)
@@ -283,7 +327,7 @@ class PaymentsController extends Controller
 
     private function inferAndValidateSection(array $data): array
     {
-        if (!empty($data['class_id']) && empty($data['section_id'])) {
+        if (! empty($data['class_id']) && empty($data['section_id'])) {
             $data['section_id'] = Section::query()->forClass($data['class_id'])->orderBy('id')->value('id');
 
             if (empty($data['section_id'])) {
@@ -291,13 +335,13 @@ class PaymentsController extends Controller
             }
         }
 
-        if (!empty($data['class_id']) && !empty($data['section_id'])) {
+        if (! empty($data['class_id']) && ! empty($data['section_id'])) {
             $isValidSection = Section::query()
                 ->forClass($data['class_id'])
                 ->where('id', $data['section_id'])
                 ->exists();
 
-            if (!$isValidSection) {
+            if (! $isValidSection) {
                 return [$data, back()->withErrors(['section_id' => 'Selected section does not belong to the selected class.'])];
             }
         }
@@ -313,8 +357,8 @@ class PaymentsController extends Controller
             ->with(['invoiceType.paymentCategory', 'student.user.profile', 'student.currentEnrollment.schoolClass'])
             ->when(($filters['status'] ?? null) === 'paid', fn ($q) => $q->where('is_paid', true))
             ->when(($filters['status'] ?? null) === 'unpaid', fn ($q) => $q->where('is_paid', false))
-            ->when(!empty($filters['class_id']), fn ($q) => $q->whereHas('student.currentEnrollment', fn ($enrollment) => $enrollment->where('class_id', $filters['class_id'])))
-            ->when(!empty($filters['student_id']), fn ($q) => $q->where('student_id', $filters['student_id']))
+            ->when(! empty($filters['class_id']), fn ($q) => $q->whereHas('student.currentEnrollment', fn ($enrollment) => $enrollment->where('class_id', $filters['class_id'])))
+            ->when(! empty($filters['student_id']), fn ($q) => $q->where('student_id', $filters['student_id']))
             ->when($search !== '', function ($q) use ($search) {
                 $q->where(function ($nested) use ($search) {
                     $nested->where('reference', 'like', '%'.$search.'%')

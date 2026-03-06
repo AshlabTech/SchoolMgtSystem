@@ -6,6 +6,7 @@ import PrimeVue from 'primevue/config';
 import Avatar from 'primevue/avatar';
 import Button from 'primevue/button';
 import Card from 'primevue/card';
+import Chart from 'primevue/chart';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import Dropdown from 'primevue/dropdown';
@@ -43,6 +44,7 @@ createServer(
                 vueApp.component('PAvatar', Avatar);
                 vueApp.component('PButton', Button);
                 vueApp.component('PCard', Card);
+                vueApp.component('PChart', Chart);
                 vueApp.component('PColumn', Column);
                 vueApp.component('PDataTable', DataTable);
                 vueApp.component('PDropdown', Dropdown);

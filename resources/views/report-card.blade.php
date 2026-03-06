@@ -107,8 +107,7 @@
         }
         
         .marks-table th {
-            background-color: #333;
-            color: white;
+            color: #000;
             padding: 4px 3px;
             border: 0.5pt solid #000;
             font-weight: bold;
@@ -146,9 +145,15 @@
             font-weight: bold;
         }
         
+        /* Blue color for TCA and EXAM scores */
+        .tca-score, .exam-score {
+            color: #2563eb;
+            font-weight: bold;
+        }
+        
         .summary-section {
             display: table;
-            width: 100%;
+            width: 68%;
             margin-bottom: 8px;
             border: 0.5pt solid #000;
         }
@@ -175,6 +180,16 @@
             padding: 5px;
             border: 0.5pt solid #000;
             background-color: #f9f9f9;
+        }
+        
+        .rating-scale {
+            width: 68%;
+            margin-bottom: 8px;
+            padding: 3px;
+            border: 0.5pt solid #000;
+            background-color: #f9f9f9;
+            text-align: center;
+            font-size: 8pt;
         }
         
         .grading-key h3 {
@@ -410,8 +425,8 @@
                                         @if(($caComponents ?? 4) >= 4)
                                             <td>{{ $mark['t4'] ?? '-' }}</td>
                                         @endif
-                                        <td><strong>{{ $mark['tca'] ?? '-' }}</strong></td>
-                                        <td><strong>{{ $mark['exam'] ?? '-' }}</strong></td>
+                                        <td class="tca-score">{{ $mark['tca'] ?? '-' }}</td>
+                                        <td class="exam-score">{{ $mark['exam'] ?? '-' }}</td>
                                         <td class="{{ $scoreClass }}"><strong>{{ $mark['total'] ?? '-' }}</strong></td>
                                         <td class="{{ $gradeClass }}"><strong>{{ $mark['grade'] ?? '-' }}</strong></td>
                                         <td>{{ $mark['remark'] ?? '-' }}</td>
@@ -488,7 +503,7 @@
         </div>
 
         <!-- Rating Scale -->
-        <div class="grading-key" style="text-align: center; font-size: 8pt; padding: 3px;">
+        <div class="rating-scale">
             <strong>RATING SCALE:</strong> 5 - Excellent | 4 - Very Good | 3 - Good | 2 - Fair | 1 - Poor
         </div>
 

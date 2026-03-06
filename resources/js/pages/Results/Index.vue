@@ -4,6 +4,7 @@ import { useForm } from '@inertiajs/vue3';
 import AppShell from '../../layouts/AppShell.vue';
 import FieldError from '../../components/FieldError.vue';
 import ModelSelect from '../../components/ModelSelect.vue';
+import StudentSelector from '../../components/StudentSelector.vue';
 import RecordViewer from '../../components/RecordViewer.vue';
 import { usePermissions } from '../../composables/usePermissions';
 import { useToast } from '../../composables/useToast';
@@ -164,7 +165,7 @@ const downloadClassBroadsheet = () => {
                 <template #content>
                     <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
                         <div>
-                            <ModelSelect v-model="filters.student_id" :options="studentOptions" optionLabel="label" optionValue="value" placeholder="Student" />
+                            <StudentSelector v-model="filters.student_id" :students="students" placeholder="Search student..." />
                             <FieldError :errors="filters.errors" field="student_id" />
                         </div>
                         <div>

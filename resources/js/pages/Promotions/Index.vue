@@ -4,6 +4,7 @@ import { router, useForm } from '@inertiajs/vue3';
 import AppShell from '../../layouts/AppShell.vue';
 import FieldError from '../../components/FieldError.vue';
 import ModelSelect from '../../components/ModelSelect.vue';
+import StudentSelector from '../../components/StudentSelector.vue';
 import RecordViewer from '../../components/RecordViewer.vue';
 import { usePermissions } from '../../composables/usePermissions';
 
@@ -68,7 +69,7 @@ const resetPromotion = (id) => {
                 <template #content>
                     <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
                         <div>
-                            <ModelSelect v-model="form.student_id" :options="studentOptions" optionLabel="label" optionValue="value" placeholder="Select student" />
+                            <StudentSelector v-model="form.student_id" :students="students" placeholder="Search student..." />
                             <FieldError :errors="form.errors" field="student_id" />
                         </div>
                         <div>

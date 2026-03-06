@@ -2,9 +2,11 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, h } from 'vue';
 import PrimeVue from 'primevue/config';
+import AutoComplete from 'primevue/autocomplete';
 import Avatar from 'primevue/avatar';
 import Button from 'primevue/button';
 import Card from 'primevue/card';
+import Chart from 'primevue/chart';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import Dropdown from 'primevue/dropdown';
@@ -35,9 +37,11 @@ createInertiaApp({
             },
         });
         vueApp.use(ToastService);
+        vueApp.component('PAutoComplete', AutoComplete);
         vueApp.component('PAvatar', Avatar);
         vueApp.component('PButton', Button);
         vueApp.component('PCard', Card);
+        vueApp.component('PChart', Chart);
         vueApp.component('PColumn', Column);
         vueApp.component('PDataTable', DataTable);
         vueApp.component('PDropdown', Dropdown);
